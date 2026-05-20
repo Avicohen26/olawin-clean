@@ -1,12 +1,12 @@
 // olawin-client.jsx
 import { useState, useEffect, useRef } from "react";
 import { db } from "./firebase";
-import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, doc, updateDoc, increment } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, doc, updateDoc, increment, where, getDocs } from "firebase/firestore";
 import { sendTicketConfirmation, sendAdminNotification } from "./emails";
 
 const T = {
   en: {
-    nav: { draws:"Draws", faq:"FAQ", legal:"Legal", buy:"BUY" },
+    nav: { draws:"Draws", faq:"FAQ", legal:"Legal", buy:"BUY", myTickets:"MY TICKETS" },
     hero: { live:"LIVE CLOSES", buyTicket:"BUY A TICKET", remaining:"tickets remaining out of" },
     section: { thisWeek:"THIS WEEK", allDraws:"ALL DRAWS", activeDraws:"active draws", howItWorks:"HOW IT WORKS", process:"PROCESS" },
     stats: { active:"ACTIVE DRAWS", value:"TOTAL VALUE", remaining:"TICKETS LEFT", countries:"ELIGIBLE COUNTRIES" },
@@ -23,7 +23,8 @@ const T = {
     ],
     shop: { back:"Back", notFound:"Draw not found.", returnHome:"Return", reserve:"RESERVE YOUR TICKETS", perTicket:"/ TICKET", individual:"INDIVIDUAL TICKETS", total:"TOTAL", continueBtn:"CONTINUE", tickets:"tickets" },
     confirm: { back:"BACK", title:"YOUR INFORMATION", firstName:"FIRST NAME *", lastName:"LAST NAME *", email:"EMAIL *", phone:"PHONE *", street:"STREET *", zip:"ZIP *", city:"CITY *", country:"COUNTRY *", countryPlaceholder:"Select...", pay:"PAY", payVia:"VIA STRIPE", processing:"PROCESSING...", bookingError:"An error occurred during booking." },
-    success: { title:"GOOD LUCK!", msg:"Your tickets are registered.", home:"HOME" },
+    success: { title:"GOOD LUCK!", msg:"Your tickets are registered.", home:"HOME", orderNum:"YOUR ORDER NUMBER", saveIt:"Save this number to retrieve your tickets later." },
+    myTickets: { title:"MY TICKETS", subtitle:"Enter your email and order number to view your tickets.", emailLabel:"EMAIL *", orderLabel:"ORDER NUMBER *", orderHint:"6 characters - found in your confirmation email.", search:"SEARCH", searching:"SEARCHING...", notFound:"No order found. Please check your email and order number.", found:"YOUR TICKETS", logout:"NEW SEARCH", ticketsLabel:"Ticket numbers:", orderDate:"Ordered on", totalPaid:"Total paid" },
     faq: {
       title:"FAQ",
       items: [
@@ -38,7 +39,7 @@ const T = {
     footer: { copyright:"2026 Olawin.", contact:"Contact" }
   },
   fr: {
-    nav: { draws:"Tirages", faq:"FAQ", legal:"Legal", buy:"ACHETER" },
+    nav: { draws:"Tirages", faq:"FAQ", legal:"Legal", buy:"ACHETER", myTickets:"MES TICKETS" },
     hero: { live:"EN COURS CLOTURE", buyTicket:"ACHETER UN TICKET", remaining:"tickets restants sur" },
     section: { thisWeek:"CETTE SEMAINE", allDraws:"TOUS LES TIRAGES", activeDraws:"tirage(s) actif(s)", howItWorks:"COMMENT CA MARCHE", process:"PROCESSUS" },
     stats: { active:"TIRAGES ACTIFS", value:"VALEUR TOTALE", remaining:"TICKETS RESTANTS", countries:"PAYS ELIGIBLES" },
@@ -55,7 +56,8 @@ const T = {
     ],
     shop: { back:"Retour", notFound:"Tirage introuvable.", returnHome:"Retour", reserve:"RESERVER VOS TICKETS", perTicket:"/ TICKET", individual:"TICKETS INDIVIDUELS", total:"TOTAL", continueBtn:"CONTINUER", tickets:"tickets" },
     confirm: { back:"RETOUR", title:"VOS INFORMATIONS", firstName:"PRENOM *", lastName:"NOM *", email:"EMAIL *", phone:"TELEPHONE *", street:"RUE *", zip:"CP *", city:"VILLE *", country:"PAYS *", countryPlaceholder:"Selectionner...", pay:"PAYER", payVia:"VIA STRIPE", processing:"EN COURS...", bookingError:"Erreur lors de la reservation." },
-    success: { title:"BONNE CHANCE!", msg:"Vos tickets sont enregistres.", home:"ACCUEIL" },
+    success: { title:"BONNE CHANCE!", msg:"Vos tickets sont enregistres.", home:"ACCUEIL", orderNum:"VOTRE NUMERO DE COMMANDE", saveIt:"Conservez ce numero pour retrouver vos tickets plus tard." },
+    myTickets: { title:"MES TICKETS", subtitle:"Entrez votre email et numero de commande pour voir vos tickets.", emailLabel:"EMAIL *", orderLabel:"NUMERO DE COMMANDE *", orderHint:"6 caracteres - trouve dans votre email de confirmation.", search:"RECHERCHER", searching:"RECHERCHE...", notFound:"Aucune commande trouvee. Verifiez votre email et numero de commande.", found:"VOS TICKETS", logout:"NOUVELLE RECHERCHE", ticketsLabel:"Numeros de tickets:", orderDate:"Commande du", totalPaid:"Total paye" },
     faq: {
       title:"FAQ",
       items: [
@@ -70,7 +72,7 @@ const T = {
     footer: { copyright:"2026 Olawin.", contact:"Contact" }
   },
   es: {
-    nav: { draws:"Sorteos", faq:"FAQ", legal:"Legal", buy:"COMPRAR" },
+    nav: { draws:"Sorteos", faq:"FAQ", legal:"Legal", buy:"COMPRAR", myTickets:"MIS BOLETOS" },
     hero: { live:"EN VIVO CIERRE", buyTicket:"COMPRAR UN BOLETO", remaining:"boletos restantes de" },
     section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO" },
     stats: { active:"SORTEOS ACTIVOS", value:"VALOR TOTAL", remaining:"BOLETOS DISPONIBLES", countries:"PAISES ELEGIBLES" },
@@ -87,7 +89,8 @@ const T = {
     ],
     shop: { back:"Atras", notFound:"Sorteo no encontrado.", returnHome:"Volver", reserve:"RESERVA TUS BOLETOS", perTicket:"/ BOLETO", individual:"BOLETOS INDIVIDUALES", total:"TOTAL", continueBtn:"CONTINUAR", tickets:"boletos" },
     confirm: { back:"ATRAS", title:"TUS DATOS", firstName:"NOMBRE *", lastName:"APELLIDO *", email:"EMAIL *", phone:"TELEFONO *", street:"CALLE *", zip:"CP *", city:"CIUDAD *", country:"PAIS *", countryPlaceholder:"Seleccionar...", pay:"PAGAR", payVia:"VIA STRIPE", processing:"PROCESANDO...", bookingError:"Error en la reserva." },
-    success: { title:"BUENA SUERTE!", msg:"Tus boletos estan registrados.", home:"INICIO" },
+    success: { title:"BUENA SUERTE!", msg:"Tus boletos estan registrados.", home:"INICIO", orderNum:"TU NUMERO DE PEDIDO", saveIt:"Guarda este numero para encontrar tus boletos mas tarde." },
+    myTickets: { title:"MIS BOLETOS", subtitle:"Ingresa tu email y numero de pedido para ver tus boletos.", emailLabel:"EMAIL *", orderLabel:"NUMERO DE PEDIDO *", orderHint:"6 caracteres - en tu email de confirmacion.", search:"BUSCAR", searching:"BUSCANDO...", notFound:"No se encontro el pedido. Verifica tu email y numero.", found:"TUS BOLETOS", logout:"NUEVA BUSQUEDA", ticketsLabel:"Numeros de boletos:", orderDate:"Pedido del", totalPaid:"Total pagado" },
     faq: {
       title:"FAQ",
       items: [
@@ -112,6 +115,13 @@ const PACKS = [
 const TICKET_OPTS = [1,2,3,4,5,6,7,8,9,10];
 const C_BG = "#D8D4CE";
 const PARTNER_LOGO = "https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/private-honors-logo.png";
+
+function genOrderNumber() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let out = "";
+  for (let i = 0; i < 6; i++) out += chars.charAt(Math.floor(Math.random() * chars.length));
+  return out;
+}
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -234,6 +244,12 @@ export default function Olawin() {
   const [openFaq, setOpenFaq] = useState(null);
   const [paying, setPaying] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [lastOrderNumber, setLastOrderNumber] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchOrder, setSearchOrder] = useState("");
+  const [searching, setSearching] = useState(false);
+  const [foundOrders, setFoundOrders] = useState(null);
+  const [searchError, setSearchError] = useState(false);
   const topRef = useRef();
 
   useEffect(function() {
@@ -258,6 +274,7 @@ export default function Olawin() {
   const featured = draws[0] || null;
   const localeMap = { en:"en-US", fr:"fr-FR", es:"es-ES" };
   const fmtDate = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"short"}) : ""; };
+  const fmtDateLong = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"long",year:"numeric"}) : ""; };
 
   const goTo = function(p) {
     setPage(p);
@@ -274,10 +291,12 @@ export default function Olawin() {
       const n = Math.floor(Math.random() * (activeDraw.totalTickets - activeDraw.soldTickets)) + activeDraw.soldTickets + 1;
       if (!used.has(n)) { used.add(n); nums.push(n); }
     }
+    const orderNumber = genOrderNumber();
     try {
       await addDoc(collection(db,"orders"), {
+        orderNumber: orderNumber,
         drawId: activeDraw.id, drawTitle: activeDraw.title,
-        firstName: form.firstName, lastName: form.lastName, email: form.email,
+        firstName: form.firstName, lastName: form.lastName, email: form.email.toLowerCase().trim(),
         phone: form.phoneCode + " " + form.phone,
         address: form.address + ", " + form.zip + " " + form.city + ", " + form.country,
         tickets: finalQty, ticketNums: nums, amount: total,
@@ -286,9 +305,10 @@ export default function Olawin() {
       });
       await updateDoc(doc(db,"draws",activeDraw.id), { soldTickets: increment(finalQty) });
       await Promise.allSettled([
-        sendTicketConfirmation({ firstName: form.firstName, lastName: form.lastName, email: form.email, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, drawDate: activeDraw.drawDate, ticketNums: nums, qty: finalQty, total: total, discount: discount, pack: selectedPack ? selectedPack.qty : null }),
-        sendAdminNotification({ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: form.phoneCode + " " + form.phone, address: form.address + ", " + form.zip + " " + form.city + ", " + form.country, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, ticketNums: nums, qty: finalQty, total: total, pack: selectedPack ? selectedPack.qty : null, orderId: "ORD-" + Date.now() })
+        sendTicketConfirmation({ firstName: form.firstName, lastName: form.lastName, email: form.email, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, drawDate: activeDraw.drawDate, ticketNums: nums, qty: finalQty, total: total, discount: discount, pack: selectedPack ? selectedPack.qty : null, orderNumber: orderNumber }),
+        sendAdminNotification({ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: form.phoneCode + " " + form.phone, address: form.address + ", " + form.zip + " " + form.city + ", " + form.country, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, ticketNums: nums, qty: finalQty, total: total, pack: selectedPack ? selectedPack.qty : null, orderId: orderNumber })
       ]);
+      setLastOrderNumber(orderNumber);
       setPaying(false);
       goTo("success");
     } catch (err) {
@@ -296,6 +316,47 @@ export default function Olawin() {
       setPaying(false);
       alert(t.confirm.bookingError);
     }
+  };
+
+  const handleSearch = async function() {
+    if (!searchEmail || !searchOrder) return;
+    setSearching(true);
+    setSearchError(false);
+    setFoundOrders(null);
+    const emailNorm = searchEmail.toLowerCase().trim();
+    const orderNorm = searchOrder.toUpperCase().trim().replace(/^OLA-?/i, "");
+    try {
+      const q = query(collection(db,"orders"), where("email","==",emailNorm));
+      const snap = await getDocs(q);
+      const matches = [];
+      snap.forEach(function(docSnap) {
+        const data = docSnap.data();
+        const docId = docSnap.id;
+        const last6 = docId.slice(-6).toUpperCase();
+        if ((data.orderNumber && data.orderNumber.toUpperCase() === orderNorm) || last6 === orderNorm) {
+          matches.push(Object.assign({ id: docId }, data));
+        }
+      });
+      if (matches.length === 0) {
+        setSearchError(true);
+        setFoundOrders(null);
+      } else {
+        setFoundOrders(matches);
+        setSearchError(false);
+      }
+      setSearching(false);
+    } catch (err) {
+      console.error("Search error:", err);
+      setSearchError(true);
+      setSearching(false);
+    }
+  };
+
+  const resetSearch = function() {
+    setSearchEmail("");
+    setSearchOrder("");
+    setFoundOrders(null);
+    setSearchError(false);
   };
 
   const CSS = "@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:" + C_BG + ";color:#1A1A1A;overflow-x:hidden;}input:focus,textarea:focus,select:focus{outline:none;}::-webkit-scrollbar{width:3px;background:" + C_BG + ";}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}@keyframes spin{to{transform:rotate(360deg);}}.nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}.nav-link:hover{color:#000;}.qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}.qty-btn.active{border-color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.08);color:#000;}.cta-dark{background:#1A1A1A;color:#E8E4DC;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2.5px;}.cta-dark:disabled{background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.25);cursor:not-allowed;}";
@@ -333,8 +394,9 @@ export default function Olawin() {
           ) : null}
         </div>
         {!isMobile ? (
-          <div style={{display:"flex",alignItems:"center",gap:"24px"}}>
+          <div style={{display:"flex",alignItems:"center",gap:"20px"}}>
             <button className="nav-link" onClick={function(){ goTo("home"); }}>{t.nav.draws}</button>
+            <button className="nav-link" onClick={function(){ goTo("mytickets"); }}>{t.nav.myTickets}</button>
             <button className="nav-link" onClick={function(){ goTo("faq"); }}>{t.nav.faq}</button>
             <button className="nav-link" onClick={function(){ goTo("legal"); }}>{t.nav.legal}</button>
             <LangSwitcher lang={lang} setLang={setLang} isMobile={false}></LangSwitcher>
@@ -353,6 +415,7 @@ export default function Olawin() {
         {isMobile && menuOpen ? (
           <div style={{position:"absolute",top:"64px",left:0,right:0,background:"rgba(216,212,206,0.98)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:"24px 20px",display:"flex",flexDirection:"column",gap:"20px"}}>
             <button className="nav-link" onClick={function(){ goTo("home"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.draws}</button>
+            <button className="nav-link" onClick={function(){ goTo("mytickets"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.myTickets}</button>
             <button className="nav-link" onClick={function(){ goTo("faq"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.faq}</button>
             <button className="nav-link" onClick={function(){ goTo("legal"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.legal}</button>
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
@@ -611,10 +674,85 @@ export default function Olawin() {
       <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"60px 24px"}}>
         <div style={{maxWidth:"500px",width:"100%",textAlign:"center"}}>
           <OlawinLogo size={56}></OlawinLogo>
-          <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",margin:"20px 0"}}>{t.success.title}</h1>
-          <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>{t.success.msg}</p>
+          <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",margin:"20px 0 16px"}}>{t.success.title}</h1>
+          <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)",marginBottom:"24px"}}>{t.success.msg}</p>
+          {lastOrderNumber ? (
+            <div style={{background:"rgba(0,0,0,0.04)",border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"20px",marginBottom:"24px"}}>
+              <div style={{fontSize:"10px",letterSpacing:"3px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{t.success.orderNum}</div>
+              <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",color:"#1A1A1A",marginBottom:"8px"}}>OLA-{lastOrderNumber}</div>
+              <div style={{fontSize:"11px",color:"rgba(0,0,0,0.5)",lineHeight:"1.5"}}>{t.success.saveIt}</div>
+            </div>
+          ) : null}
           <button onClick={function(){ goTo("home"); }} className="cta-dark" style={{padding:"13px 28px",fontSize:"11px"}}>{t.success.home}</button>
         </div>
+      </div>
+    );
+  }
+
+  function MyTicketsPage() {
+    return (
+      <div style={{maxWidth:"720px",margin:"0 auto",padding:isMobile?"48px 20px 60px":"80px 32px 80px"}}>
+        <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",marginBottom:"16px"}}>{t.myTickets.title}</h1>
+        {!foundOrders ? (
+          <div>
+            <p style={{fontSize:"14px",color:"rgba(0,0,0,0.55)",lineHeight:"1.7",marginBottom:"32px"}}>{t.myTickets.subtitle}</p>
+            <div style={{marginBottom:"16px"}}>
+              <label style={LBL}>{t.myTickets.emailLabel}</label>
+              <input type="email" value={searchEmail} onChange={function(e){ setSearchEmail(e.target.value); }} style={INP}></input>
+            </div>
+            <div style={{marginBottom:"8px"}}>
+              <label style={LBL}>{t.myTickets.orderLabel}</label>
+              <input type="text" value={searchOrder} onChange={function(e){ setSearchOrder(e.target.value); }} placeholder="OLA-XXXXXX" style={INP}></input>
+            </div>
+            <div style={{fontSize:"11px",color:"rgba(0,0,0,0.45)",marginBottom:"24px",lineHeight:"1.5"}}>{t.myTickets.orderHint}</div>
+            {searchError ? (
+              <div style={{background:"rgba(220,50,50,0.08)",border:"1px solid rgba(220,50,50,0.2)",borderRadius:"10px",padding:"14px 16px",marginBottom:"16px",fontSize:"13px",color:"rgba(180,30,30,0.9)"}}>
+                {t.myTickets.notFound}
+              </div>
+            ) : null}
+            <button onClick={handleSearch} disabled={!searchEmail || !searchOrder || searching} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>
+              {searching ? t.myTickets.searching : t.myTickets.search}
+            </button>
+          </div>
+        ) : (
+          <div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"28px",flexWrap:"wrap",gap:"12px"}}>
+              <div style={{fontSize:"11px",letterSpacing:"3px",color:"rgba(0,0,0,0.4)"}}>{t.myTickets.found} ({foundOrders.length})</div>
+              <button onClick={resetSearch} style={{background:"none",border:"1px solid rgba(0,0,0,0.15)",borderRadius:"20px",padding:"6px 14px",fontSize:"10px",letterSpacing:"2px",cursor:"pointer",color:"rgba(0,0,0,0.55)",fontFamily:"DM Sans, sans-serif"}}>{t.myTickets.logout}</button>
+            </div>
+            {foundOrders.map(function(order, i) {
+              const displayOrderNum = order.orderNumber || order.id.slice(-6).toUpperCase();
+              const orderDate = order.createdAt && order.createdAt.toDate ? fmtDateLong(order.createdAt.toDate()) : "";
+              return (
+                <div key={order.id} style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"16px",padding:isMobile?"20px":"28px",marginBottom:"16px",background:"rgba(0,0,0,0.02)"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"10px",marginBottom:"16px",paddingBottom:"16px",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
+                    <div>
+                      <div style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",marginBottom:"6px"}}>OLA-{displayOrderNum}</div>
+                      <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#1A1A1A"}}>{order.drawTitle ? order.drawTitle.toUpperCase() : ""}</div>
+                    </div>
+                    <div style={{textAlign:isMobile?"left":"right"}}>
+                      <div style={{fontSize:"10px",color:"rgba(0,0,0,0.4)",marginBottom:"4px"}}>{t.myTickets.totalPaid}</div>
+                      <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{order.amount}$</div>
+                    </div>
+                  </div>
+                  {orderDate ? (
+                    <div style={{fontSize:"12px",color:"rgba(0,0,0,0.5)",marginBottom:"14px"}}>{t.myTickets.orderDate} {orderDate}</div>
+                  ) : null}
+                  <div style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",marginBottom:"10px"}}>{t.myTickets.ticketsLabel}</div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>
+                    {(order.ticketNums || []).map(function(n, idx) {
+                      return (
+                        <span key={idx} style={{display:"inline-block",background:"#1A1A1A",color:"#E8E4DC",borderRadius:"8px",padding:"6px 12px",fontSize:"13px",fontFamily:"Courier New, monospace",fontWeight:"600",letterSpacing:"1px"}}>
+                          #{String(n).padStart(3,"0")}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }
@@ -655,6 +793,7 @@ export default function Olawin() {
           <div style={{fontSize:"10px",color:"rgba(0,0,0,0.28)",marginTop:"6px"}}>{t.footer.copyright}</div>
         </div>
         <div style={{display:"flex",gap:"20px"}}>
+          <button onClick={function(){ goTo("mytickets"); }} className="nav-link">{t.nav.myTickets}</button>
           <button onClick={function(){ goTo("faq"); }} className="nav-link">{t.nav.faq}</button>
           <button onClick={function(){ goTo("legal"); }} className="nav-link">{t.nav.legal}</button>
           <a href="mailto:contact@olawin.org" style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",textDecoration:"none",textTransform:"uppercase"}}>{t.footer.contact}</a>
@@ -671,6 +810,7 @@ export default function Olawin() {
       {page==="shop" ? <ShopPage></ShopPage> : null}
       {page==="confirm" ? <ConfirmPage></ConfirmPage> : null}
       {page==="success" ? <SuccessPage></SuccessPage> : null}
+      {page==="mytickets" ? <MyTicketsPage></MyTicketsPage> : null}
       {page==="faq" ? <FaqPage></FaqPage> : null}
       {page==="legal" ? <LegalPage></LegalPage> : null}
       <Footer></Footer>
