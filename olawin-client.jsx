@@ -249,7 +249,7 @@ function OlawinLogo(props) {
         <circle cx="20" cy="34" r="1.5" fill="#1A1A1A"></circle>
         <circle cx="6" cy="20" r="1.5" fill="#1A1A1A"></circle>
       </svg>
-      {showText ? <span style={{fontSize:size*0.56,letterSpacing:"4px",fontFamily:"Bebas Neue, sans-serif",color:"#1A1A1A",lineHeight:1}}>OLAWIN</span> : null}
+      {showText ? <span style={{fontSize:size*0.52,letterSpacing:"5px",fontFamily:"Montserrat, sans-serif",color:"#1A1A1A",lineHeight:1,fontWeight:"500"}}>OLAWIN</span> : null}
     </div>
   );
 }
@@ -353,6 +353,7 @@ export default function Olawin() {
   const [foundOrders, setFoundOrders] = useState(null);
   const [searchError, setSearchError] = useState(false);
   const topRef = useRef();
+  const drawsRef = useRef();
 
   useEffect(function() {
     const q = query(collection(db,"draws"), orderBy("createdAt","desc"));
@@ -382,6 +383,18 @@ export default function Olawin() {
     setPage(p);
     setMenuOpen(false);
     setTimeout(function() { if (topRef.current) topRef.current.scrollIntoView({behavior:"smooth"}); }, 50);
+  };
+
+  const scrollToDraws = function() {
+    setPage("home");
+    setMenuOpen(false);
+    setTimeout(function() {
+      if (drawsRef.current) {
+        drawsRef.current.scrollIntoView({behavior:"smooth", block:"start"});
+      } else if (topRef.current) {
+        topRef.current.scrollIntoView({behavior:"smooth"});
+      }
+    }, 100);
   };
 
   const handlePay = async function() {
@@ -461,7 +474,7 @@ export default function Olawin() {
     setSearchError(false);
   };
 
-  const CSS = "@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:" + C_BG + ";color:#1A1A1A;overflow-x:hidden;}input:focus,textarea:focus,select:focus{outline:none;}::-webkit-scrollbar{width:3px;background:" + C_BG + ";}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}@keyframes spin{to{transform:rotate(360deg);}}.nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}.nav-link:hover{color:#000;}.qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}.qty-btn.active{border-color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.08);color:#000;}.cta-dark{background:#1A1A1A;color:#E8E4DC;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2.5px;}.cta-dark:disabled{background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.25);cursor:not-allowed;}";
+  const CSS = "@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:" + C_BG + ";color:#1A1A1A;overflow-x:hidden;}input:focus,textarea:focus,select:focus{outline:none;}::-webkit-scrollbar{width:3px;background:" + C_BG + ";}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}@keyframes spin{to{transform:rotate(360deg);}}.nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}.nav-link:hover{color:#000;}.qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}.qty-btn.active{border-color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.08);color:#000;}.cta-dark{background:#1A1A1A;color:#E8E4DC;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2.5px;}.cta-dark:disabled{background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.25);cursor:not-allowed;}";
 
   const SOLD_LABEL = { en:"SOLD", fr:"VENDUS", es:"VENDIDOS" }[lang];
 
@@ -488,7 +501,7 @@ export default function Olawin() {
           <button className="nav-link" onClick={function(){ goTo("faq"); }}>{t.nav.faq}</button>
           <button className="nav-link" onClick={function(){ goTo("legal"); }}>{t.nav.legal}</button>
           <LangSwitcher lang={lang} setLang={setLang} isMobile={false}></LangSwitcher>
-          <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"10px 22px",fontSize:"11px",borderRadius:"8px"}}>{t.nav.buy}</button>
+          <button onClick={scrollToDraws} className="cta-dark" style={{padding:"10px 22px",fontSize:"11px",borderRadius:"8px"}}>{t.nav.buy}</button>
         </div>
       ) : (
         <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
@@ -510,7 +523,7 @@ export default function Olawin() {
             <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>{t.partnerMobile}</span>
             <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}></img>
           </div>
-          <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"14px",fontSize:"12px",borderRadius:"10px",width:"100%"}}>{t.nav.buy}</button>
+          <button onClick={scrollToDraws} className="cta-dark" style={{padding:"14px",fontSize:"12px",borderRadius:"10px",width:"100%"}}>{t.nav.buy}</button>
         </div>
       ) : null}
     </nav>
@@ -560,7 +573,7 @@ export default function Olawin() {
             </div>
           </section>
 
-          <section style={{background:C_BG,padding:isMobile?"48px 20px":"80px 48px"}}>
+          <section ref={drawsRef} style={{background:C_BG,padding:isMobile?"48px 20px":"80px 48px",scrollMarginTop:"80px"}}>
             <div style={{maxWidth:"1200px",margin:"0 auto"}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"32px",flexWrap:"wrap",gap:"12px"}}>
                 <div>
@@ -617,7 +630,7 @@ export default function Olawin() {
             <OlawinLogo size={isMobile?40:48}></OlawinLogo>
             <h2 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(36px,6vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",margin:"24px 0 12px",lineHeight:0.95}}>{t.cta.tryLuck}</h2>
             <p style={{fontSize:"15px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>{draws.length} {t.cta.active}</p>
-            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:isMobile?"16px 40px":"18px 60px",fontSize:"12px",width:isMobile?"100%":"auto",maxWidth:"400px"}}>{t.cta.viewDraws}</button>
+            <button onClick={scrollToDraws} className="cta-dark" style={{padding:isMobile?"16px 40px":"18px 60px",fontSize:"12px",width:isMobile?"100%":"auto",maxWidth:"400px"}}>{t.cta.viewDraws}</button>
           </section>
         </div>
       );
