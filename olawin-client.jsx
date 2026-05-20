@@ -117,19 +117,106 @@ const C_BG = "#D8D4CE";
 const PARTNER_LOGO = "https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/private-honors-logo.png";
 
 const COUNTRY_CODES = [
-  { code:"+1", name:"USA" }, { code:"+33", name:"France" },
-  { code:"+32", name:"Belgique" }, { code:"+41", name:"Suisse" },
-  { code:"+212", name:"Maroc" }, { code:"+213", name:"Algerie" },
-  { code:"+44", name:"UK" }, { code:"+49", name:"Allemagne" },
-  { code:"+34", name:"Espagne" }, { code:"+39", name:"Italie" },
-  { code:"+351", name:"Portugal" }, { code:"+52", name:"Mexique" },
-  { code:"+55", name:"Bresil" }, { code:"+971", name:"UAE" }
+  { code:"+1", name:"USA / Canada" },
+  { code:"+33", name:"France" },
+  { code:"+44", name:"United Kingdom" },
+  { code:"+34", name:"Espana" },
+  { code:"+49", name:"Deutschland" },
+  { code:"+39", name:"Italia" },
+  { code:"+351", name:"Portugal" },
+  { code:"+32", name:"Belgique" },
+  { code:"+41", name:"Suisse" },
+  { code:"+31", name:"Nederland" },
+  { code:"+43", name:"Osterreich" },
+  { code:"+45", name:"Danmark" },
+  { code:"+46", name:"Sverige" },
+  { code:"+47", name:"Norge" },
+  { code:"+358", name:"Suomi" },
+  { code:"+353", name:"Ireland" },
+  { code:"+30", name:"Greece" },
+  { code:"+48", name:"Polska" },
+  { code:"+420", name:"Czech Republic" },
+  { code:"+36", name:"Magyarorszag" },
+  { code:"+40", name:"Romania" },
+  { code:"+359", name:"Bulgaria" },
+  { code:"+385", name:"Hrvatska" },
+  { code:"+386", name:"Slovenija" },
+  { code:"+421", name:"Slovensko" },
+  { code:"+371", name:"Latvija" },
+  { code:"+370", name:"Lietuva" },
+  { code:"+372", name:"Eesti" },
+  { code:"+352", name:"Luxembourg" },
+  { code:"+377", name:"Monaco" },
+  { code:"+90", name:"Turkiye" },
+  { code:"+7", name:"Russia" },
+  { code:"+380", name:"Ukraine" },
+  { code:"+212", name:"Maroc" },
+  { code:"+213", name:"Algerie" },
+  { code:"+216", name:"Tunisie" },
+  { code:"+20", name:"Egypt" },
+  { code:"+218", name:"Libya" },
+  { code:"+221", name:"Senegal" },
+  { code:"+225", name:"Cote d Ivoire" },
+  { code:"+229", name:"Benin" },
+  { code:"+237", name:"Cameroun" },
+  { code:"+241", name:"Gabon" },
+  { code:"+242", name:"Congo" },
+  { code:"+243", name:"DR Congo" },
+  { code:"+244", name:"Angola" },
+  { code:"+27", name:"South Africa" },
+  { code:"+234", name:"Nigeria" },
+  { code:"+233", name:"Ghana" },
+  { code:"+254", name:"Kenya" },
+  { code:"+972", name:"Israel" },
+  { code:"+961", name:"Liban" },
+  { code:"+962", name:"Jordan" },
+  { code:"+966", name:"Saudi Arabia" },
+  { code:"+971", name:"UAE" },
+  { code:"+974", name:"Qatar" },
+  { code:"+965", name:"Kuwait" },
+  { code:"+973", name:"Bahrain" },
+  { code:"+968", name:"Oman" },
+  { code:"+98", name:"Iran" },
+  { code:"+92", name:"Pakistan" },
+  { code:"+91", name:"India" },
+  { code:"+880", name:"Bangladesh" },
+  { code:"+94", name:"Sri Lanka" },
+  { code:"+977", name:"Nepal" },
+  { code:"+66", name:"Thailand" },
+  { code:"+84", name:"Vietnam" },
+  { code:"+62", name:"Indonesia" },
+  { code:"+60", name:"Malaysia" },
+  { code:"+65", name:"Singapore" },
+  { code:"+63", name:"Philippines" },
+  { code:"+86", name:"China" },
+  { code:"+852", name:"Hong Kong" },
+  { code:"+853", name:"Macau" },
+  { code:"+886", name:"Taiwan" },
+  { code:"+81", name:"Japan" },
+  { code:"+82", name:"South Korea" },
+  { code:"+52", name:"Mexico" },
+  { code:"+55", name:"Brasil" },
+  { code:"+54", name:"Argentina" },
+  { code:"+56", name:"Chile" },
+  { code:"+57", name:"Colombia" },
+  { code:"+58", name:"Venezuela" },
+  { code:"+51", name:"Peru" },
+  { code:"+593", name:"Ecuador" },
+  { code:"+598", name:"Uruguay" },
+  { code:"+595", name:"Paraguay" },
+  { code:"+591", name:"Bolivia" },
+  { code:"+506", name:"Costa Rica" },
+  { code:"+507", name:"Panama" },
+  { code:"+61", name:"Australia" },
+  { code:"+64", name:"New Zealand" }
 ];
 
-const COUNTRIES = ["Algerie","Allemagne","Angola","Argentine","Australie","Autriche","Belgique","Bresil","Cameroun","Canada","Chine","Colombie","Cote d Ivoire","Danemark","Egypte","Espagne","Etats-Unis","France","Gabon","Ghana","Inde","Israel","Italie","Japon","Liban","Luxembourg","Maroc","Mexique","Monaco","Pays-Bas","Portugal","Royaume-Uni","Russie","Senegal","Suede","Suisse","Tunisie","Turquie","UAE"];
+const COUNTRIES = ["Afrique du Sud","Algerie","Allemagne","Angola","Arabie Saoudite","Argentine","Australie","Autriche","Bahrein","Bangladesh","Belgique","Benin","Bolivie","Bosnie","Bresil","Bulgarie","Cameroun","Canada","Chili","Chine","Chypre","Colombie","Congo","Coree du Sud","Costa Rica","Cote d Ivoire","Croatie","Danemark","Egypte","Emirats Arabes Unis","Equateur","Espagne","Estonie","Etats-Unis","Finlande","France","Gabon","Ghana","Grece","Guatemala","Hong Kong","Hongrie","Inde","Indonesie","Iran","Irlande","Islande","Israel","Italie","Japon","Jordanie","Kenya","Koweit","Lettonie","Liban","Libye","Lituanie","Luxembourg","Macao","Madagascar","Malaisie","Mali","Malte","Maroc","Mexique","Moldavie","Monaco","Mongolie","Montenegro","Mozambique","Namibie","Nepal","Nicaragua","Niger","Nigeria","Norvege","Nouvelle-Zelande","Oman","Ouganda","Pakistan","Panama","Paraguay","Pays-Bas","Perou","Philippines","Pologne","Portugal","Qatar","Republique Tcheque","Roumanie","Royaume-Uni","Russie","Rwanda","Senegal","Serbie","Singapour","Slovaquie","Slovenie","Sri Lanka","Suede","Suisse","Taiwan","Tanzanie","Thailande","Tunisie","Turquie","Ukraine","Uruguay","Venezuela","Vietnam","Yemen","Zambie","Zimbabwe"];
 
 const INP = { width:"100%", padding:"13px 16px", background:"rgba(0,0,0,0.04)", border:"1px solid rgba(0,0,0,0.12)", borderRadius:"10px", color:"#1A1A1A", fontSize:"16px", fontFamily:"DM Sans, sans-serif", boxSizing:"border-box" };
 const LBL = { fontSize:"9px", letterSpacing:"2.5px", color:"rgba(0,0,0,0.4)", marginBottom:"7px", fontFamily:"DM Sans, sans-serif", display:"block" };
+
+const TEXT_SHADOW_STRONG = "0 2px 8px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.9)";
 
 function genOrderNumber() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -188,26 +275,26 @@ function DrawCard(props) {
   const [hovered, setHovered] = useState(false);
   const pct = Math.round((draw.soldTickets / draw.totalTickets) * 100);
   return (
-    <div onMouseEnter={function(){setHovered(true);}} onMouseLeave={function(){setHovered(false);}} onClick={onClick} style={{position:"relative",borderRadius:"18px",overflow:"hidden",cursor:"pointer",height:"320px",border:"1px solid "+(hovered?"rgba(0,0,0,0.2)":"rgba(0,0,0,0.08)"),transition:"all 0.3s",boxShadow:hovered?"0 20px 48px rgba(0,0,0,0.18)":"0 4px 16px rgba(0,0,0,0.06)",transform:hovered?"translateY(-4px)":"none"}}>
+    <div onMouseEnter={function(){setHovered(true);}} onMouseLeave={function(){setHovered(false);}} onClick={onClick} style={{position:"relative",borderRadius:"18px",overflow:"hidden",cursor:"pointer",height:"360px",border:"1px solid "+(hovered?"rgba(0,0,0,0.2)":"rgba(0,0,0,0.08)"),transition:"all 0.3s",boxShadow:hovered?"0 20px 48px rgba(0,0,0,0.18)":"0 4px 16px rgba(0,0,0,0.06)",transform:hovered?"translateY(-4px)":"none"}}>
       <div style={{position:"absolute",inset:0,background:draw.gradient||"#333"}}></div>
       <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:"80px",opacity:0.12,zIndex:1}}>{draw.emoji}</div>
       {draw.image ? <img src={draw.image} alt={draw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:draw.heroPosition||"center"}}></img> : null}
-      <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0.2) 60%,rgba(0,0,0,0.0) 100%)",zIndex:2}}></div>
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)",zIndex:2}}></div>
       <div style={{position:"absolute",inset:0,padding:"24px",display:"flex",flexDirection:"column",justifyContent:"space-between",zIndex:3}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"6px"}}>
-          <div style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"20px",padding:"4px 12px",fontSize:"10px",letterSpacing:"1.5px",color:"rgba(255,255,255,0.9)"}}>{draw.country} {draw.location ? draw.location.toUpperCase() : ""}</div>
-          <div style={{background:"rgba(255,255,255,0.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:"20px",padding:"4px 12px",fontSize:"10px",color:"rgba(255,255,255,0.8)"}}>{draw.ticketPrice}$ / ticket</div>
+          <div style={{background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"5px 14px",fontSize:"12px",letterSpacing:"1.5px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{draw.country} {draw.location ? draw.location.toUpperCase() : ""}</div>
+          <div style={{background:"#ffffff",border:"1px solid rgba(255,255,255,0.95)",borderRadius:"20px",padding:"5px 14px",fontSize:"15px",color:"#1A1A1A",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1.5px"}}>{draw.ticketPrice}$ / TICKET</div>
         </div>
         <div>
-          <div style={{fontSize:"11px",letterSpacing:"1px",color:"rgba(255,255,255,0.55)",marginBottom:"6px"}}>{draw.title ? draw.title.toUpperCase() : ""}</div>
-          <div style={{fontSize:"clamp(22px,3vw,34px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#fff",lineHeight:0.95,marginBottom:"14px"}}>{draw.prize ? draw.prize.toUpperCase() : ""}</div>
-          <div style={{marginBottom:"14px"}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:"5px"}}>
-              <span style={{fontSize:"10px",color:"rgba(255,255,255,0.55)"}}>{draw.soldTickets}/{draw.totalTickets}</span>
-              <span style={{fontSize:"10px",color:"rgba(255,255,255,0.7)"}}>{pct}%</span>
+          <div style={{fontSize:"13px",letterSpacing:"1px",color:"#ffffff",marginBottom:"8px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{draw.title ? draw.title.toUpperCase() : ""}</div>
+          <div style={{fontSize:"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#ffffff",lineHeight:0.95,marginBottom:"18px",fontWeight:"900",textShadow:TEXT_SHADOW_STRONG}}>{draw.prize ? draw.prize.toUpperCase() : ""}</div>
+          <div style={{marginBottom:"4px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:"7px",alignItems:"baseline"}}>
+              <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.soldTickets}/{draw.totalTickets}</span>
+              <span style={{fontSize:"13px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{pct}%</span>
             </div>
-            <div style={{background:"rgba(0,0,0,0.15)",borderRadius:"2px",height:"2px"}}>
-              <div style={{width:pct+"%",height:"100%",background:"rgba(255,255,255,0.85)",borderRadius:"2px"}}></div>
+            <div style={{background:"rgba(255,255,255,0.25)",borderRadius:"2px",height:"3px"}}>
+              <div style={{width:pct+"%",height:"100%",background:"#ffffff",borderRadius:"2px"}}></div>
             </div>
           </div>
         </div>
@@ -453,22 +540,22 @@ export default function Olawin() {
           <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
             <div style={{position:"absolute",inset:0,background:(featured && featured.gradient) || "#1A1A1A"}}></div>
             {featured && featured.image ? <img src={featured.image} alt={featured.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:featured.heroPosition||"center"}}></img> : null}
-            <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.3) 50%,rgba(0,0,0,0.05) 100%)"}}></div>
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
             <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
-              <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(255,255,255,0.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"100px",padding:"6px 14px",marginBottom:"16px"}}>
+              <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"100px",padding:"7px 16px",marginBottom:"16px"}}>
                 <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#ff4444",animation:"pulse 1.5s infinite"}}></span>
-                <span style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(255,255,255,0.9)"}}>{t.hero.live} {fmtDate(featured && featured.endDate)}</span>
+                <span style={{fontSize:"11px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{t.hero.live} {fmtDate(featured && featured.endDate)}</span>
               </div>
-              <div style={{fontSize:"12px",letterSpacing:"3px",color:"rgba(255,255,255,0.6)",marginBottom:"10px"}}>{featured && featured.country} {featured && featured.location ? featured.location.toUpperCase() : ""}</div>
-              <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px"}}>
+              <div style={{fontSize:"14px",letterSpacing:"3px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured && featured.country} {featured && featured.location ? featured.location.toUpperCase() : ""}</div>
+              <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
                 {featured && featured.title ? featured.title.toUpperCase() : ""}
                 <br></br>
-                <span style={{color:"rgba(255,255,255,0.5)"}}>{featured && featured.location ? featured.location.toUpperCase() : ""}</span>
+                <span style={{color:"#ffffff",opacity:0.85}}>{featured && featured.location ? featured.location.toUpperCase() : ""}</span>
               </h1>
-              <p style={{fontSize:isMobile?"14px":"16px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(255,255,255,0.65)",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px"}}>{featured && featured.description}</p>
+              <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{featured && featured.description}</p>
               <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
-                <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"13px",width:isMobile?"100%":"auto"}}>{t.hero.buyTicket} {featured && featured.ticketPrice}$</button>
-                <div style={{color:"rgba(255,255,255,0.5)",fontSize:"12px",textAlign:isMobile?"center":"left"}}>{featured ? (featured.totalTickets - featured.soldTickets) : 0} {t.hero.remaining} {featured && featured.totalTickets}</div>
+                <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket} {featured && featured.ticketPrice}$</button>
+                <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured ? (featured.totalTickets - featured.soldTickets) : 0} {t.hero.remaining} {featured && featured.totalTickets}</div>
               </div>
             </div>
           </section>
@@ -549,22 +636,22 @@ export default function Olawin() {
             {activeDraw.image ? <img src={activeDraw.image} alt={activeDraw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}></img> : null}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}></div>
             <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
-              <div style={{background:"rgba(255,255,255,0.18)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"5px 12px",fontSize:"11px",letterSpacing:"2px",color:"#fff"}}>{activeDraw.country} {activeDraw.location ? activeDraw.location.toUpperCase() : ""}</div>
-              <button onClick={function(){ goTo("home"); }} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"20px",padding:"5px 12px",color:"rgba(255,255,255,0.85)",fontSize:"11px",cursor:"pointer"}}>{t.shop.back}</button>
+              <div style={{background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"6px 14px",fontSize:"13px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{activeDraw.country} {activeDraw.location ? activeDraw.location.toUpperCase() : ""}</div>
+              <button onClick={function(){ goTo("home"); }} style={{background:"rgba(0,0,0,0.45)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"6px 14px",color:"#ffffff",fontSize:"12px",cursor:"pointer",fontWeight:"600",textShadow:TEXT_SHADOW_STRONG}}>{t.shop.back}</button>
             </div>
           </div>
           <div style={{maxWidth:"1100px",margin:"0 auto",padding:isMobile?"32px 20px 60px":"40px 32px 60px"}}>
             <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 420px",gap:isMobile?"32px":"64px"}}>
               <div>
-                <h1 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,64px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px"}}>{activeDraw.title ? activeDraw.title.toUpperCase() : ""}</h1>
-                <div style={{fontSize:isMobile?"clamp(18px,5vw,24px)":"clamp(20px,2.5vw,30px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"rgba(0,0,0,0.56)",marginBottom:"24px"}}>{activeDraw.prize ? activeDraw.prize.toUpperCase() : ""}</div>
-                <p style={{fontSize:"14px",color:"rgba(0,0,0,0.52)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
+                <h1 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(42px,5.5vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.title ? activeDraw.title.toUpperCase() : ""}</h1>
+                <div style={{fontSize:isMobile?"clamp(24px,6vw,32px)":"clamp(28px,3vw,40px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#1A1A1A",marginBottom:"24px",fontWeight:"800"}}>{activeDraw.prize ? activeDraw.prize.toUpperCase() : ""}</div>
+                <p style={{fontSize:"15px",color:"rgba(0,0,0,0.65)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
                 <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
                   <ArcProgress pct={pct} label={SOLD_LABEL}></ArcProgress>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets}</div>
-                    <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
-                      <div style={{width:pct+"%",height:"100%",background:"rgba(0,0,0,0.55)",borderRadius:"2px"}}></div>
+                    <div style={{fontSize:"18px",color:"#1A1A1A",marginBottom:"8px",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets.toUpperCase()}</div>
+                    <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"3px"}}>
+                      <div style={{width:pct+"%",height:"100%",background:"#1A1A1A",borderRadius:"2px"}}></div>
                     </div>
                   </div>
                 </div>
@@ -572,7 +659,7 @@ export default function Olawin() {
               <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
                 <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
                   <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
-                  <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
+                  <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
                   <div style={{marginBottom:"20px"}}>
                     <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>
                     <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
@@ -632,9 +719,9 @@ export default function Olawin() {
         <div style={{marginBottom:"16px"}}>
           <label style={LBL}>{t.confirm.phone}</label>
           <div style={{display:"flex",gap:"8px"}}>
-            <select value={form.phoneCode} onChange={function(e){ updateForm("phoneCode", e.target.value); }} style={Object.assign({}, INP, {width: isMobile?"105px":"130px", flexShrink: 0})}>
+            <select value={form.phoneCode} onChange={function(e){ updateForm("phoneCode", e.target.value); }} style={Object.assign({}, INP, {width: isMobile?"140px":"180px", flexShrink: 0})}>
               {COUNTRY_CODES.map(function(c) {
-                return <option key={c.code+c.name} value={c.code}>{c.code}</option>;
+                return <option key={c.code+c.name} value={c.code}>{c.code} {c.name}</option>;
               })}
             </select>
             <input type="tel" value={form.phone} onChange={function(e){ updateForm("phone", e.target.value); }} style={Object.assign({}, INP, {flex: 1})}></input>
