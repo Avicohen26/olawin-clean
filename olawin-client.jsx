@@ -214,7 +214,6 @@ const T = {
   },
 };
 
-// ── PACKS (les labels viennent de T[lang].shop.packs) ────────
 const PACKS = [
   { qty: 15, discount: 10, key: "silver" },
   { qty: 25, discount: 15, key: "gold" },
@@ -222,7 +221,6 @@ const PACKS = [
 ];
 
 const TICKET_OPTS = [1,2,3,4,5,6,7,8,9,10];
-
 const C_BG = "#D8D4CE";
 const PARTNER_LOGO = "https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/private-honors-logo.png";
 
@@ -300,12 +298,11 @@ function DrawCard({ draw, onClick }) {
   );
 }
 
-// ── SÉLECTEUR DE LANGUE ──────────────────────────────────────
 function LangSwitcher({ lang, setLang, isMobile }) {
   const langs = [
-    { code:"en", label:"EN", flag:"🇬🇧" },
-    { code:"fr", label:"FR", flag:"🇫🇷" },
-    { code:"es", label:"ES", flag:"🇪🇸" },
+    { code:"en", label:"EN" },
+    { code:"fr", label:"FR" },
+    { code:"es", label:"ES" },
   ];
   return (
     <div style={{display:"flex",alignItems:"center",gap:"4px",background:"rgba(0,0,0,0.05)",border:"1px solid rgba(0,0,0,0.08)",borderRadius:"20px",padding:"3px"}}>
@@ -326,7 +323,6 @@ function LangSwitcher({ lang, setLang, isMobile }) {
     </div>
   );
 }
-
 export default function Olawin() {
   const isMobile = useIsMobile();
   const [lang, setLang] = useState(() => {
@@ -375,12 +371,10 @@ export default function Olawin() {
   const savings = Math.round(baseTotal * discount / 100);
   const total = baseTotal - savings;
   const pct = activeDraw ? Math.round((activeDraw.soldTickets / activeDraw.totalTickets)*100) : 0;
-  const odds = activeDraw ? ((finalQty / activeDraw.totalTickets)*100).toFixed(1) : "0";
   const formValid = form.firstName && form.lastName && form.email && form.phone && form.address && form.city && form.country;
   const featured = draws[0] || null;
   const localeMap = { en:"en-US", fr:"fr-FR", es:"es-ES" };
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"short"}) : "";
-  const fmtDateLong = (d) => d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"long"}) : "";
 
   const fmt = (str, vars) => Object.keys(vars||{}).reduce((s,k)=>s.replace(`{${k}}`, vars[k]), str);
 
@@ -431,7 +425,6 @@ export default function Olawin() {
     @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
     @keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}
     @keyframes spin{to{transform:rotate(360deg);}}
-    @keyframes pop{0%{transform:scale(.5);opacity:0;}80%{transform:scale(1.06);}100%{transform:scale(1);opacity:1;}}
     .nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}
     .nav-link:hover{color:#000;}
     .qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}
@@ -614,7 +607,6 @@ export default function Olawin() {
       </div>
     );
   };
-
   const ShopPage = () => {
     if (!activeDraw) return <div style={{padding:"100px 20px",textAlign:"center"}}>{t.shop.notFound} <button onClick={()=>goTo("home")} style={{textDecoration:"underline",background:"none",border:"none",cursor:"pointer"}}>{t.shop.returnHome}</button></div>;
     return (
@@ -634,8 +626,10 @@ export default function Olawin() {
               <div style={{fontSize:isMobile?"clamp(18px,5vw,24px)":"clamp(20px,2.5vw,30px)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",color:"rgba(0,0,0,0.56)",marginBottom:"24px"}}>{activeDraw.prize?.toUpperCase()}</div>
               <p style={{fontSize:"14px",color:"rgba(0,0,0,0.52)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
               <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
-                <ArcProgress pct={pct} label={SOLD_LABEL}/
-                   <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
+                <ArcProgress pct={pct} label={SOLD_LABEL}/>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets}</div>
+                  <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
                     <div style={{width:`${pct}%`,height:"100%",background:"rgba(0,0,0,0.55)",borderRadius:"2px"}}/>
                   </div>
                 </div>
