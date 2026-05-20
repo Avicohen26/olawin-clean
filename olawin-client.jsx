@@ -352,8 +352,8 @@ export default function Olawin() {
             <button className="nav-link" onClick={function(){ goTo("home"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.draws}</button>
             <button className="nav-link" onClick={function(){ goTo("faq"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.faq}</button>
             <button className="nav-link" onClick={function(){ goTo("legal"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.legal}</button>
-            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"14px",fontSize:"12px",borderRadius:"10px",width:"100%"}}>{t.nav.buy}</button>
-          </div>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}><span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>OUR PARTNER</span><img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}></img></div>
+            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"14px"
         ) : null}
       </nav>
     );
