@@ -1,27 +1,29 @@
 // olawin-client.jsx
 import { useState, useEffect, useRef } from "react";
 import { db } from "./firebase";
-import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, doc, updateDoc, increment, where, getDocs } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, addDoc, serverTimestamp, doc, updateDoc, increment, where, getDocs, getDoc } from "firebase/firestore";
 import { sendTicketConfirmation, sendAdminNotification } from "./emails";
 
 const T = {
   en: {
     nav: { draws:"Draws", faq:"FAQ", legal:"Legal", buy:"BUY", myTickets:"MY TICKETS" },
-    hero: { live:"LIVE CLOSES", buyTicket:"BUY A TICKET", remaining:"tickets remaining out of" },
-    section: { thisWeek:"THIS WEEK", allDraws:"ALL DRAWS", activeDraws:"active draws", howItWorks:"HOW IT WORKS", process:"PROCESS" },
+    hero: { live:"DRAWING ON", buyTicket:"BUY A TICKET", remaining:"tickets remaining out of" },
+    section: { thisWeek:"THIS WEEK", allDraws:"ALL DRAWS", activeDraws:"active draws", howItWorks:"HOW IT WORKS", process:"PROCESS", upcoming:"UPCOMING", past:"PAST DRAWS" },
+    countdown: { d:"d", h:"h", m:"m", s:"s", closed:"SALES CLOSED", drawing:"DRAW SOON" },
     stats: { active:"ACTIVE DRAWS", value:"TOTAL VALUE", remaining:"TICKETS LEFT", countries:"ELIGIBLE COUNTRIES" },
     cta: { tryLuck:"TRY YOUR LUCK", viewDraws:"VIEW DRAWS", active:"active draw" },
     empty: { title:"NO DRAW IN PROGRESS", sub:"Come back soon, new draws every week!" },
     loading: "LOADING...",
     partner: "WITH OUR PARTNER",
     partnerMobile: "OUR PARTNER",
+    finished: "FINISHED",
     steps: [
       { title:"Choose", desc:"Select the draw and your tickets." },
       { title:"Pay", desc:"100% secure payment via Stripe." },
       { title:"Track", desc:"Receive your ticket number by email." },
       { title:"Win", desc:"Live draw streamed on our channels." }
     ],
-    shop: { back:"Back", notFound:"Draw not found.", returnHome:"Return", reserve:"RESERVE YOUR TICKETS", perTicket:"/ TICKET", individual:"INDIVIDUAL TICKETS", total:"TOTAL", continueBtn:"CONTINUE", tickets:"tickets" },
+    shop: { back:"Back", notFound:"Draw not found.", returnHome:"Return", reserve:"RESERVE YOUR TICKETS", perTicket:"/ TICKET", individual:"INDIVIDUAL TICKETS", total:"TOTAL", continueBtn:"CONTINUE", tickets:"tickets", drawDate:"Draw date", salesClose:"Sales close" },
     confirm: { back:"BACK", title:"YOUR INFORMATION", firstName:"FIRST NAME *", lastName:"LAST NAME *", email:"EMAIL *", phone:"PHONE *", street:"STREET *", zip:"ZIP *", city:"CITY *", country:"COUNTRY *", countryPlaceholder:"Select...", pay:"PAY", payVia:"VIA STRIPE", processing:"PROCESSING...", bookingError:"An error occurred during booking." },
     success: { title:"GOOD LUCK!", msg:"Your tickets are registered.", home:"HOME", orderNum:"YOUR ORDER NUMBER", saveIt:"Save this number to retrieve your tickets later." },
     myTickets: { title:"MY TICKETS", subtitle:"Enter your email and order number to view your tickets.", emailLabel:"EMAIL *", orderLabel:"ORDER NUMBER *", orderHint:"6 characters - found in your confirmation email.", search:"SEARCH", searching:"SEARCHING...", notFound:"No order found. Please check your email and order number.", found:"YOUR TICKETS", logout:"NEW SEARCH", ticketsLabel:"Ticket numbers:", orderDate:"Ordered on", totalPaid:"Total paid" },
@@ -40,21 +42,23 @@ const T = {
   },
   fr: {
     nav: { draws:"Tirages", faq:"FAQ", legal:"Legal", buy:"ACHETER", myTickets:"MES TICKETS" },
-    hero: { live:"EN COURS CLOTURE", buyTicket:"ACHETER UN TICKET", remaining:"tickets restants sur" },
-    section: { thisWeek:"CETTE SEMAINE", allDraws:"TOUS LES TIRAGES", activeDraws:"tirage(s) actif(s)", howItWorks:"COMMENT CA MARCHE", process:"PROCESSUS" },
+    hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets restants sur" },
+    section: { thisWeek:"CETTE SEMAINE", allDraws:"TOUS LES TIRAGES", activeDraws:"tirage(s) actif(s)", howItWorks:"COMMENT CA MARCHE", process:"PROCESSUS", upcoming:"A VENIR", past:"TIRAGES PASSES" },
+    countdown: { d:"j", h:"h", m:"m", s:"s", closed:"VENTES FERMEES", drawing:"TIRAGE IMMINENT" },
     stats: { active:"TIRAGES ACTIFS", value:"VALEUR TOTALE", remaining:"TICKETS RESTANTS", countries:"PAYS ELIGIBLES" },
     cta: { tryLuck:"TENTEZ VOTRE CHANCE", viewDraws:"VOIR LES TIRAGES", active:"tirage(s) actif(s)" },
     empty: { title:"AUCUN TIRAGE EN COURS", sub:"Revenez bientot, de nouveaux tirages chaque semaine!" },
     loading: "CHARGEMENT...",
     partner: "AVEC NOTRE PARTENAIRE",
     partnerMobile: "NOTRE PARTENAIRE",
+    finished: "TERMINE",
     steps: [
       { title:"Choisissez", desc:"Selectionnez le tirage et vos tickets." },
       { title:"Payez", desc:"Paiement 100% securise via Stripe." },
       { title:"Suivez", desc:"Recevez votre numero de ticket par email." },
       { title:"Gagnez", desc:"Le tirage en direct est diffuse sur nos reseaux." }
     ],
-    shop: { back:"Retour", notFound:"Tirage introuvable.", returnHome:"Retour", reserve:"RESERVER VOS TICKETS", perTicket:"/ TICKET", individual:"TICKETS INDIVIDUELS", total:"TOTAL", continueBtn:"CONTINUER", tickets:"tickets" },
+    shop: { back:"Retour", notFound:"Tirage introuvable.", returnHome:"Retour", reserve:"RESERVER VOS TICKETS", perTicket:"/ TICKET", individual:"TICKETS INDIVIDUELS", total:"TOTAL", continueBtn:"CONTINUER", tickets:"tickets", drawDate:"Date du tirage", salesClose:"Cloture des ventes" },
     confirm: { back:"RETOUR", title:"VOS INFORMATIONS", firstName:"PRENOM *", lastName:"NOM *", email:"EMAIL *", phone:"TELEPHONE *", street:"RUE *", zip:"CP *", city:"VILLE *", country:"PAYS *", countryPlaceholder:"Selectionner...", pay:"PAYER", payVia:"VIA STRIPE", processing:"EN COURS...", bookingError:"Erreur lors de la reservation." },
     success: { title:"BONNE CHANCE!", msg:"Vos tickets sont enregistres.", home:"ACCUEIL", orderNum:"VOTRE NUMERO DE COMMANDE", saveIt:"Conservez ce numero pour retrouver vos tickets plus tard." },
     myTickets: { title:"MES TICKETS", subtitle:"Entrez votre email et numero de commande pour voir vos tickets.", emailLabel:"EMAIL *", orderLabel:"NUMERO DE COMMANDE *", orderHint:"6 caracteres - trouve dans votre email de confirmation.", search:"RECHERCHER", searching:"RECHERCHE...", notFound:"Aucune commande trouvee. Verifiez votre email et numero de commande.", found:"VOS TICKETS", logout:"NOUVELLE RECHERCHE", ticketsLabel:"Numeros de tickets:", orderDate:"Commande du", totalPaid:"Total paye" },
@@ -73,21 +77,23 @@ const T = {
   },
   es: {
     nav: { draws:"Sorteos", faq:"FAQ", legal:"Legal", buy:"COMPRAR", myTickets:"MIS BOLETOS" },
-    hero: { live:"EN VIVO CIERRE", buyTicket:"COMPRAR UN BOLETO", remaining:"boletos restantes de" },
-    section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO" },
+    hero: { live:"SORTEO EL", buyTicket:"COMPRAR UN BOLETO", remaining:"boletos restantes de" },
+    section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO", upcoming:"PROXIMOS", past:"PASADOS" },
+    countdown: { d:"d", h:"h", m:"m", s:"s", closed:"VENTAS CERRADAS", drawing:"SORTEO PROXIMO" },
     stats: { active:"SORTEOS ACTIVOS", value:"VALOR TOTAL", remaining:"BOLETOS DISPONIBLES", countries:"PAISES ELEGIBLES" },
     cta: { tryLuck:"PRUEBA TU SUERTE", viewDraws:"VER SORTEOS", active:"sorteo(s) activo(s)" },
     empty: { title:"NINGUN SORTEO EN CURSO", sub:"Vuelve pronto, nuevos sorteos cada semana!" },
     loading: "CARGANDO...",
     partner: "CON NUESTRO SOCIO",
     partnerMobile: "NUESTRO SOCIO",
+    finished: "TERMINADO",
     steps: [
       { title:"Elige", desc:"Selecciona el sorteo y tus boletos." },
       { title:"Paga", desc:"Pago 100% seguro via Stripe." },
       { title:"Sigue", desc:"Recibe tu numero de boleto por email." },
       { title:"Gana", desc:"Sorteo en vivo transmitido en nuestras redes." }
     ],
-    shop: { back:"Atras", notFound:"Sorteo no encontrado.", returnHome:"Volver", reserve:"RESERVA TUS BOLETOS", perTicket:"/ BOLETO", individual:"BOLETOS INDIVIDUALES", total:"TOTAL", continueBtn:"CONTINUAR", tickets:"boletos" },
+    shop: { back:"Atras", notFound:"Sorteo no encontrado.", returnHome:"Volver", reserve:"RESERVA TUS BOLETOS", perTicket:"/ BOLETO", individual:"BOLETOS INDIVIDUALES", total:"TOTAL", continueBtn:"CONTINUAR", tickets:"boletos", drawDate:"Fecha del sorteo", salesClose:"Cierre de ventas" },
     confirm: { back:"ATRAS", title:"TUS DATOS", firstName:"NOMBRE *", lastName:"APELLIDO *", email:"EMAIL *", phone:"TELEFONO *", street:"CALLE *", zip:"CP *", city:"CIUDAD *", country:"PAIS *", countryPlaceholder:"Seleccionar...", pay:"PAGAR", payVia:"VIA STRIPE", processing:"PROCESANDO...", bookingError:"Error en la reserva." },
     success: { title:"BUENA SUERTE!", msg:"Tus boletos estan registrados.", home:"INICIO", orderNum:"TU NUMERO DE PEDIDO", saveIt:"Guarda este numero para encontrar tus boletos mas tarde." },
     myTickets: { title:"MIS BOLETOS", subtitle:"Ingresa tu email y numero de pedido para ver tus boletos.", emailLabel:"EMAIL *", orderLabel:"NUMERO DE PEDIDO *", orderHint:"6 caracteres - en tu email de confirmacion.", search:"BUSCAR", searching:"BUSCANDO...", notFound:"No se encontro el pedido. Verifica tu email y numero.", found:"TUS BOLETOS", logout:"NUEVA BUSQUEDA", ticketsLabel:"Numeros de boletos:", orderDate:"Pedido del", totalPaid:"Total pagado" },
@@ -117,98 +123,7 @@ const C_BG = "#D8D4CE";
 const PARTNER_LOGO = "https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/private-honors-logo.png";
 
 const COUNTRY_CODES = [
-  { code:"+1", name:"USA / Canada" },
-  { code:"+33", name:"France" },
-  { code:"+44", name:"United Kingdom" },
-  { code:"+34", name:"Espana" },
-  { code:"+49", name:"Deutschland" },
-  { code:"+39", name:"Italia" },
-  { code:"+351", name:"Portugal" },
-  { code:"+32", name:"Belgique" },
-  { code:"+41", name:"Suisse" },
-  { code:"+31", name:"Nederland" },
-  { code:"+43", name:"Osterreich" },
-  { code:"+45", name:"Danmark" },
-  { code:"+46", name:"Sverige" },
-  { code:"+47", name:"Norge" },
-  { code:"+358", name:"Suomi" },
-  { code:"+353", name:"Ireland" },
-  { code:"+30", name:"Greece" },
-  { code:"+48", name:"Polska" },
-  { code:"+420", name:"Czech Republic" },
-  { code:"+36", name:"Magyarorszag" },
-  { code:"+40", name:"Romania" },
-  { code:"+359", name:"Bulgaria" },
-  { code:"+385", name:"Hrvatska" },
-  { code:"+386", name:"Slovenija" },
-  { code:"+421", name:"Slovensko" },
-  { code:"+371", name:"Latvija" },
-  { code:"+370", name:"Lietuva" },
-  { code:"+372", name:"Eesti" },
-  { code:"+352", name:"Luxembourg" },
-  { code:"+377", name:"Monaco" },
-  { code:"+90", name:"Turkiye" },
-  { code:"+7", name:"Russia" },
-  { code:"+380", name:"Ukraine" },
-  { code:"+212", name:"Maroc" },
-  { code:"+213", name:"Algerie" },
-  { code:"+216", name:"Tunisie" },
-  { code:"+20", name:"Egypt" },
-  { code:"+218", name:"Libya" },
-  { code:"+221", name:"Senegal" },
-  { code:"+225", name:"Cote d Ivoire" },
-  { code:"+229", name:"Benin" },
-  { code:"+237", name:"Cameroun" },
-  { code:"+241", name:"Gabon" },
-  { code:"+242", name:"Congo" },
-  { code:"+243", name:"DR Congo" },
-  { code:"+244", name:"Angola" },
-  { code:"+27", name:"South Africa" },
-  { code:"+234", name:"Nigeria" },
-  { code:"+233", name:"Ghana" },
-  { code:"+254", name:"Kenya" },
-  { code:"+972", name:"Israel" },
-  { code:"+961", name:"Liban" },
-  { code:"+962", name:"Jordan" },
-  { code:"+966", name:"Saudi Arabia" },
-  { code:"+971", name:"UAE" },
-  { code:"+974", name:"Qatar" },
-  { code:"+965", name:"Kuwait" },
-  { code:"+973", name:"Bahrain" },
-  { code:"+968", name:"Oman" },
-  { code:"+98", name:"Iran" },
-  { code:"+92", name:"Pakistan" },
-  { code:"+91", name:"India" },
-  { code:"+880", name:"Bangladesh" },
-  { code:"+94", name:"Sri Lanka" },
-  { code:"+977", name:"Nepal" },
-  { code:"+66", name:"Thailand" },
-  { code:"+84", name:"Vietnam" },
-  { code:"+62", name:"Indonesia" },
-  { code:"+60", name:"Malaysia" },
-  { code:"+65", name:"Singapore" },
-  { code:"+63", name:"Philippines" },
-  { code:"+86", name:"China" },
-  { code:"+852", name:"Hong Kong" },
-  { code:"+853", name:"Macau" },
-  { code:"+886", name:"Taiwan" },
-  { code:"+81", name:"Japan" },
-  { code:"+82", name:"South Korea" },
-  { code:"+52", name:"Mexico" },
-  { code:"+55", name:"Brasil" },
-  { code:"+54", name:"Argentina" },
-  { code:"+56", name:"Chile" },
-  { code:"+57", name:"Colombia" },
-  { code:"+58", name:"Venezuela" },
-  { code:"+51", name:"Peru" },
-  { code:"+593", name:"Ecuador" },
-  { code:"+598", name:"Uruguay" },
-  { code:"+595", name:"Paraguay" },
-  { code:"+591", name:"Bolivia" },
-  { code:"+506", name:"Costa Rica" },
-  { code:"+507", name:"Panama" },
-  { code:"+61", name:"Australia" },
-  { code:"+64", name:"New Zealand" }
+  { code:"+1", name:"USA / Canada" },{ code:"+33", name:"France" },{ code:"+44", name:"United Kingdom" },{ code:"+34", name:"Espana" },{ code:"+49", name:"Deutschland" },{ code:"+39", name:"Italia" },{ code:"+351", name:"Portugal" },{ code:"+32", name:"Belgique" },{ code:"+41", name:"Suisse" },{ code:"+31", name:"Nederland" },{ code:"+43", name:"Osterreich" },{ code:"+45", name:"Danmark" },{ code:"+46", name:"Sverige" },{ code:"+47", name:"Norge" },{ code:"+358", name:"Suomi" },{ code:"+353", name:"Ireland" },{ code:"+30", name:"Greece" },{ code:"+48", name:"Polska" },{ code:"+420", name:"Czech Republic" },{ code:"+36", name:"Magyarorszag" },{ code:"+40", name:"Romania" },{ code:"+359", name:"Bulgaria" },{ code:"+385", name:"Hrvatska" },{ code:"+386", name:"Slovenija" },{ code:"+421", name:"Slovensko" },{ code:"+371", name:"Latvija" },{ code:"+370", name:"Lietuva" },{ code:"+372", name:"Eesti" },{ code:"+352", name:"Luxembourg" },{ code:"+377", name:"Monaco" },{ code:"+90", name:"Turkiye" },{ code:"+7", name:"Russia" },{ code:"+380", name:"Ukraine" },{ code:"+212", name:"Maroc" },{ code:"+213", name:"Algerie" },{ code:"+216", name:"Tunisie" },{ code:"+20", name:"Egypt" },{ code:"+218", name:"Libya" },{ code:"+221", name:"Senegal" },{ code:"+225", name:"Cote d Ivoire" },{ code:"+229", name:"Benin" },{ code:"+237", name:"Cameroun" },{ code:"+241", name:"Gabon" },{ code:"+242", name:"Congo" },{ code:"+243", name:"DR Congo" },{ code:"+244", name:"Angola" },{ code:"+27", name:"South Africa" },{ code:"+234", name:"Nigeria" },{ code:"+233", name:"Ghana" },{ code:"+254", name:"Kenya" },{ code:"+972", name:"Israel" },{ code:"+961", name:"Liban" },{ code:"+962", name:"Jordan" },{ code:"+966", name:"Saudi Arabia" },{ code:"+971", name:"UAE" },{ code:"+974", name:"Qatar" },{ code:"+965", name:"Kuwait" },{ code:"+973", name:"Bahrain" },{ code:"+968", name:"Oman" },{ code:"+98", name:"Iran" },{ code:"+92", name:"Pakistan" },{ code:"+91", name:"India" },{ code:"+880", name:"Bangladesh" },{ code:"+94", name:"Sri Lanka" },{ code:"+977", name:"Nepal" },{ code:"+66", name:"Thailand" },{ code:"+84", name:"Vietnam" },{ code:"+62", name:"Indonesia" },{ code:"+60", name:"Malaysia" },{ code:"+65", name:"Singapore" },{ code:"+63", name:"Philippines" },{ code:"+86", name:"China" },{ code:"+852", name:"Hong Kong" },{ code:"+853", name:"Macau" },{ code:"+886", name:"Taiwan" },{ code:"+81", name:"Japan" },{ code:"+82", name:"South Korea" },{ code:"+52", name:"Mexico" },{ code:"+55", name:"Brasil" },{ code:"+54", name:"Argentina" },{ code:"+56", name:"Chile" },{ code:"+57", name:"Colombia" },{ code:"+58", name:"Venezuela" },{ code:"+51", name:"Peru" },{ code:"+593", name:"Ecuador" },{ code:"+598", name:"Uruguay" },{ code:"+595", name:"Paraguay" },{ code:"+591", name:"Bolivia" },{ code:"+506", name:"Costa Rica" },{ code:"+507", name:"Panama" },{ code:"+61", name:"Australia" },{ code:"+64", name:"New Zealand" }
 ];
 
 const COUNTRIES = ["Afrique du Sud","Algerie","Allemagne","Angola","Arabie Saoudite","Argentine","Australie","Autriche","Bahrein","Bangladesh","Belgique","Benin","Bolivie","Bosnie","Bresil","Bulgarie","Cameroun","Canada","Chili","Chine","Chypre","Colombie","Congo","Coree du Sud","Costa Rica","Cote d Ivoire","Croatie","Danemark","Egypte","Emirats Arabes Unis","Equateur","Espagne","Estonie","Etats-Unis","Finlande","France","Gabon","Ghana","Grece","Guatemala","Hong Kong","Hongrie","Inde","Indonesie","Iran","Irlande","Islande","Israel","Italie","Japon","Jordanie","Kenya","Koweit","Lettonie","Liban","Libye","Lituanie","Luxembourg","Macao","Madagascar","Malaisie","Mali","Malte","Maroc","Mexique","Moldavie","Monaco","Mongolie","Montenegro","Mozambique","Namibie","Nepal","Nicaragua","Niger","Nigeria","Norvege","Nouvelle-Zelande","Oman","Ouganda","Pakistan","Panama","Paraguay","Pays-Bas","Perou","Philippines","Pologne","Portugal","Qatar","Republique Tcheque","Roumanie","Royaume-Uni","Russie","Rwanda","Senegal","Serbie","Singapour","Slovaquie","Slovenie","Sri Lanka","Suede","Suisse","Taiwan","Tanzanie","Thailande","Tunisie","Turquie","Ukraine","Uruguay","Venezuela","Vietnam","Yemen","Zambie","Zimbabwe"];
@@ -234,6 +149,65 @@ function useIsMobile() {
     return function() { window.removeEventListener("resize", check); };
   }, []);
   return isMobile;
+}
+
+function getTimeLeft(endDate) {
+  if (!endDate) return null;
+  const target = new Date(endDate).getTime();
+  const now = Date.now();
+  const diff = target - now;
+  if (diff <= 0) return { d:0, h:0, m:0, s:0, expired: true };
+  const d = Math.floor(diff / (1000*60*60*24));
+  const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const s = Math.floor((diff % (1000*60)) / 1000);
+  return { d:d, h:h, m:m, s:s, expired: false };
+}
+
+function useCountdown(endDate) {
+  const [time, setTime] = useState(function() { return getTimeLeft(endDate); });
+  useEffect(function() {
+    if (!endDate) return;
+    const interval = setInterval(function() { setTime(getTimeLeft(endDate)); }, 1000);
+    return function() { clearInterval(interval); };
+  }, [endDate]);
+  return time;
+}
+
+function CountdownCard(props) {
+  const endDate = props.endDate;
+  const lang = props.lang;
+  const compact = props.compact;
+  const time = useCountdown(endDate);
+  const labels = T[lang].countdown;
+  if (!endDate) return null;
+  if (time && time.expired) {
+    return <div style={{display:"inline-block",background:"rgba(180,30,30,0.85)",color:"#fff",borderRadius:"8px",padding:compact?"4px 10px":"6px 14px",fontSize:compact?"10px":"12px",fontWeight:"700",letterSpacing:"1.5px",textShadow:TEXT_SHADOW_STRONG}}>{labels.closed}</div>;
+  }
+  if (!time) return null;
+  const fmt = function(n) { return String(n).padStart(2,"0"); };
+  if (compact) {
+    return (
+      <div style={{display:"inline-flex",gap:"4px",alignItems:"baseline",fontFamily:"DM Sans, sans-serif",fontWeight:"800",color:"#ffffff",fontSize:"13px",letterSpacing:"0.5px",textShadow:TEXT_SHADOW_STRONG}}>
+        <span>{time.d}{labels.d}</span><span style={{opacity:0.6}}>:</span>
+        <span>{fmt(time.h)}{labels.h}</span><span style={{opacity:0.6}}>:</span>
+        <span>{fmt(time.m)}{labels.m}</span><span style={{opacity:0.6}}>:</span>
+        <span>{fmt(time.s)}{labels.s}</span>
+      </div>
+    );
+  }
+  return (
+    <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
+      {[{v:time.d,l:labels.d},{v:fmt(time.h),l:labels.h},{v:fmt(time.m),l:labels.m},{v:fmt(time.s),l:labels.s}].map(function(b,i) {
+        return (
+          <div key={i} style={{background:"rgba(0,0,0,0.06)",border:"1px solid rgba(0,0,0,0.12)",borderRadius:"10px",padding:"10px 14px",minWidth:"56px",textAlign:"center"}}>
+            <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1px",color:"#1A1A1A",fontWeight:"700",lineHeight:1}}>{b.v}</div>
+            <div style={{fontSize:"9px",color:"rgba(0,0,0,0.45)",marginTop:"3px",letterSpacing:"1.5px",fontWeight:"600"}}>{b.l.toUpperCase()}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 function OlawinLogo(props) {
@@ -272,23 +246,34 @@ function ArcProgress(props) {
 function DrawCard(props) {
   const draw = props.draw;
   const onClick = props.onClick;
+  const lang = props.lang;
+  const isPast = props.isPast;
   const [hovered, setHovered] = useState(false);
   const pct = Math.round((draw.soldTickets / draw.totalTickets) * 100);
+  const t = T[lang];
   return (
-    <div onMouseEnter={function(){setHovered(true);}} onMouseLeave={function(){setHovered(false);}} onClick={onClick} style={{position:"relative",borderRadius:"18px",overflow:"hidden",cursor:"pointer",height:"360px",border:"1px solid "+(hovered?"rgba(0,0,0,0.2)":"rgba(0,0,0,0.08)"),transition:"all 0.3s",boxShadow:hovered?"0 20px 48px rgba(0,0,0,0.18)":"0 4px 16px rgba(0,0,0,0.06)",transform:hovered?"translateY(-4px)":"none"}}>
+    <div onMouseEnter={function(){setHovered(true);}} onMouseLeave={function(){setHovered(false);}} onClick={onClick} style={{position:"relative",borderRadius:"18px",overflow:"hidden",cursor:"pointer",height:"360px",border:"1px solid "+(hovered?"rgba(0,0,0,0.2)":"rgba(0,0,0,0.08)"),transition:"all 0.3s",boxShadow:hovered?"0 20px 48px rgba(0,0,0,0.18)":"0 4px 16px rgba(0,0,0,0.06)",transform:hovered?"translateY(-4px)":"none",opacity:isPast?0.7:1}}>
       <div style={{position:"absolute",inset:0,background:draw.gradient||"#333"}}></div>
       <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:"80px",opacity:0.12,zIndex:1}}>{draw.emoji}</div>
-      {draw.image ? <img src={draw.image} alt={draw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:draw.heroPosition||"center"}}></img> : null}
+      {draw.image ? <img src={draw.image} alt={draw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:draw.heroPosition||"center",filter:isPast?"grayscale(60%)":"none"}}></img> : null}
       <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)",zIndex:2}}></div>
       <div style={{position:"absolute",inset:0,padding:"24px",display:"flex",flexDirection:"column",justifyContent:"space-between",zIndex:3}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"6px"}}>
-          <div style={{background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"5px 14px",fontSize:"12px",letterSpacing:"1.5px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{draw.country} {draw.location ? draw.location.toUpperCase() : ""}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
+            <div style={{background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"5px 14px",fontSize:"12px",letterSpacing:"1.5px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG,alignSelf:"flex-start"}}>{draw.country} {draw.location ? draw.location.toUpperCase() : ""}</div>
+            {isPast ? <div style={{background:"rgba(180,30,30,0.85)",color:"#fff",borderRadius:"20px",padding:"5px 14px",fontSize:"11px",fontWeight:"800",letterSpacing:"2px",alignSelf:"flex-start"}}>{t.finished}</div> : null}
+          </div>
           <div style={{background:"#ffffff",border:"1px solid rgba(255,255,255,0.95)",borderRadius:"20px",padding:"5px 14px",fontSize:"15px",color:"#1A1A1A",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1.5px"}}>{draw.ticketPrice}$ / TICKET</div>
         </div>
         <div>
           <div style={{fontSize:"13px",letterSpacing:"1px",color:"#ffffff",marginBottom:"8px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{draw.title ? draw.title.toUpperCase() : ""}</div>
-          <div style={{fontSize:"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#ffffff",lineHeight:0.95,marginBottom:"18px",fontWeight:"900",textShadow:TEXT_SHADOW_STRONG}}>{draw.prize ? draw.prize.toUpperCase() : ""}</div>
-          <div style={{marginBottom:"4px"}}>
+          <div style={{fontSize:"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#ffffff",lineHeight:0.95,marginBottom:"14px",fontWeight:"900",textShadow:TEXT_SHADOW_STRONG}}>{draw.prize ? draw.prize.toUpperCase() : ""}</div>
+          {!isPast && draw.endDate ? (
+            <div style={{marginBottom:"12px"}}>
+              <CountdownCard endDate={draw.endDate} lang={lang} compact={true}></CountdownCard>
+            </div>
+          ) : null}
+          <div>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:"7px",alignItems:"baseline"}}>
               <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.soldTickets}/{draw.totalTickets}</span>
               <span style={{fontSize:"13px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{pct}%</span>
@@ -318,7 +303,6 @@ function LangSwitcher(props) {
     </div>
   );
 }
-
 export default function Olawin() {
   const isMobile = useIsMobile();
   const [lang, setLang] = useState(function() {
@@ -337,6 +321,8 @@ export default function Olawin() {
 
   const [page, setPage] = useState("home");
   const [draws, setDraws] = useState([]);
+  const [pastDraws, setPastDraws] = useState([]);
+  const [heroConfig, setHeroConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedDraw, setSelectedDraw] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
@@ -358,10 +344,39 @@ export default function Olawin() {
   useEffect(function() {
     const q = query(collection(db,"draws"), orderBy("createdAt","desc"));
     const unsub = onSnapshot(q, function(snap) {
-      const data = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
-      setDraws(data.filter(function(d) { return d.status === "active"; }));
+      const all = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+      const activeAll = all.filter(function(d) { return d.status === "active" || d.status === "drawn"; });
+      const now = Date.now();
+      const upcoming = [];
+      const past = [];
+      activeAll.forEach(function(d) {
+        const drawTime = d.drawDate ? new Date(d.drawDate).getTime() : 0;
+        if (d.status === "drawn" || (drawTime && drawTime < now)) {
+          past.push(d);
+        } else {
+          upcoming.push(d);
+        }
+      });
+      upcoming.sort(function(a, b) {
+        const aDate = a.drawDate ? new Date(a.drawDate).getTime() : 0;
+        const bDate = b.drawDate ? new Date(b.drawDate).getTime() : 0;
+        if (!aDate && !bDate) return 0;
+        if (!aDate) return 1;
+        if (!bDate) return -1;
+        return bDate - aDate;
+      });
+      past.sort(function(a, b) {
+        const aDate = a.drawDate ? new Date(a.drawDate).getTime() : 0;
+        const bDate = b.drawDate ? new Date(b.drawDate).getTime() : 0;
+        return bDate - aDate;
+      });
+      setDraws(upcoming);
+      setPastDraws(past);
       setLoading(false);
     }, function(err) { console.error("Firebase error:", err); setLoading(false); });
+    getDoc(doc(db, "settings", "hero")).then(function(snap) {
+      if (snap.exists()) setHeroConfig(snap.data());
+    }).catch(function(e){ console.error("Hero config error:", e); });
     return function() { unsub(); };
   }, []);
 
@@ -374,7 +389,18 @@ export default function Olawin() {
   const total = baseTotal - savings;
   const pct = activeDraw ? Math.round((activeDraw.soldTickets / activeDraw.totalTickets) * 100) : 0;
   const formValid = form.firstName && form.lastName && form.email && form.phone && form.address && form.city && form.country;
-  const featured = draws[0] || null;
+  const featuredFromDraws = draws[0] || null;
+  const useHero = heroConfig && heroConfig.enabled && heroConfig.image;
+  const featured = useHero ? Object.assign({}, featuredFromDraws||{}, {
+    image: heroConfig.image,
+    title: heroConfig.title || (featuredFromDraws && featuredFromDraws.title) || "",
+    location: heroConfig.location || (featuredFromDraws && featuredFromDraws.location) || "",
+    country: heroConfig.country || (featuredFromDraws && featuredFromDraws.country) || "",
+    description: heroConfig.description || (featuredFromDraws && featuredFromDraws.description) || "",
+    subtitle: heroConfig.subtitle || "",
+    gradient: (featuredFromDraws && featuredFromDraws.gradient) || "#1A1A1A"
+  }) : featuredFromDraws;
+
   const localeMap = { en:"en-US", fr:"fr-FR", es:"es-ES" };
   const fmtDate = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"short"}) : ""; };
   const fmtDateLong = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"long",year:"numeric"}) : ""; };
@@ -452,13 +478,8 @@ export default function Olawin() {
           matches.push(Object.assign({ id: docId }, data));
         }
       });
-      if (matches.length === 0) {
-        setSearchError(true);
-        setFoundOrders(null);
-      } else {
-        setFoundOrders(matches);
-        setSearchError(false);
-      }
+      if (matches.length === 0) { setSearchError(true); setFoundOrders(null); }
+      else { setFoundOrders(matches); setSearchError(false); }
       setSearching(false);
     } catch (err) {
       console.error("Search error:", err);
@@ -468,10 +489,7 @@ export default function Olawin() {
   };
 
   const resetSearch = function() {
-    setSearchEmail("");
-    setSearchOrder("");
-    setFoundOrders(null);
-    setSearchError(false);
+    setSearchEmail(""); setSearchOrder(""); setFoundOrders(null); setSearchError(false);
   };
 
   const CSS = "@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:" + C_BG + ";color:#1A1A1A;overflow-x:hidden;}input:focus,textarea:focus,select:focus{outline:none;}::-webkit-scrollbar{width:3px;background:" + C_BG + ";}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}@keyframes spin{to{transform:rotate(360deg);}}.nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}.nav-link:hover{color:#000;}.qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}.qty-btn.active{border-color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.08);color:#000;}.cta-dark{background:#1A1A1A;color:#E8E4DC;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2.5px;}.cta-dark:disabled{background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.25);cursor:not-allowed;}";
@@ -540,7 +558,7 @@ export default function Olawin() {
           <p style={{fontSize:"12px",letterSpacing:"3px",color:"rgba(0,0,0,0.35)"}}>{t.loading}</p>
         </div>
       );
-    } else if (draws.length === 0) {
+    } else if (draws.length === 0 && pastDraws.length === 0) {
       pageContent = (
         <div style={{minHeight:"60vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"16px",textAlign:"center",padding:"48px 20px"}}>
           <h2 style={{fontSize:"clamp(22px,5vw,28px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.empty.title}</h2>
@@ -550,45 +568,77 @@ export default function Olawin() {
     } else {
       pageContent = (
         <div>
-          <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
-            <div style={{position:"absolute",inset:0,background:(featured && featured.gradient) || "#1A1A1A"}}></div>
-            {featured && featured.image ? <img src={featured.image} alt={featured.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:featured.heroPosition||"center"}}></img> : null}
-            <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
-            <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
-              <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"100px",padding:"7px 16px",marginBottom:"16px"}}>
-                <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#ff4444",animation:"pulse 1.5s infinite"}}></span>
-                <span style={{fontSize:"11px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{t.hero.live} {fmtDate(featured && featured.endDate)}</span>
+          {featured ? (
+            <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+              <div style={{position:"absolute",inset:0,background:(featured && featured.gradient) || "#1A1A1A"}}></div>
+              {featured && featured.image ? <img src={featured.image} alt={featured.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:featured.heroPosition||"center"}}></img> : null}
+              <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
+              <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
+                {featured.drawDate && !useHero ? (
+                  <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"100px",padding:"7px 16px",marginBottom:"16px"}}>
+                    <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#ff4444",animation:"pulse 1.5s infinite"}}></span>
+                    <span style={{fontSize:"11px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{t.hero.live} {fmtDate(featured.drawDate)}</span>
+                  </div>
+                ) : null}
+                <div style={{fontSize:"14px",letterSpacing:"3px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.country} {featured.location ? featured.location.toUpperCase() : ""}</div>
+                <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
+                  {featured.title ? featured.title.toUpperCase() : ""}
+                  {featured.subtitle ? <span><br></br><span style={{color:"#ffffff",opacity:0.85}}>{featured.subtitle.toUpperCase()}</span></span> : (featured.location ? <span><br></br><span style={{color:"#ffffff",opacity:0.85}}>{featured.location.toUpperCase()}</span></span> : null)}
+                </h1>
+                {featured.description ? <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{featured.description}</p> : null}
+                {!useHero && featured.endDate ? (
+                  <div style={{marginBottom:"24px",display:"inline-block",background:"rgba(0,0,0,0.4)",backdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"14px",padding:"12px 18px"}}>
+                    <div style={{fontSize:"9px",letterSpacing:"2.5px",color:"rgba(255,255,255,0.7)",marginBottom:"8px",fontWeight:"700"}}>{t.shop.salesClose.toUpperCase()}</div>
+                    <CountdownCard endDate={featured.endDate} lang={lang} compact={true}></CountdownCard>
+                  </div>
+                ) : null}
+                <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
+                  <button onClick={function(){ setSelectedDraw(featuredFromDraws); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket}{featuredFromDraws ? " "+featuredFromDraws.ticketPrice+"$" : ""}</button>
+                  {!useHero && featured.totalTickets ? <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.totalTickets - featured.soldTickets} {t.hero.remaining} {featured.totalTickets}</div> : null}
+                </div>
               </div>
-              <div style={{fontSize:"14px",letterSpacing:"3px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured && featured.country} {featured && featured.location ? featured.location.toUpperCase() : ""}</div>
-              <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
-                {featured && featured.title ? featured.title.toUpperCase() : ""}
-                <br></br>
-                <span style={{color:"#ffffff",opacity:0.85}}>{featured && featured.location ? featured.location.toUpperCase() : ""}</span>
-              </h1>
-              <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{featured && featured.description}</p>
-              <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
-                <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket} {featured && featured.ticketPrice}$</button>
-                <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured ? (featured.totalTickets - featured.soldTickets) : 0} {t.hero.remaining} {featured && featured.totalTickets}</div>
-              </div>
-            </div>
-          </section>
+            </section>
+          ) : null}
 
           <section ref={drawsRef} style={{background:C_BG,padding:isMobile?"48px 20px":"80px 48px",scrollMarginTop:"80px"}}>
             <div style={{maxWidth:"1200px",margin:"0 auto"}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"32px",flexWrap:"wrap",gap:"12px"}}>
                 <div>
-                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.thisWeek}</div>
+                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.upcoming}</div>
                   <h2 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95}}>{t.section.allDraws}</h2>
                 </div>
                 <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{draws.length} {t.section.activeDraws}</div>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
-                {draws.map(function(draw) {
-                  return <DrawCard key={draw.id} draw={draw} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
-                })}
-              </div>
+              {draws.length === 0 ? (
+                <div style={{textAlign:"center",padding:"40px 20px",fontSize:"14px",color:"rgba(0,0,0,0.4)"}}>{t.empty.title}</div>
+              ) : (
+                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
+                  {draws.map(function(draw) {
+                    return <DrawCard key={draw.id} draw={draw} lang={lang} isPast={false} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
+                  })}
+                </div>
+              )}
             </div>
           </section>
+
+          {pastDraws.length > 0 ? (
+            <section style={{background:C_BG,padding:isMobile?"32px 20px 48px":"56px 48px 80px",scrollMarginTop:"80px",borderTop:"1px solid rgba(0,0,0,0.09)"}}>
+              <div style={{maxWidth:"1200px",margin:"0 auto"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"24px",flexWrap:"wrap",gap:"12px"}}>
+                  <div>
+                    <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.past}</div>
+                    <h2 style={{fontSize:isMobile?"clamp(24px,6vw,30px)":"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,color:"rgba(0,0,0,0.6)"}}>{t.section.past}</h2>
+                  </div>
+                  <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{pastDraws.length}</div>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
+                  {pastDraws.map(function(draw) {
+                    return <DrawCard key={draw.id} draw={draw} lang={lang} isPast={true} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
+                  })}
+                </div>
+              </div>
+            </section>
+          ) : null}
 
           <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
             {[
@@ -643,6 +693,7 @@ export default function Olawin() {
         </div>
       );
     } else {
+      const drawIsPast = activeDraw.drawDate && new Date(activeDraw.drawDate) < new Date();
       pageContent = (
         <div>
           <div style={{position:"relative",height:isMobile?"200px":"300px",overflow:"hidden",background:activeDraw.gradient||"#1A1A1A"}}>
@@ -650,6 +701,7 @@ export default function Olawin() {
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}></div>
             <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
               <div style={{background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"6px 14px",fontSize:"13px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{activeDraw.country} {activeDraw.location ? activeDraw.location.toUpperCase() : ""}</div>
+              {drawIsPast ? <div style={{background:"rgba(180,30,30,0.85)",color:"#fff",borderRadius:"20px",padding:"6px 14px",fontSize:"12px",fontWeight:"800",letterSpacing:"2px"}}>{t.finished}</div> : null}
               <button onClick={function(){ goTo("home"); }} style={{background:"rgba(0,0,0,0.45)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"6px 14px",color:"#ffffff",fontSize:"12px",cursor:"pointer",fontWeight:"600",textShadow:TEXT_SHADOW_STRONG}}>{t.shop.back}</button>
             </div>
           </div>
@@ -659,6 +711,13 @@ export default function Olawin() {
                 <h1 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(42px,5.5vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.title ? activeDraw.title.toUpperCase() : ""}</h1>
                 <div style={{fontSize:isMobile?"clamp(24px,6vw,32px)":"clamp(28px,3vw,40px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#1A1A1A",marginBottom:"24px",fontWeight:"800"}}>{activeDraw.prize ? activeDraw.prize.toUpperCase() : ""}</div>
                 <p style={{fontSize:"15px",color:"rgba(0,0,0,0.65)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
+                {!drawIsPast && activeDraw.endDate ? (
+                  <div style={{background:"rgba(0,0,0,0.04)",border:"1px solid rgba(0,0,0,0.1)",borderRadius:"16px",padding:"20px",marginBottom:"32px"}}>
+                    <div style={{fontSize:"10px",letterSpacing:"3px",color:"rgba(0,0,0,0.5)",marginBottom:"12px",fontWeight:"700"}}>{t.shop.salesClose.toUpperCase()}</div>
+                    <CountdownCard endDate={activeDraw.endDate} lang={lang} compact={false}></CountdownCard>
+                    {activeDraw.drawDate ? <div style={{fontSize:"11px",color:"rgba(0,0,0,0.5)",marginTop:"12px"}}>{t.shop.drawDate}: <strong style={{color:"#1A1A1A"}}>{fmtDateLong(activeDraw.drawDate)}</strong></div> : null}
+                  </div>
+                ) : null}
                 <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
                   <ArcProgress pct={pct} label={SOLD_LABEL}></ArcProgress>
                   <div style={{flex:1,minWidth:0}}>
@@ -671,6 +730,9 @@ export default function Olawin() {
               </div>
               <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
                 <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
+                  {drawIsPast ? (
+                    <div style={{background:"rgba(180,30,30,0.08)",border:"1px solid rgba(180,30,30,0.2)",borderRadius:"10px",padding:"14px",marginBottom:"20px",textAlign:"center",fontSize:"13px",color:"rgba(150,20,20,0.95)",fontWeight:"600"}}>{t.countdown.closed}</div>
+                  ) : null}
                   <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
                   <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
                   <div style={{marginBottom:"20px"}}>
@@ -678,7 +740,7 @@ export default function Olawin() {
                     <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
                       {TICKET_OPTS.map(function(n) {
                         const cls = "qty-btn" + (qty===n && !selectedPack && customQty==="" ? " active" : "");
-                        return <button key={n} onClick={function(){ setQty(n); setCustomQty(""); setSelectedPack(null); }} className={cls} style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px"}}>{n}</button>;
+                        return <button key={n} disabled={drawIsPast} onClick={function(){ setQty(n); setCustomQty(""); setSelectedPack(null); }} className={cls} style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px",opacity:drawIsPast?0.4:1}}>{n}</button>;
                       })}
                     </div>
                   </div>
@@ -689,7 +751,7 @@ export default function Olawin() {
                       const packTotal = packBase - packSave;
                       const isActive = selectedPack && selectedPack.qty === pack.qty;
                       return (
-                        <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"1px solid " + (isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"),borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:"pointer",textAlign:"left"}}>
+                        <button key={pack.qty} disabled={drawIsPast} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"1px solid " + (isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"),borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:drawIsPast?"not-allowed":"pointer",textAlign:"left",opacity:drawIsPast?0.4:1}}>
                           <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
                           <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
                         </button>
@@ -702,7 +764,7 @@ export default function Olawin() {
                       <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}$</span>
                     </div>
                   </div>
-                  <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}$</button>
+                  <button disabled={drawIsPast} onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{drawIsPast ? t.countdown.closed : (t.shop.continueBtn + " " + total + "$")}</button>
                 </div>
               </div>
             </div>
