@@ -1346,5 +1346,4 @@ export default function OlawinAdmin() {
     </div>
   );
 }
-  );
-}
+  
