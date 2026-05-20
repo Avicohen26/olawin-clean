@@ -14,6 +14,7 @@ const T = {
     empty: { title:"NO DRAW IN PROGRESS", sub:"Come back soon, new draws every week!" },
     loading: "LOADING...",
     partner: "WITH OUR PARTNER",
+    partnerMobile: "OUR PARTNER",
     steps: [
       { title:"Choose", desc:"Select the draw and your tickets." },
       { title:"Pay", desc:"100% secure payment via Stripe." },
@@ -45,6 +46,7 @@ const T = {
     empty: { title:"AUCUN TIRAGE EN COURS", sub:"Revenez bientot, de nouveaux tirages chaque semaine!" },
     loading: "CHARGEMENT...",
     partner: "AVEC NOTRE PARTENAIRE",
+    partnerMobile: "NOTRE PARTENAIRE",
     steps: [
       { title:"Choisissez", desc:"Selectionnez le tirage et vos tickets." },
       { title:"Payez", desc:"Paiement 100% securise via Stripe." },
@@ -76,6 +78,7 @@ const T = {
     empty: { title:"NINGUN SORTEO EN CURSO", sub:"Vuelve pronto, nuevos sorteos cada semana!" },
     loading: "CARGANDO...",
     partner: "CON NUESTRO SOCIO",
+    partnerMobile: "NUESTRO SOCIO",
     steps: [
       { title:"Elige", desc:"Selecciona el sorteo y tus boletos." },
       { title:"Paga", desc:"Pago 100% seguro via Stripe." },
@@ -352,8 +355,12 @@ export default function Olawin() {
             <button className="nav-link" onClick={function(){ goTo("home"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.draws}</button>
             <button className="nav-link" onClick={function(){ goTo("faq"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.faq}</button>
             <button className="nav-link" onClick={function(){ goTo("legal"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.legal}</button>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}><span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>OUR PARTNER</span><img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}></img></div>
-            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"14px"
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
+              <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>{t.partnerMobile}</span>
+              <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}></img>
+            </div>
+            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"14px",fontSize:"12px",borderRadius:"10px",width:"100%"}}>{t.nav.buy}</button>
+          </div>
         ) : null}
       </nav>
     );
