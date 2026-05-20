@@ -1,7 +1,6 @@
 // ════════════════════════════════════════════════════════════
-//  olawin-client.jsx  —  Site multilingue EN/FR/ES (étape 1)
+// olawin-client.jsx — Site multilingue EN/FR/ES (complet)
 // ════════════════════════════════════════════════════════════
-
 import { useState, useEffect, useRef } from "react";
 import { db } from "./firebase";
 import {
@@ -28,6 +27,56 @@ const T = {
       {title:"Track",desc:"Receive your ticket number by email."},
       {title:"Win",desc:"Live draw streamed on our channels."},
     ],
+    shop: {
+      back: "← Back",
+      notFound: "Draw not found.",
+      returnHome: "Return",
+      reserve: "RESERVE YOUR TICKETS",
+      perTicket: "/ TICKET",
+      individual: "INDIVIDUAL TICKETS",
+      total: "TOTAL",
+      continue: "CONTINUE →",
+      tickets: "tickets",
+      packs: { silver:"SILVER PACK", gold:"GOLD PACK", elite:"ELITE PACK" },
+    },
+    confirm: {
+      back: "← BACK",
+      title: "YOUR INFORMATION",
+      firstName: "FIRST NAME *",
+      lastName: "LAST NAME *",
+      email: "EMAIL *",
+      phone: "PHONE *",
+      street: "STREET *",
+      zip: "ZIP *",
+      city: "CITY *",
+      country: "COUNTRY *",
+      countryPlaceholder: "Select...",
+      pay: "PAY",
+      payVia: "VIA STRIPE",
+      processing: "PROCESSING...",
+      bookingError: "An error occurred during booking.",
+    },
+    success: {
+      title: "GOOD LUCK!",
+      msgOne: "Your ticket is registered.",
+      msgMany: "Your {n} tickets are registered.",
+      home: "HOME",
+    },
+    faq: {
+      title: "FAQ",
+      items: [
+        { q:"How does the draw work?", a:"At the closing date, a certified random draw is performed live on our channels." },
+        { q:"When do I receive my ticket?", a:"Immediately after Stripe payment — a confirmation email is sent automatically." },
+        { q:"What happens if not all tickets are sold?", a:"The draw still takes place. Your chances increase." },
+        { q:"How do I use the PrivateHonors voucher?", a:"The winner receives a code by email within 48h." },
+        { q:"Is payment secure?", a:"100%. Stripe does not store any banking data." },
+      ],
+    },
+    legal: {
+      title: "LEGAL",
+      body: "Terms and conditions of use. Any person of legal age may participate. The draw is conducted publicly. The winner receives a voucher within 48 hours.",
+    },
+    footer: { copyright: "© 2026 Olawin.", contact: "Contact" },
   },
   fr: {
     nav: { draws:"Tirages", faq:"FAQ", legal:"Légal", buy:"ACHETER" },
@@ -45,6 +94,56 @@ const T = {
       {title:"Suivez",desc:"Recevez votre numéro de ticket par email."},
       {title:"Gagnez",desc:"Le tirage en direct est diffusé sur nos réseaux."},
     ],
+    shop: {
+      back: "← Retour",
+      notFound: "Tirage introuvable.",
+      returnHome: "Retour",
+      reserve: "RÉSERVER VOS TICKETS",
+      perTicket: "/ TICKET",
+      individual: "TICKETS INDIVIDUELS",
+      total: "TOTAL",
+      continue: "CONTINUER →",
+      tickets: "tickets",
+      packs: { silver:"PACK SILVER", gold:"PACK GOLD", elite:"PACK ELITE" },
+    },
+    confirm: {
+      back: "← RETOUR",
+      title: "VOS INFORMATIONS",
+      firstName: "PRÉNOM *",
+      lastName: "NOM *",
+      email: "EMAIL *",
+      phone: "TÉLÉPHONE *",
+      street: "RUE *",
+      zip: "CP *",
+      city: "VILLE *",
+      country: "PAYS *",
+      countryPlaceholder: "Sélectionner...",
+      pay: "PAYER",
+      payVia: "VIA STRIPE",
+      processing: "EN COURS...",
+      bookingError: "Erreur lors de la réservation.",
+    },
+    success: {
+      title: "BONNE CHANCE !",
+      msgOne: "Votre ticket est enregistré.",
+      msgMany: "Vos {n} tickets sont enregistrés.",
+      home: "ACCUEIL",
+    },
+    faq: {
+      title: "FAQ",
+      items: [
+        { q:"Comment fonctionne le tirage ?", a:"À la date de clôture, un tirage aléatoire certifié est effectué en live sur nos réseaux." },
+        { q:"Quand je reçois mon ticket ?", a:"Immédiatement après paiement Stripe — un email de confirmation vous est envoyé automatiquement." },
+        { q:"Que se passe-t-il si les tickets ne sont pas tous vendus ?", a:"Le tirage se tient quand même. Vos chances augmentent." },
+        { q:"Comment utiliser le bon PrivateHonors ?", a:"Le gagnant reçoit un code par email dans les 48h." },
+        { q:"Le paiement est-il sécurisé ?", a:"100%. Stripe ne stocke aucune donnée bancaire." },
+      ],
+    },
+    legal: {
+      title: "LÉGAL",
+      body: "Conditions générales d'utilisation. Toute personne majeure peut participer. Le tirage est effectué publiquement. Le gagnant reçoit un bon dans les 48h.",
+    },
+    footer: { copyright: "© 2026 Olawin.", contact: "Contact" },
   },
   es: {
     nav: { draws:"Sorteos", faq:"FAQ", legal:"Legal", buy:"COMPRAR" },
@@ -62,24 +161,67 @@ const T = {
       {title:"Sigue",desc:"Recibe tu número de boleto por email."},
       {title:"Gana",desc:"Sorteo en vivo transmitido en nuestras redes."},
     ],
+    shop: {
+      back: "← Atrás",
+      notFound: "Sorteo no encontrado.",
+      returnHome: "Volver",
+      reserve: "RESERVA TUS BOLETOS",
+      perTicket: "/ BOLETO",
+      individual: "BOLETOS INDIVIDUALES",
+      total: "TOTAL",
+      continue: "CONTINUAR →",
+      tickets: "boletos",
+      packs: { silver:"PACK SILVER", gold:"PACK GOLD", elite:"PACK ELITE" },
+    },
+    confirm: {
+      back: "← ATRÁS",
+      title: "TUS DATOS",
+      firstName: "NOMBRE *",
+      lastName: "APELLIDO *",
+      email: "EMAIL *",
+      phone: "TELÉFONO *",
+      street: "CALLE *",
+      zip: "CP *",
+      city: "CIUDAD *",
+      country: "PAÍS *",
+      countryPlaceholder: "Seleccionar...",
+      pay: "PAGAR",
+      payVia: "VÍA STRIPE",
+      processing: "PROCESANDO...",
+      bookingError: "Error en la reserva.",
+    },
+    success: {
+      title: "¡BUENA SUERTE!",
+      msgOne: "Tu boleto está registrado.",
+      msgMany: "Tus {n} boletos están registrados.",
+      home: "INICIO",
+    },
+    faq: {
+      title: "FAQ",
+      items: [
+        { q:"¿Cómo funciona el sorteo?", a:"En la fecha de cierre, se realiza un sorteo aleatorio certificado en vivo en nuestras redes." },
+        { q:"¿Cuándo recibo mi boleto?", a:"Inmediatamente después del pago con Stripe — se envía un email de confirmación automáticamente." },
+        { q:"¿Qué pasa si no se venden todos los boletos?", a:"El sorteo se realiza igualmente. Tus posibilidades aumentan." },
+        { q:"¿Cómo uso el bono PrivateHonors?", a:"El ganador recibe un código por email en las 48h." },
+        { q:"¿Es seguro el pago?", a:"100%. Stripe no almacena ningún dato bancario." },
+      ],
+    },
+    legal: {
+      title: "LEGAL",
+      body: "Términos y condiciones de uso. Cualquier persona mayor de edad puede participar. El sorteo se realiza públicamente. El ganador recibe un bono en un plazo de 48 horas.",
+    },
+    footer: { copyright: "© 2026 Olawin.", contact: "Contacto" },
   },
 };
 
+// ── PACKS (les labels viennent de T[lang].shop.packs) ────────
 const PACKS = [
-  { qty: 15, discount: 10, label: "PACK SILVER", badge: "POPULAIRE" },
-  { qty: 25, discount: 15, label: "PACK GOLD",   badge: "MEILLEURE VALEUR" },
-  { qty: 50, discount: 20, label: "PACK ELITE",  badge: "MAXIMUM CHANCES" },
+  { qty: 15, discount: 10, key: "silver" },
+  { qty: 25, discount: 15, key: "gold" },
+  { qty: 50, discount: 20, key: "elite" },
 ];
 
 const TICKET_OPTS = [1,2,3,4,5,6,7,8,9,10];
-
-const FAQ_ITEMS = [
-  { q:"Comment fonctionne le tirage ?",           a:"À la date de clôture, un tirage aléatoire certifié est effectué en live sur nos réseaux." },
-  { q:"Quand je reçois mon ticket ?",             a:"Immédiatement après paiement Stripe — un email de confirmation vous est envoyé automatiquement." },
-  { q:"Que se passe-t-il si les tickets ne sont pas tous vendus ?", a:"Le tirage se tient quand même. Vos chances augmentent." },
-  { q:"Comment utiliser le bon PrivateHonors ?",  a:"Le gagnant reçoit un code par email dans les 48h." },
-  { q:"Le paiement est-il sécurisé ?",            a:"100%. Stripe ne stocke aucune donnée bancaire." },
-];
 
 const C_BG = "#D8D4CE";
 const PARTNER_LOGO = "https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/private-honors-logo.png";
@@ -101,17 +243,17 @@ function OlawinLogo({ size=36, showText=true }) {
       <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
         <polygon points="20,2 38,20 20,38 2,20" fill="none" stroke="#1A1A1A" strokeWidth="1.5"/>
         <circle cx="20" cy="20" r="7" fill="none" stroke="#1A1A1A" strokeWidth="1.5"/>
-        <circle cx="20" cy="6"  r="1.5" fill="#1A1A1A"/>
+        <circle cx="20" cy="6" r="1.5" fill="#1A1A1A"/>
         <circle cx="34" cy="20" r="1.5" fill="#1A1A1A"/>
         <circle cx="20" cy="34" r="1.5" fill="#1A1A1A"/>
-        <circle cx="6"  cy="20" r="1.5" fill="#1A1A1A"/>
+        <circle cx="6" cy="20" r="1.5" fill="#1A1A1A"/>
       </svg>
       {showText && <span style={{fontSize:size*0.56,letterSpacing:"4px",fontFamily:"'Bebas Neue',sans-serif",color:"#1A1A1A",lineHeight:1}}>OLAWIN</span>}
     </div>
   );
 }
 
-function ArcProgress({pct}) {
+function ArcProgress({pct, label}) {
   const r=70,circ=2*Math.PI*r;
   return (
     <svg width="140" height="140" viewBox="0 0 160 160">
@@ -120,7 +262,7 @@ function ArcProgress({pct}) {
         strokeDasharray={circ} strokeDashoffset={circ-(pct/100)*circ}
         strokeLinecap="round" transform="rotate(-90 80 80)"/>
       <text x="80" y="74" textAnchor="middle" fill="#111" fontSize="26" fontFamily="'Bebas Neue',sans-serif">{pct}%</text>
-      <text x="80" y="90" textAnchor="middle" fill="rgba(0,0,0,0.4)" fontSize="9" fontFamily="sans-serif" letterSpacing="2">VENDUS</text>
+      <text x="80" y="90" textAnchor="middle" fill="rgba(0,0,0,0.4)" fontSize="9" fontFamily="sans-serif" letterSpacing="2">{label}</text>
     </svg>
   );
 }
@@ -191,9 +333,15 @@ export default function Olawin() {
     if (typeof window === "undefined") return "en";
     const saved = localStorage.getItem("olawin_lang");
     if (saved && T[saved]) return saved;
+    const browser = (navigator.language || "").slice(0,2).toLowerCase();
+    if (T[browser]) return browser;
     return "en";
   });
   const t = T[lang];
+
+  useEffect(() => {
+    if (typeof document !== "undefined") document.documentElement.lang = lang;
+  }, [lang]);
 
   const [page, setPage] = useState("home");
   const [draws, setDraws] = useState([]);
@@ -220,20 +368,21 @@ export default function Olawin() {
   }, []);
 
   const activeDraw = selectedDraw;
-  const remaining  = activeDraw ? activeDraw.totalTickets - activeDraw.soldTickets : 0;
-  const finalQty   = selectedPack ? selectedPack.qty : customQty !== "" ? Math.min(parseInt(customQty)||1, remaining) : qty;
-  const discount   = selectedPack ? selectedPack.discount : 0;
-  const baseTotal  = finalQty * (activeDraw?.ticketPrice || 0);
-  const savings    = Math.round(baseTotal * discount / 100);
-  const total      = baseTotal - savings;
-  const pct        = activeDraw ? Math.round((activeDraw.soldTickets / activeDraw.totalTickets)*100) : 0;
-  const odds       = activeDraw ? ((finalQty / activeDraw.totalTickets)*100).toFixed(1) : "0";
-  const formValid  = form.firstName && form.lastName && form.email && form.phone && form.address && form.city && form.country;
-  const featured   = draws[0] || null;
-
+  const remaining = activeDraw ? activeDraw.totalTickets - activeDraw.soldTickets : 0;
+  const finalQty = selectedPack ? selectedPack.qty : customQty !== "" ? Math.min(parseInt(customQty)||1, remaining) : qty;
+  const discount = selectedPack ? selectedPack.discount : 0;
+  const baseTotal = finalQty * (activeDraw?.ticketPrice || 0);
+  const savings = Math.round(baseTotal * discount / 100);
+  const total = baseTotal - savings;
+  const pct = activeDraw ? Math.round((activeDraw.soldTickets / activeDraw.totalTickets)*100) : 0;
+  const odds = activeDraw ? ((finalQty / activeDraw.totalTickets)*100).toFixed(1) : "0";
+  const formValid = form.firstName && form.lastName && form.email && form.phone && form.address && form.city && form.country;
+  const featured = draws[0] || null;
   const localeMap = { en:"en-US", fr:"fr-FR", es:"es-ES" };
   const fmtDate = (d) => d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"short"}) : "";
   const fmtDateLong = (d) => d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"long"}) : "";
+
+  const fmt = (str, vars) => Object.keys(vars||{}).reduce((s,k)=>s.replace(`{${k}}`, vars[k]), str);
 
   const goTo = (p) => {
     setPage(p); setMenuOpen(false);
@@ -256,16 +405,16 @@ export default function Olawin() {
         phone: `${form.phoneCode} ${form.phone}`,
         address: `${form.address}, ${form.zip} ${form.city}, ${form.country}`,
         tickets: finalQty, ticketNums: nums, amount: total,
-        discount: discount, pack: selectedPack?.label || null,
+        discount: discount, pack: selectedPack?.key || null,
         status: "paid", createdAt: serverTimestamp(),
       });
       await updateDoc(doc(db,"draws",activeDraw.id),{ soldTickets: increment(finalQty) });
       await Promise.allSettled([
-        sendTicketConfirmation({ firstName: form.firstName, lastName: form.lastName, email: form.email, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, drawDate: activeDraw.drawDate, ticketNums: nums, qty: finalQty, total, discount, pack: selectedPack?.label || null }),
-        sendAdminNotification({ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: `${form.phoneCode} ${form.phone}`, address: `${form.address}, ${form.zip} ${form.city}, ${form.country}`, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, ticketNums: nums, qty: finalQty, total, pack: selectedPack?.label || null, orderId: `ORD-${Date.now()}` }),
+        sendTicketConfirmation({ firstName: form.firstName, lastName: form.lastName, email: form.email, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, drawDate: activeDraw.drawDate, ticketNums: nums, qty: finalQty, total, discount, pack: selectedPack?.key || null }),
+        sendAdminNotification({ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: `${form.phoneCode} ${form.phone}`, address: `${form.address}, ${form.zip} ${form.city}, ${form.country}`, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, ticketNums: nums, qty: finalQty, total, pack: selectedPack?.key || null, orderId: `ORD-${Date.now()}` }),
       ]);
       setPaying(false); goTo("success");
-    } catch(err) { console.error("Erreur Firebase:", err); setPaying(false); alert("Erreur lors de la réservation."); }
+    } catch(err) { console.error("Erreur Firebase:", err); setPaying(false); alert(t.confirm.bookingError); }
   };
 
   const CSS = `
@@ -309,6 +458,8 @@ export default function Olawin() {
   ];
 
   const COUNTRIES = ["Algérie","Allemagne","Angola","Argentine","Australie","Autriche","Belgique","Brésil","Cameroun","Canada","Chine","Colombie","Côte d'Ivoire","Danemark","Égypte","Espagne","États-Unis","France","Gabon","Ghana","Inde","Israël","Italie","Japon","Liban","Luxembourg","Maroc","Mexique","Monaco","Pays-Bas","Portugal","Royaume-Uni","Russie","Sénégal","Suède","Suisse","Tunisie","Turquie","UAE"];
+
+  const SOLD_LABEL = { en:"SOLD", fr:"VENDUS", es:"VENDIDOS" }[lang];
 
   const Nav = () => (
     <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(216,212,206,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",height:"64px",padding:isMobile?"0 16px":"0 48px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -376,7 +527,6 @@ export default function Olawin() {
         <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)"}}>{t.empty.sub}</p>
       </div>
     );
-
     return (
       <div style={{animation:"fadeUp 0.6s ease"}}>
         <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
@@ -466,93 +616,88 @@ export default function Olawin() {
   };
 
   const ShopPage = () => {
-    if (!activeDraw) return <div style={{padding:"100px 20px",textAlign:"center"}}>Tirage introuvable. <button onClick={()=>goTo("home")} style={{textDecoration:"underline",background:"none",border:"none",cursor:"pointer"}}>Retour</button></div>;
+    if (!activeDraw) return <div style={{padding:"100px 20px",textAlign:"center"}}>{t.shop.notFound} <button onClick={()=>goTo("home")} style={{textDecoration:"underline",background:"none",border:"none",cursor:"pointer"}}>{t.shop.returnHome}</button></div>;
     return (
-    <div style={{animation:"fadeUp 0.5s ease"}}>
-      <div style={{position:"relative",height:isMobile?"200px":"300px",overflow:"hidden",background:activeDraw.gradient||"#1A1A1A"}}>
-        {activeDraw.image && <img src={activeDraw.image} alt={activeDraw.location} onError={e=>e.target.style.display="none"} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>}
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}/>
-        <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
-          <div style={{background:"rgba(255,255,255,0.18)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"5px 12px",fontSize:"11px",letterSpacing:"2px",color:"#fff"}}>{activeDraw.country} {activeDraw.location?.toUpperCase()}</div>
-          <button onClick={()=>goTo("home")} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"20px",padding:"5px 12px",color:"rgba(255,255,255,0.85)",fontSize:"11px",cursor:"pointer"}}>← Retour</button>
+      <div style={{animation:"fadeUp 0.5s ease"}}>
+        <div style={{position:"relative",height:isMobile?"200px":"300px",overflow:"hidden",background:activeDraw.gradient||"#1A1A1A"}}>
+          {activeDraw.image && <img src={activeDraw.image} alt={activeDraw.location} onError={e=>e.target.style.display="none"} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>}
+          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}/>
+          <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
+            <div style={{background:"rgba(255,255,255,0.18)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"5px 12px",fontSize:"11px",letterSpacing:"2px",color:"#fff"}}>{activeDraw.country} {activeDraw.location?.toUpperCase()}</div>
+            <button onClick={()=>goTo("home")} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"20px",padding:"5px 12px",color:"rgba(255,255,255,0.85)",fontSize:"11px",cursor:"pointer"}}>{t.shop.back}</button>
+          </div>
         </div>
-      </div>
-
-      <div style={{maxWidth:"1100px",margin:"0 auto",padding:isMobile?"32px 20px 60px":"40px 32px 60px"}}>
-        <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 420px",gap:isMobile?"32px":"64px"}}>
-          <div>
-            <h1 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,64px)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px"}}>{activeDraw.title?.toUpperCase()}</h1>
-            <div style={{fontSize:isMobile?"clamp(18px,5vw,24px)":"clamp(20px,2.5vw,30px)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",color:"rgba(0,0,0,0.56)",marginBottom:"24px"}}>{activeDraw.prize?.toUpperCase()}</div>
-            <p style={{fontSize:"14px",color:"rgba(0,0,0,0.52)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
-            <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
-              <ArcProgress pct={pct}/>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} tickets</div>
-                <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
-                  <div style={{width:`${pct}%`,height:"100%",background:"rgba(0,0,0,0.55)",borderRadius:"2px"}}/>
+        <div style={{maxWidth:"1100px",margin:"0 auto",padding:isMobile?"32px 20px 60px":"40px 32px 60px"}}>
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 420px",gap:isMobile?"32px":"64px"}}>
+            <div>
+              <h1 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,64px)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px"}}>{activeDraw.title?.toUpperCase()}</h1>
+              <div style={{fontSize:isMobile?"clamp(18px,5vw,24px)":"clamp(20px,2.5vw,30px)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",color:"rgba(0,0,0,0.56)",marginBottom:"24px"}}>{activeDraw.prize?.toUpperCase()}</div>
+              <p style={{fontSize:"14px",color:"rgba(0,0,0,0.52)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
+              <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
+                <ArcProgress pct={pct} label={SOLD_LABEL}/>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets}</div>
+                  <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
+                    <div style={{width:`${pct}%`,height:"100%",background:"rgba(0,0,0,0.55)",borderRadius:"2px"}}/>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
-            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
-              <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>RÉSERVER VOS TICKETS</div>
-              <div style={{fontSize:"22px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginBottom:"24px"}}>{activeDraw.ticketPrice}$ / TICKET</div>
-
-              <div style={{marginBottom:"20px"}}>
-                <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>TICKETS INDIVIDUELS</div>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
-                  {TICKET_OPTS.map(n=>(
-                    <button key={n} onClick={()=>{setQty(n);setCustomQty("");setSelectedPack(null);}}
-                      className={`qty-btn${qty===n&&!selectedPack&&customQty===""?" active":""}`}
-                      style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px"}}>{n}</button>
-                  ))}
+            <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
+              <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
+                <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
+                <div style={{fontSize:"22px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginBottom:"24px"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
+                <div style={{marginBottom:"20px"}}>
+                  <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>
+                  <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
+                    {TICKET_OPTS.map(n=>(
+                      <button key={n} onClick={()=>{setQty(n);setCustomQty("");setSelectedPack(null);}}
+                        className={`qty-btn${qty===n&&!selectedPack&&customQty===""?" active":""}`}
+                        style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px"}}>{n}</button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"20px"}}>
-                {PACKS.map(pack=>{
-                  const packBase=pack.qty*activeDraw.ticketPrice;
-                  const packSave=Math.round(packBase*pack.discount/100);
-                  const packTotal=packBase-packSave;
-                  const isActive=selectedPack?.qty===pack.qty;
-                  return (
-                    <button key={pack.qty} onClick={()=>{setSelectedPack(isActive?null:pack);setQty(0);setCustomQty("");}}
-                      style={{border:`1px solid ${isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"}`,borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:"pointer",textAlign:"left"}}>
-                      <div style={{fontSize:"20px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} TICKETS</div>
-                      <div style={{fontSize:"24px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"16px",marginBottom:"20px"}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                  <span style={{fontSize:"12px",color:"rgba(0,0,0,0.45)"}}>TOTAL</span>
-                  <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px"}}>{total}$</span>
+                <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"20px"}}>
+                  {PACKS.map(pack=>{
+                    const packBase=pack.qty*activeDraw.ticketPrice;
+                    const packSave=Math.round(packBase*pack.discount/100);
+                    const packTotal=packBase-packSave;
+                    const isActive=selectedPack?.qty===pack.qty;
+                    return (
+                      <button key={pack.qty} onClick={()=>{setSelectedPack(isActive?null:pack);setQty(0);setCustomQty("");}}
+                        style={{border:`1px solid ${isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"}`,borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:"pointer",textAlign:"left"}}>
+                        <div style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.5)",marginBottom:"4px"}}>{t.shop.packs[pack.key]}</div>
+                        <div style={{fontSize:"20px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
+                        <div style={{fontSize:"24px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
+                      </button>
+                    );
+                  })}
                 </div>
+                <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"16px",marginBottom:"20px"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                    <span style={{fontSize:"12px",color:"rgba(0,0,0,0.45)"}}>{t.shop.total}</span>
+                    <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px"}}>{total}$</span>
+                  </div>
+                </div>
+                <button onClick={()=>goTo("confirm")} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continue} {total}$</button>
               </div>
-
-              <button onClick={()=>goTo("confirm")} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>CONTINUER → {total}$</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );};
+    );
+  };
 
   const ConfirmPage = () => (
     <div style={{maxWidth:"580px",margin:"0 auto",padding:isMobile?"40px 20px":"60px 32px"}}>
-      <button onClick={()=>goTo("shop")} style={{background:"none",border:"none",color:"rgba(0,0,0,0.38)",cursor:"pointer",fontSize:"11px",letterSpacing:"2px",marginBottom:"32px"}}>← RETOUR</button>
-      <h2 style={{fontSize:isMobile?"32px":"40px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginBottom:"28px"}}>VOS INFORMATIONS</h2>
-
+      <button onClick={()=>goTo("shop")} style={{background:"none",border:"none",color:"rgba(0,0,0,0.38)",cursor:"pointer",fontSize:"11px",letterSpacing:"2px",marginBottom:"32px"}}>{t.confirm.back}</button>
+      <h2 style={{fontSize:isMobile?"32px":"40px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginBottom:"28px"}}>{t.confirm.title}</h2>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"16px"}}>
-        <div><label style={LBL}>PRÉNOM *</label><input type="text" value={form.firstName} onChange={e=>setForm({...form,firstName:e.target.value})} style={INP}/></div>
-        <div><label style={LBL}>NOM *</label><input type="text" value={form.lastName} onChange={e=>setForm({...form,lastName:e.target.value})} style={INP}/></div>
+        <div><label style={LBL}>{t.confirm.firstName}</label><input type="text" value={form.firstName} onChange={e=>setForm({...form,firstName:e.target.value})} style={INP}/></div>
+        <div><label style={LBL}>{t.confirm.lastName}</label><input type="text" value={form.lastName} onChange={e=>setForm({...form,lastName:e.target.value})} style={INP}/></div>
       </div>
-      <div style={{marginBottom:"12px"}}><label style={LBL}>EMAIL *</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} style={INP}/></div>
-      <div style={{marginBottom:"16px"}}><label style={LBL}>TÉLÉPHONE *</label>
+      <div style={{marginBottom:"12px"}}><label style={LBL}>{t.confirm.email}</label><input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} style={INP}/></div>
+      <div style={{marginBottom:"16px"}}><label style={LBL}>{t.confirm.phone}</label>
         <div style={{display:"flex",gap:"8px"}}>
           <select value={form.phoneCode} onChange={e=>setForm({...form,phoneCode:e.target.value})} style={{...INP,width:isMobile?"105px":"130px",flexShrink:0}}>
             {COUNTRY_CODES.map(c=><option key={c.code+c.name} value={c.code}>{c.flag} {c.code}</option>)}
@@ -560,20 +705,19 @@ export default function Olawin() {
           <input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} style={{...INP,flex:1}}/>
         </div>
       </div>
-      <div style={{marginBottom:"12px"}}><label style={LBL}>RUE *</label><input type="text" value={form.address} onChange={e=>setForm({...form,address:e.target.value})} style={INP}/></div>
+      <div style={{marginBottom:"12px"}}><label style={LBL}>{t.confirm.street}</label><input type="text" value={form.address} onChange={e=>setForm({...form,address:e.target.value})} style={INP}/></div>
       <div style={{display:"grid",gridTemplateColumns:"110px 1fr",gap:"10px",marginBottom:"12px"}}>
-        <div><label style={LBL}>CP *</label><input type="text" value={form.zip} onChange={e=>setForm({...form,zip:e.target.value})} style={INP}/></div>
-        <div><label style={LBL}>VILLE *</label><input type="text" value={form.city} onChange={e=>setForm({...form,city:e.target.value})} style={INP}/></div>
+        <div><label style={LBL}>{t.confirm.zip}</label><input type="text" value={form.zip} onChange={e=>setForm({...form,zip:e.target.value})} style={INP}/></div>
+        <div><label style={LBL}>{t.confirm.city}</label><input type="text" value={form.city} onChange={e=>setForm({...form,city:e.target.value})} style={INP}/></div>
       </div>
-      <div style={{marginBottom:"20px"}}><label style={LBL}>PAYS *</label>
+      <div style={{marginBottom:"20px"}}><label style={LBL}>{t.confirm.country}</label>
         <select value={form.country} onChange={e=>setForm({...form,country:e.target.value})} style={INP}>
-          <option value="">Sélectionner...</option>
+          <option value="">{t.confirm.countryPlaceholder}</option>
           {COUNTRIES.map(c=><option key={c} value={c}>{c}</option>)}
         </select>
       </div>
-
       <button onClick={handlePay} disabled={!formValid||paying} className="cta-dark" style={{width:"100%",padding:"17px",fontSize:"12px"}}>
-        {paying?"EN COURS...":`PAYER ${total}$ VIA STRIPE`}
+        {paying ? t.confirm.processing : `${t.confirm.pay} ${total}$ ${t.confirm.payVia}`}
       </button>
     </div>
   );
@@ -582,17 +726,19 @@ export default function Olawin() {
     <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"60px 24px"}}>
       <div style={{maxWidth:"500px",width:"100%",textAlign:"center"}}>
         <OlawinLogo size={56}/>
-        <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"4px",margin:"20px 0"}}>BONNE CHANCE !</h1>
-        <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>Vos {finalQty} ticket{finalQty>1?"s":""} sont enregistrés.</p>
-        <button onClick={()=>goTo("home")} className="cta-dark" style={{padding:"13px 28px",fontSize:"11px"}}>ACCUEIL</button>
+        <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"4px",margin:"20px 0"}}>{t.success.title}</h1>
+        <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>
+          {finalQty > 1 ? fmt(t.success.msgMany, {n: finalQty}) : t.success.msgOne}
+        </p>
+        <button onClick={()=>goTo("home")} className="cta-dark" style={{padding:"13px 28px",fontSize:"11px"}}>{t.success.home}</button>
       </div>
     </div>
   );
 
   const FaqPage = () => (
     <div style={{maxWidth:"700px",margin:"0 auto",padding:isMobile?"48px 20px":"80px 32px"}}>
-      <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.nav.faq}</h1>
-      {FAQ_ITEMS.map((item,i)=>(
+      <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.faq.title}</h1>
+      {t.faq.items.map((item,i)=>(
         <div key={i} style={{borderTop:i===0?"1px solid rgba(0,0,0,0.08)":"none",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
           <button onClick={()=>setOpenFaq(openFaq===i?null:i)} style={{width:"100%",padding:"20px 4px",display:"flex",justifyContent:"space-between",alignItems:"center",background:"none",border:"none",fontSize:"16px",cursor:"pointer",textAlign:"left",fontFamily:"'Playfair Display',serif"}}>
             <span>{item.q}</span><span>{openFaq===i?"−":"+"}</span>
@@ -605,18 +751,18 @@ export default function Olawin() {
 
   const LegalPage = () => (
     <div style={{maxWidth:"700px",margin:"0 auto",padding:isMobile?"48px 20px":"80px 32px"}}>
-      <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.nav.legal}</h1>
-      <p style={{fontSize:"13px",color:"rgba(0,0,0,0.45)",lineHeight:"1.8"}}>Conditions générales d'utilisation. Toute personne majeure peut participer. Le tirage est effectué publiquement. Le gagnant reçoit un bon dans les 48h.</p>
+      <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.legal.title}</h1>
+      <p style={{fontSize:"13px",color:"rgba(0,0,0,0.45)",lineHeight:"1.8"}}>{t.legal.body}</p>
     </div>
   );
 
   const Footer = () => (
     <footer style={{borderTop:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 20px":"48px",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:"20px",textAlign:isMobile?"center":"left"}}>
-      <div><OlawinLogo size={26}/><div style={{fontSize:"10px",color:"rgba(0,0,0,0.28)",marginTop:"6px"}}>© 2026 Olawin.</div></div>
+      <div><OlawinLogo size={26}/><div style={{fontSize:"10px",color:"rgba(0,0,0,0.28)",marginTop:"6px"}}>{t.footer.copyright}</div></div>
       <div style={{display:"flex",gap:"20px"}}>
         <button onClick={()=>goTo("faq")} className="nav-link">{t.nav.faq}</button>
         <button onClick={()=>goTo("legal")} className="nav-link">{t.nav.legal}</button>
-        <a href="mailto:contact@olawin.org" style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",textDecoration:"none",textTransform:"uppercase"}}>Contact</a>
+        <a href="mailto:contact@olawin.org" style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",textDecoration:"none",textTransform:"uppercase"}}>{t.footer.contact}</a>
       </div>
     </footer>
   );
@@ -625,12 +771,12 @@ export default function Olawin() {
     <div ref={topRef} style={{background:C_BG,minHeight:"100vh",color:"#1A1A1A"}}>
       <style>{CSS}</style>
       <Nav/>
-      {page==="home"    && <HomePage/>}
-      {page==="shop"    && <ShopPage/>}
+      {page==="home" && <HomePage/>}
+      {page==="shop" && <ShopPage/>}
       {page==="confirm" && <ConfirmPage/>}
       {page==="success" && <SuccessPage/>}
-      {page==="faq"     && <FaqPage/>}
-      {page==="legal"   && <LegalPage/>}
+      {page==="faq" && <FaqPage/>}
+      {page==="legal" && <LegalPage/>}
       <Footer/>
     </div>
   );
