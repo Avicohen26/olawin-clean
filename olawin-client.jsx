@@ -116,6 +116,21 @@ const TICKET_OPTS = [1,2,3,4,5,6,7,8,9,10];
 const C_BG = "#D8D4CE";
 const PARTNER_LOGO = "https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/private-honors-logo.png";
 
+const COUNTRY_CODES = [
+  { code:"+1", name:"USA" }, { code:"+33", name:"France" },
+  { code:"+32", name:"Belgique" }, { code:"+41", name:"Suisse" },
+  { code:"+212", name:"Maroc" }, { code:"+213", name:"Algerie" },
+  { code:"+44", name:"UK" }, { code:"+49", name:"Allemagne" },
+  { code:"+34", name:"Espagne" }, { code:"+39", name:"Italie" },
+  { code:"+351", name:"Portugal" }, { code:"+52", name:"Mexique" },
+  { code:"+55", name:"Bresil" }, { code:"+971", name:"UAE" }
+];
+
+const COUNTRIES = ["Algerie","Allemagne","Angola","Argentine","Australie","Autriche","Belgique","Bresil","Cameroun","Canada","Chine","Colombie","Cote d Ivoire","Danemark","Egypte","Espagne","Etats-Unis","France","Gabon","Ghana","Inde","Israel","Italie","Japon","Liban","Luxembourg","Maroc","Mexique","Monaco","Pays-Bas","Portugal","Royaume-Uni","Russie","Senegal","Suede","Suisse","Tunisie","Turquie","UAE"];
+
+const INP = { width:"100%", padding:"13px 16px", background:"rgba(0,0,0,0.04)", border:"1px solid rgba(0,0,0,0.12)", borderRadius:"10px", color:"#1A1A1A", fontSize:"16px", fontFamily:"DM Sans, sans-serif", boxSizing:"border-box" };
+const LBL = { fontSize:"9px", letterSpacing:"2.5px", color:"rgba(0,0,0,0.4)", marginBottom:"7px", fontFamily:"DM Sans, sans-serif", display:"block" };
+
 function genOrderNumber() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let out = "";
@@ -191,7 +206,7 @@ function DrawCard(props) {
               <span style={{fontSize:"10px",color:"rgba(255,255,255,0.55)"}}>{draw.soldTickets}/{draw.totalTickets}</span>
               <span style={{fontSize:"10px",color:"rgba(255,255,255,0.7)"}}>{pct}%</span>
             </div>
-            <div style={{background:"rgba(255,255,255,0.15)",borderRadius:"2px",height:"2px"}}>
+            <div style={{background:"rgba(0,0,0,0.15)",borderRadius:"2px",height:"2px"}}>
               <div style={{width:pct+"%",height:"100%",background:"rgba(255,255,255,0.85)",borderRadius:"2px"}}></div>
             </div>
           </div>
@@ -361,303 +376,287 @@ export default function Olawin() {
 
   const CSS = "@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:" + C_BG + ";color:#1A1A1A;overflow-x:hidden;}input:focus,textarea:focus,select:focus{outline:none;}::-webkit-scrollbar{width:3px;background:" + C_BG + ";}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}@keyframes spin{to{transform:rotate(360deg);}}.nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}.nav-link:hover{color:#000;}.qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}.qty-btn.active{border-color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.08);color:#000;}.cta-dark{background:#1A1A1A;color:#E8E4DC;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2.5px;}.cta-dark:disabled{background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.25);cursor:not-allowed;}";
 
-  const INP = { width:"100%", padding:"13px 16px", background:"rgba(0,0,0,0.04)", border:"1px solid rgba(0,0,0,0.12)", borderRadius:"10px", color:"#1A1A1A", fontSize:"16px", fontFamily:"DM Sans, sans-serif", boxSizing:"border-box" };
-  const LBL = { fontSize:"9px", letterSpacing:"2.5px", color:"rgba(0,0,0,0.4)", marginBottom:"7px", fontFamily:"DM Sans, sans-serif", display:"block" };
-
-  const COUNTRY_CODES = [
-    { code:"+1", name:"USA" }, { code:"+33", name:"France" },
-    { code:"+32", name:"Belgique" }, { code:"+41", name:"Suisse" },
-    { code:"+212", name:"Maroc" }, { code:"+213", name:"Algerie" },
-    { code:"+44", name:"UK" }, { code:"+49", name:"Allemagne" },
-    { code:"+34", name:"Espagne" }, { code:"+39", name:"Italie" },
-    { code:"+351", name:"Portugal" }, { code:"+52", name:"Mexique" },
-    { code:"+55", name:"Bresil" }, { code:"+971", name:"UAE" }
-  ];
-
-  const COUNTRIES = ["Algerie","Allemagne","Angola","Argentine","Australie","Autriche","Belgique","Bresil","Cameroun","Canada","Chine","Colombie","Cote d Ivoire","Danemark","Egypte","Espagne","Etats-Unis","France","Gabon","Ghana","Inde","Israel","Italie","Japon","Liban","Luxembourg","Maroc","Mexique","Monaco","Pays-Bas","Portugal","Royaume-Uni","Russie","Senegal","Suede","Suisse","Tunisie","Turquie","UAE"];
-
   const SOLD_LABEL = { en:"SOLD", fr:"VENDUS", es:"VENDIDOS" }[lang];
 
-  function Nav() {
-    return (
-      <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(216,212,206,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",height:"64px",padding:isMobile?"0 16px":"0 48px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <div style={{display:"flex",alignItems:"center",gap:isMobile?"10px":"20px"}}>
-          <button onClick={function(){ goTo("home"); }} style={{background:"none",border:"none",cursor:"pointer"}}>
-            <OlawinLogo size={isMobile?26:34}></OlawinLogo>
-          </button>
-          {!isMobile ? (
-            <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-              <div style={{width:"1px",height:"28px",background:"rgba(0,0,0,0.15)"}}></div>
-              <span style={{fontSize:"8px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",fontFamily:"DM Sans, sans-serif",lineHeight:"1.3",textAlign:"right",whiteSpace:"nowrap"}}>{t.partner}</span>
-              <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"24px",width:"auto",objectFit:"contain"}}></img>
-            </div>
-          ) : null}
-        </div>
+  const updateForm = function(field, value) { setForm(Object.assign({}, form, { [field]: value })); };
+
+  const navContent = (
+    <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(216,212,206,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",height:"64px",padding:isMobile?"0 16px":"0 48px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+      <div style={{display:"flex",alignItems:"center",gap:isMobile?"10px":"20px"}}>
+        <button onClick={function(){ goTo("home"); }} style={{background:"none",border:"none",cursor:"pointer"}}>
+          <OlawinLogo size={isMobile?26:34}></OlawinLogo>
+        </button>
         {!isMobile ? (
-          <div style={{display:"flex",alignItems:"center",gap:"20px"}}>
-            <button className="nav-link" onClick={function(){ goTo("home"); }}>{t.nav.draws}</button>
-            <button className="nav-link" onClick={function(){ goTo("mytickets"); }}>{t.nav.myTickets}</button>
-            <button className="nav-link" onClick={function(){ goTo("faq"); }}>{t.nav.faq}</button>
-            <button className="nav-link" onClick={function(){ goTo("legal"); }}>{t.nav.legal}</button>
-            <LangSwitcher lang={lang} setLang={setLang} isMobile={false}></LangSwitcher>
-            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"10px 22px",fontSize:"11px",borderRadius:"8px"}}>{t.nav.buy}</button>
-          </div>
-        ) : (
           <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-            <LangSwitcher lang={lang} setLang={setLang} isMobile={true}></LangSwitcher>
-            <button onClick={function(){ setMenuOpen(!menuOpen); }} style={{background:"none",border:"none",cursor:"pointer",padding:"8px",display:"flex",flexDirection:"column",gap:"4px"}}>
-              <span style={{width:"22px",height:"2px",background:"#1A1A1A",borderRadius:"2px",transition:"all 0.2s"}}></span>
-              <span style={{width:"22px",height:"2px",background:"#1A1A1A",borderRadius:"2px",transition:"all 0.2s"}}></span>
-              <span style={{width:"22px",height:"2px",background:"#1A1A1A",borderRadius:"2px",transition:"all 0.2s"}}></span>
-            </button>
-          </div>
-        )}
-        {isMobile && menuOpen ? (
-          <div style={{position:"absolute",top:"64px",left:0,right:0,background:"rgba(216,212,206,0.98)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:"24px 20px",display:"flex",flexDirection:"column",gap:"20px"}}>
-            <button className="nav-link" onClick={function(){ goTo("home"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.draws}</button>
-            <button className="nav-link" onClick={function(){ goTo("mytickets"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.myTickets}</button>
-            <button className="nav-link" onClick={function(){ goTo("faq"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.faq}</button>
-            <button className="nav-link" onClick={function(){ goTo("legal"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.legal}</button>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
-              <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>{t.partnerMobile}</span>
-              <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}></img>
-            </div>
-            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"14px",fontSize:"12px",borderRadius:"10px",width:"100%"}}>{t.nav.buy}</button>
+            <div style={{width:"1px",height:"28px",background:"rgba(0,0,0,0.15)"}}></div>
+            <span style={{fontSize:"8px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",fontFamily:"DM Sans, sans-serif",lineHeight:"1.3",textAlign:"right",whiteSpace:"nowrap"}}>{t.partner}</span>
+            <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"24px",width:"auto",objectFit:"contain"}}></img>
           </div>
         ) : null}
-      </nav>
-    );
-  }
+      </div>
+      {!isMobile ? (
+        <div style={{display:"flex",alignItems:"center",gap:"20px"}}>
+          <button className="nav-link" onClick={function(){ goTo("home"); }}>{t.nav.draws}</button>
+          <button className="nav-link" onClick={function(){ goTo("mytickets"); }}>{t.nav.myTickets}</button>
+          <button className="nav-link" onClick={function(){ goTo("faq"); }}>{t.nav.faq}</button>
+          <button className="nav-link" onClick={function(){ goTo("legal"); }}>{t.nav.legal}</button>
+          <LangSwitcher lang={lang} setLang={setLang} isMobile={false}></LangSwitcher>
+          <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"10px 22px",fontSize:"11px",borderRadius:"8px"}}>{t.nav.buy}</button>
+        </div>
+      ) : (
+        <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+          <LangSwitcher lang={lang} setLang={setLang} isMobile={true}></LangSwitcher>
+          <button onClick={function(){ setMenuOpen(!menuOpen); }} style={{background:"none",border:"none",cursor:"pointer",padding:"8px",display:"flex",flexDirection:"column",gap:"4px"}}>
+            <span style={{width:"22px",height:"2px",background:"#1A1A1A",borderRadius:"2px",transition:"all 0.2s"}}></span>
+            <span style={{width:"22px",height:"2px",background:"#1A1A1A",borderRadius:"2px",transition:"all 0.2s"}}></span>
+            <span style={{width:"22px",height:"2px",background:"#1A1A1A",borderRadius:"2px",transition:"all 0.2s"}}></span>
+          </button>
+        </div>
+      )}
+      {isMobile && menuOpen ? (
+        <div style={{position:"absolute",top:"64px",left:0,right:0,background:"rgba(216,212,206,0.98)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:"24px 20px",display:"flex",flexDirection:"column",gap:"20px"}}>
+          <button className="nav-link" onClick={function(){ goTo("home"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.draws}</button>
+          <button className="nav-link" onClick={function(){ goTo("mytickets"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.myTickets}</button>
+          <button className="nav-link" onClick={function(){ goTo("faq"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.faq}</button>
+          <button className="nav-link" onClick={function(){ goTo("legal"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.legal}</button>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
+            <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>{t.partnerMobile}</span>
+            <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}></img>
+          </div>
+          <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:"14px",fontSize:"12px",borderRadius:"10px",width:"100%"}}>{t.nav.buy}</button>
+        </div>
+      ) : null}
+    </nav>
+  );
 
-  function HomePage() {
+  let pageContent = null;
+
+  if (page === "home") {
     if (loading) {
-      return (
+      pageContent = (
         <div style={{minHeight:"60vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"20px"}}>
           <OlawinLogo size={40}></OlawinLogo>
           <div style={{width:"32px",height:"32px",border:"2px solid rgba(0,0,0,0.1)",borderTopColor:"#1A1A1A",borderRadius:"50%",animation:"spin 0.8s linear infinite"}}></div>
           <p style={{fontSize:"12px",letterSpacing:"3px",color:"rgba(0,0,0,0.35)"}}>{t.loading}</p>
         </div>
       );
-    }
-    if (draws.length === 0) {
-      return (
+    } else if (draws.length === 0) {
+      pageContent = (
         <div style={{minHeight:"60vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"16px",textAlign:"center",padding:"48px 20px"}}>
           <h2 style={{fontSize:"clamp(22px,5vw,28px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.empty.title}</h2>
           <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)"}}>{t.empty.sub}</p>
         </div>
       );
+    } else {
+      pageContent = (
+        <div>
+          <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+            <div style={{position:"absolute",inset:0,background:(featured && featured.gradient) || "#1A1A1A"}}></div>
+            {featured && featured.image ? <img src={featured.image} alt={featured.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:featured.heroPosition||"center"}}></img> : null}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.3) 50%,rgba(0,0,0,0.05) 100%)"}}></div>
+            <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
+              <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(255,255,255,0.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"100px",padding:"6px 14px",marginBottom:"16px"}}>
+                <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#ff4444",animation:"pulse 1.5s infinite"}}></span>
+                <span style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(255,255,255,0.9)"}}>{t.hero.live} {fmtDate(featured && featured.endDate)}</span>
+              </div>
+              <div style={{fontSize:"12px",letterSpacing:"3px",color:"rgba(255,255,255,0.6)",marginBottom:"10px"}}>{featured && featured.country} {featured && featured.location ? featured.location.toUpperCase() : ""}</div>
+              <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px"}}>
+                {featured && featured.title ? featured.title.toUpperCase() : ""}
+                <br></br>
+                <span style={{color:"rgba(255,255,255,0.5)"}}>{featured && featured.location ? featured.location.toUpperCase() : ""}</span>
+              </h1>
+              <p style={{fontSize:isMobile?"14px":"16px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(255,255,255,0.65)",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px"}}>{featured && featured.description}</p>
+              <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
+                <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"13px",width:isMobile?"100%":"auto"}}>{t.hero.buyTicket} {featured && featured.ticketPrice}$</button>
+                <div style={{color:"rgba(255,255,255,0.5)",fontSize:"12px",textAlign:isMobile?"center":"left"}}>{featured ? (featured.totalTickets - featured.soldTickets) : 0} {t.hero.remaining} {featured && featured.totalTickets}</div>
+              </div>
+            </div>
+          </section>
+
+          <section style={{background:C_BG,padding:isMobile?"48px 20px":"80px 48px"}}>
+            <div style={{maxWidth:"1200px",margin:"0 auto"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"32px",flexWrap:"wrap",gap:"12px"}}>
+                <div>
+                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.thisWeek}</div>
+                  <h2 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95}}>{t.section.allDraws}</h2>
+                </div>
+                <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{draws.length} {t.section.activeDraws}</div>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
+                {draws.map(function(draw) {
+                  return <DrawCard key={draw.id} draw={draw} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
+                })}
+              </div>
+            </div>
+          </section>
+
+          <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
+            {[
+              { val: String(draws.length), lbl: t.stats.active },
+              { val: draws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + "$", lbl: t.stats.value },
+              { val: String(draws.reduce(function(s,d){ return s + (d.totalTickets - d.soldTickets); }, 0)), lbl: t.stats.remaining },
+              { val: "100+", lbl: t.stats.countries }
+            ].map(function(s, i) {
+              return (
+                <div key={i} style={{textAlign:"center",padding:isMobile?"16px 12px":"0 24px"}}>
+                  <div style={{fontSize:isMobile?"clamp(22px,6vw,28px)":"clamp(28px,3.5vw,44px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{s.val}</div>
+                  <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.35)"}}>{s.lbl}</div>
+                </div>
+              );
+            })}
+          </section>
+
+          <section style={{padding:isMobile?"64px 20px":"100px 48px"}}>
+            <div style={{maxWidth:"1100px",margin:"0 auto"}}>
+              <div style={{textAlign:"center",marginBottom:isMobile?"40px":"64px"}}>
+                <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"12px"}}>{t.section.process}</div>
+                <h2 style={{fontSize:isMobile?"clamp(28px,7vw,38px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.section.howItWorks}</h2>
+              </div>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(4,1fr)",gap:"2px"}}>
+                {t.steps.map(function(s, i) {
+                  return (
+                    <div key={i} style={{padding:isMobile?"24px 0":"40px 32px"}}>
+                      <div style={{fontSize:isMobile?"56px":"80px",fontFamily:"Bebas Neue, sans-serif",color:"rgba(0,0,0,0.05)",lineHeight:1,marginBottom:"16px"}}>0{i+1}</div>
+                      <div style={{fontSize:"18px",fontFamily:"Playfair Display, serif",marginBottom:"10px"}}>{s.title}</div>
+                      <div style={{fontSize:"13px",color:"rgba(0,0,0,0.48)",lineHeight:"1.7"}}>{s.desc}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          <section style={{padding:isMobile?"56px 20px":"100px 32px",textAlign:"center",borderTop:"1px solid rgba(0,0,0,0.09)"}}>
+            <OlawinLogo size={isMobile?40:48}></OlawinLogo>
+            <h2 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(36px,6vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",margin:"24px 0 12px",lineHeight:0.95}}>{t.cta.tryLuck}</h2>
+            <p style={{fontSize:"15px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>{draws.length} {t.cta.active}</p>
+            <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:isMobile?"16px 40px":"18px 60px",fontSize:"12px",width:isMobile?"100%":"auto",maxWidth:"400px"}}>{t.cta.viewDraws}</button>
+          </section>
+        </div>
+      );
     }
-    return (
-      <div>
-        <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
-          <div style={{position:"absolute",inset:0,background:(featured && featured.gradient) || "#1A1A1A"}}></div>
-          {featured && featured.image ? <img src={featured.image} alt={featured.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:featured.heroPosition||"center"}}></img> : null}
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.3) 50%,rgba(0,0,0,0.05) 100%)"}}></div>
-          <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
-            <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(255,255,255,0.12)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"100px",padding:"6px 14px",marginBottom:"16px"}}>
-              <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#ff4444",animation:"pulse 1.5s infinite"}}></span>
-              <span style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(255,255,255,0.9)"}}>{t.hero.live} {fmtDate(featured && featured.endDate)}</span>
-            </div>
-            <div style={{fontSize:"12px",letterSpacing:"3px",color:"rgba(255,255,255,0.6)",marginBottom:"10px"}}>{featured && featured.country} {featured && featured.location ? featured.location.toUpperCase() : ""}</div>
-            <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px"}}>
-              {featured && featured.title ? featured.title.toUpperCase() : ""}
-              <br></br>
-              <span style={{color:"rgba(255,255,255,0.5)"}}>{featured && featured.location ? featured.location.toUpperCase() : ""}</span>
-            </h1>
-            <p style={{fontSize:isMobile?"14px":"16px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(255,255,255,0.65)",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px"}}>{featured && featured.description}</p>
-            <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
-              <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"13px",width:isMobile?"100%":"auto"}}>{t.hero.buyTicket} {featured && featured.ticketPrice}$</button>
-              <div style={{color:"rgba(255,255,255,0.5)",fontSize:"12px",textAlign:isMobile?"center":"left"}}>{featured ? (featured.totalTickets - featured.soldTickets) : 0} {t.hero.remaining} {featured && featured.totalTickets}</div>
-            </div>
-          </div>
-        </section>
-
-        <section style={{background:C_BG,padding:isMobile?"48px 20px":"80px 48px"}}>
-          <div style={{maxWidth:"1200px",margin:"0 auto"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"32px",flexWrap:"wrap",gap:"12px"}}>
-              <div>
-                <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.thisWeek}</div>
-                <h2 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95}}>{t.section.allDraws}</h2>
-              </div>
-              <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{draws.length} {t.section.activeDraws}</div>
-            </div>
-            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
-              {draws.map(function(draw) {
-                return <DrawCard key={draw.id} draw={draw} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
-          {[
-            { val: String(draws.length), lbl: t.stats.active },
-            { val: draws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + "$", lbl: t.stats.value },
-            { val: String(draws.reduce(function(s,d){ return s + (d.totalTickets - d.soldTickets); }, 0)), lbl: t.stats.remaining },
-            { val: "100+", lbl: t.stats.countries }
-          ].map(function(s, i) {
-            return (
-              <div key={i} style={{textAlign:"center",padding:isMobile?"16px 12px":"0 24px"}}>
-                <div style={{fontSize:isMobile?"clamp(22px,6vw,28px)":"clamp(28px,3.5vw,44px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{s.val}</div>
-                <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.35)"}}>{s.lbl}</div>
-              </div>
-            );
-          })}
-        </section>
-
-        <section style={{padding:isMobile?"64px 20px":"100px 48px"}}>
-          <div style={{maxWidth:"1100px",margin:"0 auto"}}>
-            <div style={{textAlign:"center",marginBottom:isMobile?"40px":"64px"}}>
-              <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"12px"}}>{t.section.process}</div>
-              <h2 style={{fontSize:isMobile?"clamp(28px,7vw,38px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.section.howItWorks}</h2>
-            </div>
-            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(4,1fr)",gap:"2px"}}>
-              {t.steps.map(function(s, i) {
-                return (
-                  <div key={i} style={{padding:isMobile?"24px 0":"40px 32px"}}>
-                    <div style={{fontSize:isMobile?"56px":"80px",fontFamily:"Bebas Neue, sans-serif",color:"rgba(0,0,0,0.05)",lineHeight:1,marginBottom:"16px"}}>0{i+1}</div>
-                    <div style={{fontSize:"18px",fontFamily:"Playfair Display, serif",marginBottom:"10px"}}>{s.title}</div>
-                    <div style={{fontSize:"13px",color:"rgba(0,0,0,0.48)",lineHeight:"1.7"}}>{s.desc}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        <section style={{padding:isMobile?"56px 20px":"100px 32px",textAlign:"center",borderTop:"1px solid rgba(0,0,0,0.09)"}}>
-          <OlawinLogo size={isMobile?40:48}></OlawinLogo>
-          <h2 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(36px,6vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",margin:"24px 0 12px",lineHeight:0.95}}>{t.cta.tryLuck}</h2>
-          <p style={{fontSize:"15px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>{draws.length} {t.cta.active}</p>
-          <button onClick={function(){ if(draws[0]){ setSelectedDraw(draws[0]); goTo("shop"); } }} className="cta-dark" style={{padding:isMobile?"16px 40px":"18px 60px",fontSize:"12px",width:isMobile?"100%":"auto",maxWidth:"400px"}}>{t.cta.viewDraws}</button>
-        </section>
-      </div>
-    );
-  }
-
-  function ShopPage() {
+  } else if (page === "shop") {
     if (!activeDraw) {
-      return (
+      pageContent = (
         <div style={{padding:"100px 20px",textAlign:"center"}}>
           {t.shop.notFound} <button onClick={function(){ goTo("home"); }} style={{textDecoration:"underline",background:"none",border:"none",cursor:"pointer"}}>{t.shop.returnHome}</button>
         </div>
       );
-    }
-    return (
-      <div>
-        <div style={{position:"relative",height:isMobile?"200px":"300px",overflow:"hidden",background:activeDraw.gradient||"#1A1A1A"}}>
-          {activeDraw.image ? <img src={activeDraw.image} alt={activeDraw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}></img> : null}
-          <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}></div>
-          <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
-            <div style={{background:"rgba(255,255,255,0.18)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"5px 12px",fontSize:"11px",letterSpacing:"2px",color:"#fff"}}>{activeDraw.country} {activeDraw.location ? activeDraw.location.toUpperCase() : ""}</div>
-            <button onClick={function(){ goTo("home"); }} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"20px",padding:"5px 12px",color:"rgba(255,255,255,0.85)",fontSize:"11px",cursor:"pointer"}}>{t.shop.back}</button>
+    } else {
+      pageContent = (
+        <div>
+          <div style={{position:"relative",height:isMobile?"200px":"300px",overflow:"hidden",background:activeDraw.gradient||"#1A1A1A"}}>
+            {activeDraw.image ? <img src={activeDraw.image} alt={activeDraw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}></img> : null}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}></div>
+            <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
+              <div style={{background:"rgba(255,255,255,0.18)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"5px 12px",fontSize:"11px",letterSpacing:"2px",color:"#fff"}}>{activeDraw.country} {activeDraw.location ? activeDraw.location.toUpperCase() : ""}</div>
+              <button onClick={function(){ goTo("home"); }} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"20px",padding:"5px 12px",color:"rgba(255,255,255,0.85)",fontSize:"11px",cursor:"pointer"}}>{t.shop.back}</button>
+            </div>
           </div>
-        </div>
-        <div style={{maxWidth:"1100px",margin:"0 auto",padding:isMobile?"32px 20px 60px":"40px 32px 60px"}}>
-          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 420px",gap:isMobile?"32px":"64px"}}>
-            <div>
-              <h1 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,64px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px"}}>{activeDraw.title ? activeDraw.title.toUpperCase() : ""}</h1>
-              <div style={{fontSize:isMobile?"clamp(18px,5vw,24px)":"clamp(20px,2.5vw,30px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"rgba(0,0,0,0.56)",marginBottom:"24px"}}>{activeDraw.prize ? activeDraw.prize.toUpperCase() : ""}</div>
-              <p style={{fontSize:"14px",color:"rgba(0,0,0,0.52)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
-              <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
-                <ArcProgress pct={pct} label={SOLD_LABEL}></ArcProgress>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets}</div>
-                  <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
-                    <div style={{width:pct+"%",height:"100%",background:"rgba(0,0,0,0.55)",borderRadius:"2px"}}></div>
+          <div style={{maxWidth:"1100px",margin:"0 auto",padding:isMobile?"32px 20px 60px":"40px 32px 60px"}}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 420px",gap:isMobile?"32px":"64px"}}>
+              <div>
+                <h1 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,64px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px"}}>{activeDraw.title ? activeDraw.title.toUpperCase() : ""}</h1>
+                <div style={{fontSize:isMobile?"clamp(18px,5vw,24px)":"clamp(20px,2.5vw,30px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"rgba(0,0,0,0.56)",marginBottom:"24px"}}>{activeDraw.prize ? activeDraw.prize.toUpperCase() : ""}</div>
+                <p style={{fontSize:"14px",color:"rgba(0,0,0,0.52)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
+                <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
+                  <ArcProgress pct={pct} label={SOLD_LABEL}></ArcProgress>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets}</div>
+                    <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
+                      <div style={{width:pct+"%",height:"100%",background:"rgba(0,0,0,0.55)",borderRadius:"2px"}}></div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
-              <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
-                <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
-                <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
-                <div style={{marginBottom:"20px"}}>
-                  <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
-                    {TICKET_OPTS.map(function(n) {
-                      const cls = "qty-btn" + (qty===n && !selectedPack && customQty==="" ? " active" : "");
-                      return <button key={n} onClick={function(){ setQty(n); setCustomQty(""); setSelectedPack(null); }} className={cls} style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px"}}>{n}</button>;
+              <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
+                <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
+                  <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
+                  <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
+                  <div style={{marginBottom:"20px"}}>
+                    <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
+                      {TICKET_OPTS.map(function(n) {
+                        const cls = "qty-btn" + (qty===n && !selectedPack && customQty==="" ? " active" : "");
+                        return <button key={n} onClick={function(){ setQty(n); setCustomQty(""); setSelectedPack(null); }} className={cls} style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px"}}>{n}</button>;
+                      })}
+                    </div>
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"20px"}}>
+                    {PACKS.map(function(pack) {
+                      const packBase = pack.qty * activeDraw.ticketPrice;
+                      const packSave = Math.round(packBase * pack.discount / 100);
+                      const packTotal = packBase - packSave;
+                      const isActive = selectedPack && selectedPack.qty === pack.qty;
+                      return (
+                        <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"1px solid " + (isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"),borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:"pointer",textAlign:"left"}}>
+                          <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
+                          <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
+                        </button>
+                      );
                     })}
                   </div>
-                </div>
-                <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"20px"}}>
-                  {PACKS.map(function(pack) {
-                    const packBase = pack.qty * activeDraw.ticketPrice;
-                    const packSave = Math.round(packBase * pack.discount / 100);
-                    const packTotal = packBase - packSave;
-                    const isActive = selectedPack && selectedPack.qty === pack.qty;
-                    return (
-                      <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"1px solid " + (isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"),borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:"pointer",textAlign:"left"}}>
-                        <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
-                        <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
-                      </button>
-                    );
-                  })}
-                </div>
-                <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"16px",marginBottom:"20px"}}>
-                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                    <span style={{fontSize:"12px",color:"rgba(0,0,0,0.45)"}}>{t.shop.total}</span>
-                    <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}$</span>
+                  <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"16px",marginBottom:"20px"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                      <span style={{fontSize:"12px",color:"rgba(0,0,0,0.45)"}}>{t.shop.total}</span>
+                      <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}$</span>
+                    </div>
                   </div>
+                  <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}$</button>
                 </div>
-                <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}$</button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    );
-  }
-
-  function ConfirmPage() {
-    return (
+      );
+    }
+  } else if (page === "confirm") {
+    pageContent = (
       <div style={{maxWidth:"580px",margin:"0 auto",padding:isMobile?"40px 20px":"60px 32px"}}>
         <button onClick={function(){ goTo("shop"); }} style={{background:"none",border:"none",color:"rgba(0,0,0,0.38)",cursor:"pointer",fontSize:"11px",letterSpacing:"2px",marginBottom:"32px"}}>{t.confirm.back}</button>
         <h2 style={{fontSize:isMobile?"32px":"40px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"28px"}}>{t.confirm.title}</h2>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"16px"}}>
           <div>
             <label style={LBL}>{t.confirm.firstName}</label>
-            <input type="text" value={form.firstName} onChange={function(e){ setForm(Object.assign({}, form, {firstName: e.target.value})); }} style={INP}></input>
+            <input type="text" value={form.firstName} onChange={function(e){ updateForm("firstName", e.target.value); }} style={INP}></input>
           </div>
           <div>
             <label style={LBL}>{t.confirm.lastName}</label>
-            <input type="text" value={form.lastName} onChange={function(e){ setForm(Object.assign({}, form, {lastName: e.target.value})); }} style={INP}></input>
+            <input type="text" value={form.lastName} onChange={function(e){ updateForm("lastName", e.target.value); }} style={INP}></input>
           </div>
         </div>
         <div style={{marginBottom:"12px"}}>
           <label style={LBL}>{t.confirm.email}</label>
-          <input type="email" value={form.email} onChange={function(e){ setForm(Object.assign({}, form, {email: e.target.value})); }} style={INP}></input>
+          <input type="email" value={form.email} onChange={function(e){ updateForm("email", e.target.value); }} style={INP}></input>
         </div>
         <div style={{marginBottom:"16px"}}>
           <label style={LBL}>{t.confirm.phone}</label>
           <div style={{display:"flex",gap:"8px"}}>
-            <select value={form.phoneCode} onChange={function(e){ setForm(Object.assign({}, form, {phoneCode: e.target.value})); }} style={Object.assign({}, INP, {width: isMobile?"105px":"130px", flexShrink: 0})}>
+            <select value={form.phoneCode} onChange={function(e){ updateForm("phoneCode", e.target.value); }} style={Object.assign({}, INP, {width: isMobile?"105px":"130px", flexShrink: 0})}>
               {COUNTRY_CODES.map(function(c) {
                 return <option key={c.code+c.name} value={c.code}>{c.code}</option>;
               })}
             </select>
-            <input type="tel" value={form.phone} onChange={function(e){ setForm(Object.assign({}, form, {phone: e.target.value})); }} style={Object.assign({}, INP, {flex: 1})}></input>
+            <input type="tel" value={form.phone} onChange={function(e){ updateForm("phone", e.target.value); }} style={Object.assign({}, INP, {flex: 1})}></input>
           </div>
         </div>
         <div style={{marginBottom:"12px"}}>
           <label style={LBL}>{t.confirm.street}</label>
-          <input type="text" value={form.address} onChange={function(e){ setForm(Object.assign({}, form, {address: e.target.value})); }} style={INP}></input>
+          <input type="text" value={form.address} onChange={function(e){ updateForm("address", e.target.value); }} style={INP}></input>
         </div>
         <div style={{display:"grid",gridTemplateColumns:"110px 1fr",gap:"10px",marginBottom:"12px"}}>
           <div>
             <label style={LBL}>{t.confirm.zip}</label>
-            <input type="text" value={form.zip} onChange={function(e){ setForm(Object.assign({}, form, {zip: e.target.value})); }} style={INP}></input>
+            <input type="text" value={form.zip} onChange={function(e){ updateForm("zip", e.target.value); }} style={INP}></input>
           </div>
           <div>
             <label style={LBL}>{t.confirm.city}</label>
-            <input type="text" value={form.city} onChange={function(e){ setForm(Object.assign({}, form, {city: e.target.value})); }} style={INP}></input>
+            <input type="text" value={form.city} onChange={function(e){ updateForm("city", e.target.value); }} style={INP}></input>
           </div>
         </div>
         <div style={{marginBottom:"20px"}}>
           <label style={LBL}>{t.confirm.country}</label>
-          <select value={form.country} onChange={function(e){ setForm(Object.assign({}, form, {country: e.target.value})); }} style={INP}>
+          <select value={form.country} onChange={function(e){ updateForm("country", e.target.value); }} style={INP}>
             <option value="">{t.confirm.countryPlaceholder}</option>
             {COUNTRIES.map(function(c) { return <option key={c} value={c}>{c}</option>; })}
           </select>
@@ -667,10 +666,8 @@ export default function Olawin() {
         </button>
       </div>
     );
-  }
-
-  function SuccessPage() {
-    return (
+  } else if (page === "success") {
+    pageContent = (
       <div style={{minHeight:"80vh",display:"flex",alignItems:"center",justifyContent:"center",padding:"60px 24px"}}>
         <div style={{maxWidth:"500px",width:"100%",textAlign:"center"}}>
           <OlawinLogo size={56}></OlawinLogo>
@@ -687,10 +684,8 @@ export default function Olawin() {
         </div>
       </div>
     );
-  }
-
-  function MyTicketsPage() {
-    return (
+  } else if (page === "mytickets") {
+    pageContent = (
       <div style={{maxWidth:"720px",margin:"0 auto",padding:isMobile?"48px 20px 60px":"80px 32px 80px"}}>
         <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",marginBottom:"16px"}}>{t.myTickets.title}</h1>
         {!foundOrders ? (
@@ -755,10 +750,8 @@ export default function Olawin() {
         )}
       </div>
     );
-  }
-
-  function FaqPage() {
-    return (
+  } else if (page === "faq") {
+    pageContent = (
       <div style={{maxWidth:"700px",margin:"0 auto",padding:isMobile?"48px 20px":"80px 32px"}}>
         <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.faq.title}</h1>
         {t.faq.items.map(function(item, i) {
@@ -774,10 +767,8 @@ export default function Olawin() {
         })}
       </div>
     );
-  }
-
-  function LegalPage() {
-    return (
+  } else if (page === "legal") {
+    pageContent = (
       <div style={{maxWidth:"700px",margin:"0 auto",padding:isMobile?"48px 20px":"80px 32px"}}>
         <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.legal.title}</h1>
         <p style={{fontSize:"13px",color:"rgba(0,0,0,0.45)",lineHeight:"1.8"}}>{t.legal.body}</p>
@@ -785,8 +776,11 @@ export default function Olawin() {
     );
   }
 
-  function Footer() {
-    return (
+  return (
+    <div ref={topRef} style={{background:C_BG,minHeight:"100vh",color:"#1A1A1A"}}>
+      <style>{CSS}</style>
+      {navContent}
+      {pageContent}
       <footer style={{borderTop:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 20px":"48px",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:"20px",textAlign:isMobile?"center":"left"}}>
         <div>
           <OlawinLogo size={26}></OlawinLogo>
@@ -799,21 +793,6 @@ export default function Olawin() {
           <a href="mailto:contact@olawin.org" style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",textDecoration:"none",textTransform:"uppercase"}}>{t.footer.contact}</a>
         </div>
       </footer>
-    );
-  }
-
-  return (
-    <div ref={topRef} style={{background:C_BG,minHeight:"100vh",color:"#1A1A1A"}}>
-      <style>{CSS}</style>
-      <Nav></Nav>
-      {page==="home" ? <HomePage></HomePage> : null}
-      {page==="shop" ? <ShopPage></ShopPage> : null}
-      {page==="confirm" ? <ConfirmPage></ConfirmPage> : null}
-      {page==="success" ? <SuccessPage></SuccessPage> : null}
-      {page==="mytickets" ? <MyTicketsPage></MyTicketsPage> : null}
-      {page==="faq" ? <FaqPage></FaqPage> : null}
-      {page==="legal" ? <LegalPage></LegalPage> : null}
-      <Footer></Footer>
     </div>
   );
 }
