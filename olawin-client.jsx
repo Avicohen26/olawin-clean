@@ -634,10 +634,8 @@ export default function Olawin() {
               <div style={{fontSize:isMobile?"clamp(18px,5vw,24px)":"clamp(20px,2.5vw,30px)",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",color:"rgba(0,0,0,0.56)",marginBottom:"24px"}}>{activeDraw.prize?.toUpperCase()}</div>
               <p style={{fontSize:"14px",color:"rgba(0,0,0,0.52)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
               <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
-                <ArcProgress pct={pct} label={SOLD_LABEL}/>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets}</div>
-                  <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
+                <ArcProgress pct={pct} label={SOLD_LABEL}/
+                   <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"2px"}}>
                     <div style={{width:`${pct}%`,height:"100%",background:"rgba(0,0,0,0.55)",borderRadius:"2px"}}/>
                   </div>
                 </div>
