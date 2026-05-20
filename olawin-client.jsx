@@ -1,6 +1,6 @@
 // ════════════════════════════════════════════════════════════
 //  olawin-client.jsx  —  Site client avec Firebase temps réel
-//  Version responsive mobile
+//  Version responsive mobile + logo Private Honors
 // ════════════════════════════════════════════════════════════
 
 import { useState, useEffect, useRef } from "react";
@@ -28,6 +28,7 @@ const FAQ_ITEMS = [
 ];
 
 const C_BG = "#D8D4CE";
+const PARTNER_LOGO = "https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/private-honors-logo.png";
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -233,9 +234,20 @@ export default function Olawin() {
 
   const Nav = () => (
     <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(216,212,206,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",height:"64px",padding:isMobile?"0 20px":"0 48px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-      <button onClick={()=>goTo("home")} style={{background:"none",border:"none",cursor:"pointer"}}>
-        <OlawinLogo size={isMobile?28:34}/>
-      </button>
+      <div style={{display:"flex",alignItems:"center",gap:isMobile?"12px":"20px"}}>
+        <button onClick={()=>goTo("home")} style={{background:"none",border:"none",cursor:"pointer"}}>
+          <OlawinLogo size={isMobile?28:34}/>
+        </button>
+        {!isMobile && (
+          <>
+            <div style={{width:"1px",height:"28px",background:"rgba(0,0,0,0.15)"}}/>
+            <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+              <span style={{fontSize:"8px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",fontFamily:"'DM Sans',sans-serif",lineHeight:"1.3",textAlign:"right"}}>EN PARTENARIAT<br/>AVEC</span>
+              <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"24px",width:"auto",objectFit:"contain"}}/>
+            </div>
+          </>
+        )}
+      </div>
       {!isMobile ? (
         <div style={{display:"flex",alignItems:"center",gap:"32px"}}>
           <button className="nav-link" onClick={()=>goTo("home")}>Tirages</button>
@@ -255,6 +267,10 @@ export default function Olawin() {
           <button className="nav-link" onClick={()=>goTo("home")} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>Tirages</button>
           <button className="nav-link" onClick={()=>goTo("faq")} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>FAQ</button>
           <button className="nav-link" onClick={()=>goTo("legal")} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>Légal</button>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
+            <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>PARTENAIRE</span>
+            <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}/>
+          </div>
           <button onClick={()=>{ if(draws[0]){setSelectedDraw(draws[0]);goTo("shop");} }} className="cta-dark" style={{padding:"14px",fontSize:"12px",borderRadius:"10px",width:"100%"}}>ACHETER</button>
         </div>
       )}
