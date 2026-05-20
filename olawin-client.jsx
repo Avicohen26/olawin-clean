@@ -242,7 +242,7 @@ export default function Olawin() {
           <>
             <div style={{width:"1px",height:"28px",background:"rgba(0,0,0,0.15)"}}/>
             <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-              <span style={{fontSize:"8px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",fontFamily:"'DM Sans',sans-serif",lineHeight:"1.3",textAlign:"right"}}>EN PARTENARIAT<br/>AVEC</span>
+              <span style={{fontSize:"8px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",fontFamily:"'DM Sans',sans-serif",lineHeight:"1.3",textAlign:"right"}}>AVEC NOTRE<br/>PARTENAIRE</span>
               <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"24px",width:"auto",objectFit:"contain"}}/>
             </div>
           </>
