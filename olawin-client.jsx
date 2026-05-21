@@ -338,6 +338,7 @@ export default function Olawin() {
   const [heroConfig, setHeroConfig] = useState(null);
   const [socialConfig, setSocialConfig] = useState(null);
   const [contentConfig, setContentConfig] = useState(null);
+  const [legalConfig, setLegalConfig] = useState(null);
   const [selectedDraw, setSelectedDraw] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
   const [qty, setQty] = useState(1);
