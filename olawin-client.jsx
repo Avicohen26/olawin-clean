@@ -587,7 +587,6 @@ export default function Olawin() {
           <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)"}}>{t.empty.sub}</p>
         </div>
       );
-      );
     } else {
       const heroEndDate = heroData && heroData.drawDate ? heroData.drawDate : (heroData && heroData.endDate ? heroData.endDate : null);
       pageContent = (
