@@ -78,8 +78,8 @@ const T = {
   es: {
     nav: { draws:"Sorteos", faq:"FAQ", legal:"Legal", buy:"COMPRAR", myTickets:"MIS BOLETOS" },
     hero: { live:"SORTEO EL", buyTicket:"COMPRAR UN BOLETO", remaining:"boletos restantes de" },
-    section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO", upcoming:"PROXIMOS", past:"PASADOS" },
-    countdown: { d:"d", h:"h", m:"m", s:"s", closed:"VENTAS CERRADAS", drawing:"SORTEO PROXIMO" },
+    section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO", upcoming:"PROXIMOS", past:"SORTEOS PASADOS" },
+    countdown: { d:"d", h:"h", m:"m", s:"s", closed:"VENTAS CERRADAS", drawing:"SORTEO INMINENTE" },
     stats: { active:"SORTEOS ACTIVOS", value:"VALOR TOTAL", remaining:"BOLETOS DISPONIBLES", countries:"PAISES ELEGIBLES" },
     cta: { tryLuck:"PRUEBA TU SUERTE", viewDraws:"VER SORTEOS", active:"sorteo(s) activo(s)" },
     empty: { title:"NINGUN SORTEO EN CURSO", sub:"Vuelve pronto, nuevos sorteos cada semana!" },
@@ -151,63 +151,29 @@ function useIsMobile() {
   return isMobile;
 }
 
-function getTimeLeft(endDate) {
-  if (!endDate) return null;
-  const target = new Date(endDate).getTime();
-  const now = Date.now();
-  const diff = target - now;
-  if (diff <= 0) return { d:0, h:0, m:0, s:0, expired: true };
-  const d = Math.floor(diff / (1000*60*60*24));
-  const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
-  const m = Math.floor((diff % (1000*60*60)) / (1000*60));
-  const s = Math.floor((diff % (1000*60)) / 1000);
-  return { d:d, h:h, m:m, s:s, expired: false };
-}
-
 function useCountdown(endDate) {
-  const [time, setTime] = useState(function() { return getTimeLeft(endDate); });
+  const [tl, setTl] = useState({ days:0, hours:0, minutes:0, seconds:0, total:0 });
   useEffect(function() {
     if (!endDate) return;
-    const interval = setInterval(function() { setTime(getTimeLeft(endDate)); }, 1000);
-    return function() { clearInterval(interval); };
+    const target = new Date(endDate).getTime();
+    const tick = function() {
+      const now = Date.now();
+      const diff = target - now;
+      if (diff <= 0) {
+        setTl({ days:0, hours:0, minutes:0, seconds:0, total:0 });
+        return;
+      }
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+      const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const seconds = Math.floor((diff % (1000*60)) / 1000);
+      setTl({ days, hours, minutes, seconds, total: diff });
+    };
+    tick();
+    const itv = setInterval(tick, 1000);
+    return function() { clearInterval(itv); };
   }, [endDate]);
-  return time;
-}
-
-function CountdownCard(props) {
-  const endDate = props.endDate;
-  const lang = props.lang;
-  const compact = props.compact;
-  const time = useCountdown(endDate);
-  const labels = T[lang].countdown;
-  if (!endDate) return null;
-  if (time && time.expired) {
-    return <div style={{display:"inline-block",background:"rgba(180,30,30,0.85)",color:"#fff",borderRadius:"8px",padding:compact?"4px 10px":"6px 14px",fontSize:compact?"10px":"12px",fontWeight:"700",letterSpacing:"1.5px",textShadow:TEXT_SHADOW_STRONG}}>{labels.closed}</div>;
-  }
-  if (!time) return null;
-  const fmt = function(n) { return String(n).padStart(2,"0"); };
-  if (compact) {
-    return (
-      <div style={{display:"inline-flex",gap:"4px",alignItems:"baseline",fontFamily:"DM Sans, sans-serif",fontWeight:"800",color:"#ffffff",fontSize:"13px",letterSpacing:"0.5px",textShadow:TEXT_SHADOW_STRONG}}>
-        <span>{time.d}{labels.d}</span><span style={{opacity:0.6}}>:</span>
-        <span>{fmt(time.h)}{labels.h}</span><span style={{opacity:0.6}}>:</span>
-        <span>{fmt(time.m)}{labels.m}</span><span style={{opacity:0.6}}>:</span>
-        <span>{fmt(time.s)}{labels.s}</span>
-      </div>
-    );
-  }
-  return (
-    <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
-      {[{v:time.d,l:labels.d},{v:fmt(time.h),l:labels.h},{v:fmt(time.m),l:labels.m},{v:fmt(time.s),l:labels.s}].map(function(b,i) {
-        return (
-          <div key={i} style={{background:"rgba(0,0,0,0.06)",border:"1px solid rgba(0,0,0,0.12)",borderRadius:"10px",padding:"10px 14px",minWidth:"56px",textAlign:"center"}}>
-            <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1px",color:"#1A1A1A",fontWeight:"700",lineHeight:1}}>{b.v}</div>
-            <div style={{fontSize:"9px",color:"rgba(0,0,0,0.45)",marginTop:"3px",letterSpacing:"1.5px",fontWeight:"600"}}>{b.l.toUpperCase()}</div>
-          </div>
-        );
-      })}
-    </div>
-  );
+  return tl;
 }
 
 function OlawinLogo(props) {
@@ -243,37 +209,54 @@ function ArcProgress(props) {
   );
 }
 
+function Countdown(props) {
+  const tl = useCountdown(props.endDate);
+  const t = props.t;
+  const compact = props.compact;
+  if (tl.total <= 0) return <span style={{fontSize:compact?"11px":"13px",letterSpacing:"1.5px",color:"#ff4444",fontWeight:"700"}}>{t.countdown.closed}</span>;
+  const isUrgent = tl.total < 24*60*60*1000;
+  const c = isUrgent ? "#ff4444" : "#ffffff";
+  const pad = function(n) { return String(n).padStart(2,"0"); };
+  return (
+    <div style={{display:"inline-flex",alignItems:"center",gap:compact?"4px":"8px",fontFamily:"Bebas Neue, sans-serif",fontWeight:"700"}}>
+      <span style={{fontSize:compact?"14px":"18px",color:c,letterSpacing:"1px"}}>{tl.days}{t.countdown.d}</span>
+      <span style={{opacity:0.5,color:c}}>:</span>
+      <span style={{fontSize:compact?"14px":"18px",color:c,letterSpacing:"1px"}}>{pad(tl.hours)}{t.countdown.h}</span>
+      <span style={{opacity:0.5,color:c}}>:</span>
+      <span style={{fontSize:compact?"14px":"18px",color:c,letterSpacing:"1px"}}>{pad(tl.minutes)}{t.countdown.m}</span>
+      <span style={{opacity:0.5,color:c}}>:</span>
+      <span style={{fontSize:compact?"14px":"18px",color:c,letterSpacing:"1px"}}>{pad(tl.seconds)}{t.countdown.s}</span>
+    </div>
+  );
+}
+
 function DrawCard(props) {
   const draw = props.draw;
+  const t = props.t;
   const onClick = props.onClick;
-  const lang = props.lang;
-  const isPast = props.isPast;
+  const isFinished = props.finished;
   const [hovered, setHovered] = useState(false);
   const pct = Math.round((draw.soldTickets / draw.totalTickets) * 100);
-  const t = T[lang];
   return (
-    <div onMouseEnter={function(){setHovered(true);}} onMouseLeave={function(){setHovered(false);}} onClick={onClick} style={{position:"relative",borderRadius:"18px",overflow:"hidden",cursor:"pointer",height:"360px",border:"1px solid "+(hovered?"rgba(0,0,0,0.2)":"rgba(0,0,0,0.08)"),transition:"all 0.3s",boxShadow:hovered?"0 20px 48px rgba(0,0,0,0.18)":"0 4px 16px rgba(0,0,0,0.06)",transform:hovered?"translateY(-4px)":"none",opacity:isPast?0.7:1}}>
+    <div onMouseEnter={function(){setHovered(true);}} onMouseLeave={function(){setHovered(false);}} onClick={onClick} style={{position:"relative",borderRadius:"18px",overflow:"hidden",cursor:isFinished?"default":"pointer",height:"360px",border:"1px solid "+(hovered&&!isFinished?"rgba(0,0,0,0.2)":"rgba(0,0,0,0.08)"),transition:"all 0.3s",boxShadow:hovered&&!isFinished?"0 20px 48px rgba(0,0,0,0.18)":"0 4px 16px rgba(0,0,0,0.06)",transform:hovered&&!isFinished?"translateY(-4px)":"none",opacity:isFinished?0.65:1,filter:isFinished?"grayscale(0.4)":"none"}}>
       <div style={{position:"absolute",inset:0,background:draw.gradient||"#333"}}></div>
       <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:"80px",opacity:0.12,zIndex:1}}>{draw.emoji}</div>
-      {draw.image ? <img src={draw.image} alt={draw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:draw.heroPosition||"center",filter:isPast?"grayscale(60%)":"none"}}></img> : null}
+      {draw.image ? <img src={draw.image} alt={draw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:draw.heroPosition||"center"}}></img> : null}
       <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)",zIndex:2}}></div>
       <div style={{position:"absolute",inset:0,padding:"24px",display:"flex",flexDirection:"column",justifyContent:"space-between",zIndex:3}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"6px"}}>
-          <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
-            <div style={{background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"5px 14px",fontSize:"12px",letterSpacing:"1.5px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG,alignSelf:"flex-start"}}>{draw.country} {draw.location ? draw.location.toUpperCase() : ""}</div>
-            {isPast ? <div style={{background:"rgba(180,30,30,0.85)",color:"#fff",borderRadius:"20px",padding:"5px 14px",fontSize:"11px",fontWeight:"800",letterSpacing:"2px",alignSelf:"flex-start"}}>{t.finished}</div> : null}
-          </div>
-          <div style={{background:"#ffffff",border:"1px solid rgba(255,255,255,0.95)",borderRadius:"20px",padding:"5px 14px",fontSize:"15px",color:"#1A1A1A",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1.5px"}}>{draw.ticketPrice}$ / TICKET</div>
+          <div style={{background:isFinished?"rgba(120,120,120,0.85)":"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"5px 14px",fontSize:"12px",letterSpacing:"1.5px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{isFinished ? t.finished : (draw.country + " " + (draw.location ? draw.location.toUpperCase() : ""))}</div>
+          {!isFinished ? <div style={{background:"#ffffff",border:"1px solid rgba(255,255,255,0.95)",borderRadius:"20px",padding:"5px 14px",fontSize:"15px",color:"#1A1A1A",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1.5px"}}>{draw.ticketPrice}$ / TICKET</div> : null}
         </div>
         <div>
           <div style={{fontSize:"13px",letterSpacing:"1px",color:"#ffffff",marginBottom:"8px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{draw.title ? draw.title.toUpperCase() : ""}</div>
-          <div style={{fontSize:"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#ffffff",lineHeight:0.95,marginBottom:"14px",fontWeight:"900",textShadow:TEXT_SHADOW_STRONG}}>{draw.prize ? draw.prize.toUpperCase() : ""}</div>
-          {!isPast && draw.endDate ? (
-            <div style={{marginBottom:"12px"}}>
-              <CountdownCard endDate={draw.endDate} lang={lang} compact={true}></CountdownCard>
+          <div style={{fontSize:"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#ffffff",lineHeight:0.95,marginBottom:"18px",fontWeight:"900",textShadow:TEXT_SHADOW_STRONG}}>{draw.prize ? draw.prize.toUpperCase() : ""}</div>
+          {!isFinished && draw.drawDate ? (
+            <div style={{marginBottom:"12px",padding:"8px 12px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",borderRadius:"8px",border:"1px solid rgba(255,255,255,0.2)",textAlign:"center"}}>
+              <Countdown endDate={draw.drawDate} t={t} compact={true}></Countdown>
             </div>
           ) : null}
-          <div>
+          <div style={{marginBottom:"4px"}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:"7px",alignItems:"baseline"}}>
               <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.soldTickets}/{draw.totalTickets}</span>
               <span style={{fontSize:"13px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{pct}%</span>
@@ -303,6 +286,36 @@ function LangSwitcher(props) {
     </div>
   );
 }
+
+function WhatsAppButton(props) {
+  const phone = props.phone;
+  const message = props.message;
+  if (!phone) return null;
+  const cleanPhone = phone.replace(/[^0-9]/g, "");
+  const encodedMsg = encodeURIComponent(message || "Bonjour, j'ai une question sur Olawin");
+  const url = "https://wa.me/" + cleanPhone + "?text=" + encodedMsg;
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" style={{position:"fixed",bottom:"24px",right:"24px",zIndex:1000,width:"60px",height:"60px",borderRadius:"50%",background:"#25D366",boxShadow:"0 8px 24px rgba(37,211,102,0.4), 0 4px 12px rgba(0,0,0,0.15)",display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none",animation:"wapulse 2s infinite",transition:"transform 0.2s"}} onMouseEnter={function(e){e.currentTarget.style.transform="scale(1.08)";}} onMouseLeave={function(e){e.currentTarget.style.transform="scale(1)";}}>
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M16 0C7.163 0 0 7.163 0 16c0 2.825 0.738 5.476 2.029 7.776L0 32l8.428-2.014A15.93 15.93 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0z" fill="#fff" opacity="0.001"></path>
+        <path d="M16.001 5.333c-5.881 0-10.667 4.785-10.667 10.667 0 1.882 0.494 3.727 1.431 5.345l-1.518 5.547 5.682-1.491c1.554 0.846 3.296 1.292 5.072 1.292 5.881 0 10.667-4.785 10.667-10.667S21.882 5.333 16.001 5.333zM16.001 24.482c-1.602 0-3.173-0.43-4.544-1.244l-0.326-0.194-3.376 0.886 0.901-3.291-0.213-0.339a8.79 8.79 0 01-1.345-4.7c0-4.866 3.96-8.825 8.825-8.825 4.866 0 8.825 3.96 8.825 8.825-0.001 4.866-3.961 8.825-8.826 8.825zm4.842-6.605c-0.265-0.133-1.57-0.776-1.814-0.865-0.244-0.089-0.421-0.133-0.598 0.133-0.177 0.265-0.687 0.865-0.842 1.042-0.155 0.177-0.31 0.199-0.576 0.066-0.265-0.133-1.12-0.413-2.134-1.317-0.789-0.704-1.322-1.572-1.478-1.837-0.155-0.265-0.017-0.408 0.117-0.541 0.12-0.119 0.265-0.31 0.398-0.465 0.133-0.155 0.177-0.265 0.265-0.443 0.089-0.177 0.044-0.332-0.022-0.465-0.066-0.133-0.598-1.443-0.82-1.974-0.216-0.518-0.435-0.448-0.598-0.456-0.155-0.008-0.332-0.01-0.51-0.01s-0.465 0.066-0.708 0.332c-0.244 0.265-0.93 0.909-0.93 2.219 0 1.31 0.952 2.574 1.085 2.751 0.133 0.177 1.873 2.86 4.538 4.011 0.634 0.274 1.129 0.437 1.515 0.559 0.636 0.202 1.215 0.174 1.673 0.105 0.51-0.076 1.57-0.642 1.792-1.262 0.221-0.62 0.221-1.151 0.155-1.262-0.066-0.111-0.244-0.177-0.51-0.31z" fill="#fff"></path>
+      </svg>
+    </a>
+  );
+}
+
+function InstagramIcon(props) {
+  const size = props.size || 18;
+  const color = props.color || "rgba(0,0,0,0.45)";
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+  );
+}
+
 export default function Olawin() {
   const isMobile = useIsMobile();
   const [lang, setLang] = useState(function() {
@@ -321,9 +334,10 @@ export default function Olawin() {
 
   const [page, setPage] = useState("home");
   const [draws, setDraws] = useState([]);
-  const [pastDraws, setPastDraws] = useState([]);
-  const [heroConfig, setHeroConfig] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [heroConfig, setHeroConfig] = useState(null);
+  const [socialConfig, setSocialConfig] = useState(null);
+  const [contentConfig, setContentConfig] = useState(null);
   const [selectedDraw, setSelectedDraw] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
   const [qty, setQty] = useState(1);
@@ -344,41 +358,46 @@ export default function Olawin() {
   useEffect(function() {
     const q = query(collection(db,"draws"), orderBy("createdAt","desc"));
     const unsub = onSnapshot(q, function(snap) {
-      const all = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
-      const activeAll = all.filter(function(d) { return d.status === "active" || d.status === "drawn"; });
-      const now = Date.now();
-      const upcoming = [];
-      const past = [];
-      activeAll.forEach(function(d) {
-        const drawTime = d.drawDate ? new Date(d.drawDate).getTime() : 0;
-        if (d.status === "drawn" || (drawTime && drawTime < now)) {
-          past.push(d);
-        } else {
-          upcoming.push(d);
-        }
-      });
-      upcoming.sort(function(a, b) {
-        const aDate = a.drawDate ? new Date(a.drawDate).getTime() : 0;
-        const bDate = b.drawDate ? new Date(b.drawDate).getTime() : 0;
-        if (!aDate && !bDate) return 0;
-        if (!aDate) return 1;
-        if (!bDate) return -1;
-        return bDate - aDate;
-      });
-      past.sort(function(a, b) {
-        const aDate = a.drawDate ? new Date(a.drawDate).getTime() : 0;
-        const bDate = b.drawDate ? new Date(b.drawDate).getTime() : 0;
-        return bDate - aDate;
-      });
-      setDraws(upcoming);
-      setPastDraws(past);
+      const data = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
+      setDraws(data);
       setLoading(false);
     }, function(err) { console.error("Firebase error:", err); setLoading(false); });
-    getDoc(doc(db, "settings", "hero")).then(function(snap) {
-      if (snap.exists()) setHeroConfig(snap.data());
-    }).catch(function(e){ console.error("Hero config error:", e); });
     return function() { unsub(); };
   }, []);
+
+  useEffect(function() {
+    getDoc(doc(db,"settings","hero")).then(function(snap) {
+      if (snap.exists()) setHeroConfig(snap.data());
+    }).catch(function(err) { console.error("Hero load error:", err); });
+    getDoc(doc(db,"settings","social")).then(function(snap) {
+      if (snap.exists()) setSocialConfig(snap.data());
+    }).catch(function(err) { console.error("Social load error:", err); });
+    getDoc(doc(db,"settings","content")).then(function(snap) {
+      if (snap.exists()) setContentConfig(snap.data());
+    }).catch(function(err) { console.error("Content load error:", err); });
+  }, []);
+
+  const now = Date.now();
+  const isDrawnOrPast = function(d) {
+    if (d.status === "drawn") return true;
+    if (d.drawDate) {
+      const dt = new Date(d.drawDate).getTime();
+      if (!isNaN(dt) && dt < now) return true;
+    }
+    return false;
+  };
+  const activeDraws = draws.filter(function(d) { return d.status === "active" && !isDrawnOrPast(d); });
+  const pastDraws = draws.filter(function(d) { return isDrawnOrPast(d); });
+  activeDraws.sort(function(a, b) {
+    const ta = a.drawDate ? new Date(a.drawDate).getTime() : 0;
+    const tb = b.drawDate ? new Date(b.drawDate).getTime() : 0;
+    return tb - ta;
+  });
+  pastDraws.sort(function(a, b) {
+    const ta = a.drawDate ? new Date(a.drawDate).getTime() : 0;
+    const tb = b.drawDate ? new Date(b.drawDate).getTime() : 0;
+    return tb - ta;
+  });
 
   const activeDraw = selectedDraw;
   const remaining = activeDraw ? activeDraw.totalTickets - activeDraw.soldTickets : 0;
@@ -389,18 +408,8 @@ export default function Olawin() {
   const total = baseTotal - savings;
   const pct = activeDraw ? Math.round((activeDraw.soldTickets / activeDraw.totalTickets) * 100) : 0;
   const formValid = form.firstName && form.lastName && form.email && form.phone && form.address && form.city && form.country;
-  const featuredFromDraws = draws[0] || null;
-  const useHero = heroConfig && heroConfig.enabled && heroConfig.image;
-  const featured = useHero ? Object.assign({}, featuredFromDraws||{}, {
-    image: heroConfig.image,
-    title: heroConfig.title || (featuredFromDraws && featuredFromDraws.title) || "",
-    location: heroConfig.location || (featuredFromDraws && featuredFromDraws.location) || "",
-    country: heroConfig.country || (featuredFromDraws && featuredFromDraws.country) || "",
-    description: heroConfig.description || (featuredFromDraws && featuredFromDraws.description) || "",
-    subtitle: heroConfig.subtitle || "",
-    gradient: (featuredFromDraws && featuredFromDraws.gradient) || "#1A1A1A"
-  }) : featuredFromDraws;
-
+  const featured = activeDraws[0] || null;
+  const heroData = heroConfig && heroConfig.enabled ? heroConfig : featured;
   const localeMap = { en:"en-US", fr:"fr-FR", es:"es-ES" };
   const fmtDate = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"short"}) : ""; };
   const fmtDateLong = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"long",year:"numeric"}) : ""; };
@@ -478,8 +487,13 @@ export default function Olawin() {
           matches.push(Object.assign({ id: docId }, data));
         }
       });
-      if (matches.length === 0) { setSearchError(true); setFoundOrders(null); }
-      else { setFoundOrders(matches); setSearchError(false); }
+      if (matches.length === 0) {
+        setSearchError(true);
+        setFoundOrders(null);
+      } else {
+        setFoundOrders(matches);
+        setSearchError(false);
+      }
       setSearching(false);
     } catch (err) {
       console.error("Search error:", err);
@@ -489,14 +503,22 @@ export default function Olawin() {
   };
 
   const resetSearch = function() {
-    setSearchEmail(""); setSearchOrder(""); setFoundOrders(null); setSearchError(false);
+    setSearchEmail("");
+    setSearchOrder("");
+    setFoundOrders(null);
+    setSearchError(false);
   };
 
-  const CSS = "@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:" + C_BG + ";color:#1A1A1A;overflow-x:hidden;}input:focus,textarea:focus,select:focus{outline:none;}::-webkit-scrollbar{width:3px;background:" + C_BG + ";}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}@keyframes spin{to{transform:rotate(360deg);}}.nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}.nav-link:hover{color:#000;}.qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}.qty-btn.active{border-color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.08);color:#000;}.cta-dark{background:#1A1A1A;color:#E8E4DC;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2.5px;}.cta-dark:disabled{background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.25);cursor:not-allowed;}";
+  const CSS = "@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}body{background:" + C_BG + ";color:#1A1A1A;overflow-x:hidden;}input:focus,textarea:focus,select:focus{outline:none;}::-webkit-scrollbar{width:3px;background:" + C_BG + ";}::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:4px;}@keyframes pulse{0%,100%{opacity:.3;}50%{opacity:1;}}@keyframes spin{to{transform:rotate(360deg);}}@keyframes wapulse{0%,100%{box-shadow:0 8px 24px rgba(37,211,102,0.4), 0 4px 12px rgba(0,0,0,0.15);}50%{box-shadow:0 8px 24px rgba(37,211,102,0.7), 0 0 0 8px rgba(37,211,102,0.2);}}.nav-link{color:rgba(0,0,0,0.42);font-size:11px;letter-spacing:2px;font-family:'DM Sans',sans-serif;cursor:pointer;background:none;border:none;padding:0;text-transform:uppercase;}.nav-link:hover{color:#000;}.qty-btn{transition:all 0.18s;border:1px solid rgba(0,0,0,0.1);background:rgba(0,0,0,0.03);color:rgba(0,0,0,0.45);border-radius:10px;cursor:pointer;font-family:'Playfair Display',serif;}.qty-btn.active{border-color:rgba(0,0,0,0.55);background:rgba(0,0,0,0.08);color:#000;}.cta-dark{background:#1A1A1A;color:#E8E4DC;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;letter-spacing:2.5px;}.cta-dark:disabled{background:rgba(0,0,0,0.1);color:rgba(0,0,0,0.25);cursor:not-allowed;}";
 
   const SOLD_LABEL = { en:"SOLD", fr:"VENDUS", es:"VENDIDOS" }[lang];
 
   const updateForm = function(field, value) { setForm(Object.assign({}, form, { [field]: value })); };
+
+  const steps = (contentConfig && contentConfig.steps && contentConfig.steps[lang] && contentConfig.steps[lang].length > 0) ? contentConfig.steps[lang] : t.steps;
+  const faqItems = (contentConfig && contentConfig.faq && contentConfig.faq[lang] && contentConfig.faq[lang].length > 0) ? contentConfig.faq[lang] : t.faq.items;
+  const footerCopyright = (contentConfig && contentConfig.footer && contentConfig.footer.copyright) ? contentConfig.footer.copyright : t.footer.copyright;
+  const footerContactEmail = (contentConfig && contentConfig.footer && contentConfig.footer.contactEmail) ? contentConfig.footer.contactEmail : "contact@olawin.org";
 
   const navContent = (
     <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(216,212,206,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",height:"64px",padding:isMobile?"0 16px":"0 48px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -558,82 +580,76 @@ export default function Olawin() {
           <p style={{fontSize:"12px",letterSpacing:"3px",color:"rgba(0,0,0,0.35)"}}>{t.loading}</p>
         </div>
       );
-    } else if (draws.length === 0 && pastDraws.length === 0) {
+    } else if (activeDraws.length === 0 && pastDraws.length === 0) {
       pageContent = (
         <div style={{minHeight:"60vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"16px",textAlign:"center",padding:"48px 20px"}}>
           <h2 style={{fontSize:"clamp(22px,5vw,28px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.empty.title}</h2>
           <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)"}}>{t.empty.sub}</p>
         </div>
       );
+      );
     } else {
+      const heroEndDate = heroData && heroData.drawDate ? heroData.drawDate : (heroData && heroData.endDate ? heroData.endDate : null);
       pageContent = (
         <div>
-          {featured ? (
-            <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
-              <div style={{position:"absolute",inset:0,background:(featured && featured.gradient) || "#1A1A1A"}}></div>
-              {featured && featured.image ? <img src={featured.image} alt={featured.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:featured.heroPosition||"center"}}></img> : null}
-              <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
-              <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
-                {featured.drawDate && !useHero ? (
-                  <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"100px",padding:"7px 16px",marginBottom:"16px"}}>
-                    <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#ff4444",animation:"pulse 1.5s infinite"}}></span>
-                    <span style={{fontSize:"11px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{t.hero.live} {fmtDate(featured.drawDate)}</span>
+          <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+            <div style={{position:"absolute",inset:0,background:(heroData && heroData.gradient) || "#1A1A1A"}}></div>
+            {heroData && heroData.image ? <img src={heroData.image} alt={heroData.location||"Olawin"} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}></img> : null}
+            <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
+            <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
+              {heroEndDate ? (
+                <div style={{display:"inline-flex",alignItems:"center",gap:"8px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"100px",padding:"7px 16px",marginBottom:"16px"}}>
+                  <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#ff4444",animation:"pulse 1.5s infinite"}}></span>
+                  <span style={{fontSize:"11px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{t.hero.live} {fmtDate(heroEndDate)}</span>
+                </div>
+              ) : null}
+              <div style={{fontSize:"14px",letterSpacing:"3px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{heroData && heroData.country} {heroData && heroData.location ? heroData.location.toUpperCase() : ""}</div>
+              <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
+                {heroData && heroData.title ? heroData.title.toUpperCase() : ""}
+                <br></br>
+                <span style={{color:"#ffffff",opacity:0.85}}>{heroData && heroData.location ? heroData.location.toUpperCase() : ""}</span>
+              </h1>
+              <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{heroData && heroData.description}</p>
+              {heroEndDate ? (
+                <div style={{marginBottom:"20px",padding:"12px 16px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"12px",display:"inline-block"}}>
+                  <Countdown endDate={heroEndDate} t={t} compact={false}></Countdown>
+                </div>
+              ) : null}
+              <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
+                {featured ? <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket} {featured.ticketPrice}$</button> : null}
+                {featured ? <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.totalTickets - featured.soldTickets} {t.hero.remaining} {featured.totalTickets}</div> : null}
+              </div>
+            </div>
+          </section>
+
+          {activeDraws.length > 0 ? (
+            <section ref={drawsRef} style={{background:C_BG,padding:isMobile?"48px 20px":"80px 48px",scrollMarginTop:"80px"}}>
+              <div style={{maxWidth:"1200px",margin:"0 auto"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"32px",flexWrap:"wrap",gap:"12px"}}>
+                  <div>
+                    <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.upcoming}</div>
+                    <h2 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95}}>{t.section.allDraws}</h2>
                   </div>
-                ) : null}
-                <div style={{fontSize:"14px",letterSpacing:"3px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.country} {featured.location ? featured.location.toUpperCase() : ""}</div>
-                <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
-                  {featured.title ? featured.title.toUpperCase() : ""}
-                  {featured.subtitle ? <span><br></br><span style={{color:"#ffffff",opacity:0.85}}>{featured.subtitle.toUpperCase()}</span></span> : (featured.location ? <span><br></br><span style={{color:"#ffffff",opacity:0.85}}>{featured.location.toUpperCase()}</span></span> : null)}
-                </h1>
-                {featured.description ? <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{featured.description}</p> : null}
-                {!useHero && featured.endDate ? (
-                  <div style={{marginBottom:"24px",display:"inline-block",background:"rgba(0,0,0,0.4)",backdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"14px",padding:"12px 18px"}}>
-                    <div style={{fontSize:"9px",letterSpacing:"2.5px",color:"rgba(255,255,255,0.7)",marginBottom:"8px",fontWeight:"700"}}>{t.shop.salesClose.toUpperCase()}</div>
-                    <CountdownCard endDate={featured.endDate} lang={lang} compact={true}></CountdownCard>
-                  </div>
-                ) : null}
-                <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
-                  <button onClick={function(){ setSelectedDraw(featuredFromDraws); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket}{featuredFromDraws ? " "+featuredFromDraws.ticketPrice+"$" : ""}</button>
-                  {!useHero && featured.totalTickets ? <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.totalTickets - featured.soldTickets} {t.hero.remaining} {featured.totalTickets}</div> : null}
+                  <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{activeDraws.length} {t.section.activeDraws}</div>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
+                  {activeDraws.map(function(draw) {
+                    return <DrawCard key={draw.id} draw={draw} t={t} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
+                  })}
                 </div>
               </div>
             </section>
           ) : null}
 
-          <section ref={drawsRef} style={{background:C_BG,padding:isMobile?"48px 20px":"80px 48px",scrollMarginTop:"80px"}}>
-            <div style={{maxWidth:"1200px",margin:"0 auto"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"32px",flexWrap:"wrap",gap:"12px"}}>
-                <div>
-                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.upcoming}</div>
-                  <h2 style={{fontSize:isMobile?"clamp(32px,8vw,42px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95}}>{t.section.allDraws}</h2>
-                </div>
-                <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{draws.length} {t.section.activeDraws}</div>
-              </div>
-              {draws.length === 0 ? (
-                <div style={{textAlign:"center",padding:"40px 20px",fontSize:"14px",color:"rgba(0,0,0,0.4)"}}>{t.empty.title}</div>
-              ) : (
-                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
-                  {draws.map(function(draw) {
-                    return <DrawCard key={draw.id} draw={draw} lang={lang} isPast={false} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
-                  })}
-                </div>
-              )}
-            </div>
-          </section>
-
           {pastDraws.length > 0 ? (
-            <section style={{background:C_BG,padding:isMobile?"32px 20px 48px":"56px 48px 80px",scrollMarginTop:"80px",borderTop:"1px solid rgba(0,0,0,0.09)"}}>
+            <section style={{background:C_BG,padding:isMobile?"40px 20px":"60px 48px",borderTop:"1px solid rgba(0,0,0,0.06)"}}>
               <div style={{maxWidth:"1200px",margin:"0 auto"}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:"24px",flexWrap:"wrap",gap:"12px"}}>
-                  <div>
-                    <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.past}</div>
-                    <h2 style={{fontSize:isMobile?"clamp(24px,6vw,30px)":"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,color:"rgba(0,0,0,0.6)"}}>{t.section.past}</h2>
-                  </div>
-                  <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{pastDraws.length}</div>
+                <div style={{marginBottom:"24px"}}>
+                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.past}</div>
                 </div>
                 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
                   {pastDraws.map(function(draw) {
-                    return <DrawCard key={draw.id} draw={draw} lang={lang} isPast={true} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
+                    return <DrawCard key={draw.id} draw={draw} t={t} finished={true} onClick={function(){}}></DrawCard>;
                   })}
                 </div>
               </div>
@@ -642,9 +658,9 @@ export default function Olawin() {
 
           <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
             {[
-              { val: String(draws.length), lbl: t.stats.active },
-              { val: draws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + "$", lbl: t.stats.value },
-              { val: String(draws.reduce(function(s,d){ return s + (d.totalTickets - d.soldTickets); }, 0)), lbl: t.stats.remaining },
+              { val: String(activeDraws.length), lbl: t.stats.active },
+              { val: activeDraws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + "$", lbl: t.stats.value },
+              { val: String(activeDraws.reduce(function(s,d){ return s + (d.totalTickets - d.soldTickets); }, 0)), lbl: t.stats.remaining },
               { val: "100+", lbl: t.stats.countries }
             ].map(function(s, i) {
               return (
@@ -663,7 +679,7 @@ export default function Olawin() {
                 <h2 style={{fontSize:isMobile?"clamp(28px,7vw,38px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.section.howItWorks}</h2>
               </div>
               <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(4,1fr)",gap:"2px"}}>
-                {t.steps.map(function(s, i) {
+                {steps.map(function(s, i) {
                   return (
                     <div key={i} style={{padding:isMobile?"24px 0":"40px 32px"}}>
                       <div style={{fontSize:isMobile?"56px":"80px",fontFamily:"Bebas Neue, sans-serif",color:"rgba(0,0,0,0.05)",lineHeight:1,marginBottom:"16px"}}>0{i+1}</div>
@@ -679,7 +695,7 @@ export default function Olawin() {
           <section style={{padding:isMobile?"56px 20px":"100px 32px",textAlign:"center",borderTop:"1px solid rgba(0,0,0,0.09)"}}>
             <OlawinLogo size={isMobile?40:48}></OlawinLogo>
             <h2 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(36px,6vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",margin:"24px 0 12px",lineHeight:0.95}}>{t.cta.tryLuck}</h2>
-            <p style={{fontSize:"15px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>{draws.length} {t.cta.active}</p>
+            <p style={{fontSize:"15px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(0,0,0,0.45)",marginBottom:"32px"}}>{activeDraws.length} {t.cta.active}</p>
             <button onClick={scrollToDraws} className="cta-dark" style={{padding:isMobile?"16px 40px":"18px 60px",fontSize:"12px",width:isMobile?"100%":"auto",maxWidth:"400px"}}>{t.cta.viewDraws}</button>
           </section>
         </div>
@@ -693,7 +709,7 @@ export default function Olawin() {
         </div>
       );
     } else {
-      const drawIsPast = activeDraw.drawDate && new Date(activeDraw.drawDate) < new Date();
+      const isPast = isDrawnOrPast(activeDraw);
       pageContent = (
         <div>
           <div style={{position:"relative",height:isMobile?"200px":"300px",overflow:"hidden",background:activeDraw.gradient||"#1A1A1A"}}>
@@ -701,7 +717,6 @@ export default function Olawin() {
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}></div>
             <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
               <div style={{background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"6px 14px",fontSize:"13px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{activeDraw.country} {activeDraw.location ? activeDraw.location.toUpperCase() : ""}</div>
-              {drawIsPast ? <div style={{background:"rgba(180,30,30,0.85)",color:"#fff",borderRadius:"20px",padding:"6px 14px",fontSize:"12px",fontWeight:"800",letterSpacing:"2px"}}>{t.finished}</div> : null}
               <button onClick={function(){ goTo("home"); }} style={{background:"rgba(0,0,0,0.45)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"6px 14px",color:"#ffffff",fontSize:"12px",cursor:"pointer",fontWeight:"600",textShadow:TEXT_SHADOW_STRONG}}>{t.shop.back}</button>
             </div>
           </div>
@@ -710,12 +725,11 @@ export default function Olawin() {
               <div>
                 <h1 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(42px,5.5vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.title ? activeDraw.title.toUpperCase() : ""}</h1>
                 <div style={{fontSize:isMobile?"clamp(24px,6vw,32px)":"clamp(28px,3vw,40px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#1A1A1A",marginBottom:"24px",fontWeight:"800"}}>{activeDraw.prize ? activeDraw.prize.toUpperCase() : ""}</div>
-                <p style={{fontSize:"15px",color:"rgba(0,0,0,0.65)",lineHeight:"1.8",marginBottom:"32px"}}>{activeDraw.description}</p>
-                {!drawIsPast && activeDraw.endDate ? (
-                  <div style={{background:"rgba(0,0,0,0.04)",border:"1px solid rgba(0,0,0,0.1)",borderRadius:"16px",padding:"20px",marginBottom:"32px"}}>
-                    <div style={{fontSize:"10px",letterSpacing:"3px",color:"rgba(0,0,0,0.5)",marginBottom:"12px",fontWeight:"700"}}>{t.shop.salesClose.toUpperCase()}</div>
-                    <CountdownCard endDate={activeDraw.endDate} lang={lang} compact={false}></CountdownCard>
-                    {activeDraw.drawDate ? <div style={{fontSize:"11px",color:"rgba(0,0,0,0.5)",marginTop:"12px"}}>{t.shop.drawDate}: <strong style={{color:"#1A1A1A"}}>{fmtDateLong(activeDraw.drawDate)}</strong></div> : null}
+                <p style={{fontSize:"15px",color:"rgba(0,0,0,0.65)",lineHeight:"1.8",marginBottom:"24px"}}>{activeDraw.description}</p>
+                {activeDraw.drawDate && !isPast ? (
+                  <div style={{marginBottom:"24px",padding:"16px 20px",background:"#1A1A1A",borderRadius:"12px",display:"inline-block"}}>
+                    <div style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(255,255,255,0.5)",marginBottom:"6px"}}>{t.shop.drawDate}</div>
+                    <Countdown endDate={activeDraw.drawDate} t={t} compact={false}></Countdown>
                   </div>
                 ) : null}
                 <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
@@ -726,45 +740,51 @@ export default function Olawin() {
                       <div style={{width:pct+"%",height:"100%",background:"#1A1A1A",borderRadius:"2px"}}></div>
                     </div>
                   </div>
-                </div>
+                  </div>
               </div>
               <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
                 <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
-                  {drawIsPast ? (
-                    <div style={{background:"rgba(180,30,30,0.08)",border:"1px solid rgba(180,30,30,0.2)",borderRadius:"10px",padding:"14px",marginBottom:"20px",textAlign:"center",fontSize:"13px",color:"rgba(150,20,20,0.95)",fontWeight:"600"}}>{t.countdown.closed}</div>
-                  ) : null}
-                  <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
-                  <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
-                  <div style={{marginBottom:"20px"}}>
-                    <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>
-                    <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
-                      {TICKET_OPTS.map(function(n) {
-                        const cls = "qty-btn" + (qty===n && !selectedPack && customQty==="" ? " active" : "");
-                        return <button key={n} disabled={drawIsPast} onClick={function(){ setQty(n); setCustomQty(""); setSelectedPack(null); }} className={cls} style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px",opacity:drawIsPast?0.4:1}}>{n}</button>;
-                      })}
+                  {isPast ? (
+                    <div style={{textAlign:"center",padding:"24px 0"}}>
+                      <div style={{fontSize:"32px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",color:"rgba(0,0,0,0.4)",marginBottom:"8px"}}>{t.finished}</div>
+                      <div style={{fontSize:"13px",color:"rgba(0,0,0,0.4)"}}>{t.countdown.closed}</div>
                     </div>
-                  </div>
-                  <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"20px"}}>
-                    {PACKS.map(function(pack) {
-                      const packBase = pack.qty * activeDraw.ticketPrice;
-                      const packSave = Math.round(packBase * pack.discount / 100);
-                      const packTotal = packBase - packSave;
-                      const isActive = selectedPack && selectedPack.qty === pack.qty;
-                      return (
-                        <button key={pack.qty} disabled={drawIsPast} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"1px solid " + (isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"),borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:drawIsPast?"not-allowed":"pointer",textAlign:"left",opacity:drawIsPast?0.4:1}}>
-                          <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
-                          <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"16px",marginBottom:"20px"}}>
-                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                      <span style={{fontSize:"12px",color:"rgba(0,0,0,0.45)"}}>{t.shop.total}</span>
-                      <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}$</span>
+                  ) : (
+                    <div>
+                      <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
+                      <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
+                      <div style={{marginBottom:"20px"}}>
+                        <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>
+                        <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
+                          {TICKET_OPTS.map(function(n) {
+                            const cls = "qty-btn" + (qty===n && !selectedPack && customQty==="" ? " active" : "");
+                            return <button key={n} onClick={function(){ setQty(n); setCustomQty(""); setSelectedPack(null); }} className={cls} style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px"}}>{n}</button>;
+                          })}
+                        </div>
+                      </div>
+                      <div style={{display:"flex",flexDirection:"column",gap:"8px",marginBottom:"20px"}}>
+                        {PACKS.map(function(pack) {
+                          const packBase = pack.qty * activeDraw.ticketPrice;
+                          const packSave = Math.round(packBase * pack.discount / 100);
+                          const packTotal = packBase - packSave;
+                          const isActive = selectedPack && selectedPack.qty === pack.qty;
+                          return (
+                            <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"1px solid " + (isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"),borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:"pointer",textAlign:"left"}}>
+                              <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
+                              <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"16px",marginBottom:"20px"}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
+                          <span style={{fontSize:"12px",color:"rgba(0,0,0,0.45)"}}>{t.shop.total}</span>
+                          <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}$</span>
+                        </div>
+                      </div>
+                      <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}$</button>
                     </div>
-                  </div>
-                  <button disabled={drawIsPast} onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{drawIsPast ? t.countdown.closed : (t.shop.continueBtn + " " + total + "$")}</button>
+                  )}
                 </div>
               </div>
             </div>
@@ -916,7 +936,7 @@ export default function Olawin() {
     pageContent = (
       <div style={{maxWidth:"700px",margin:"0 auto",padding:isMobile?"48px 20px":"80px 32px"}}>
         <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.faq.title}</h1>
-        {t.faq.items.map(function(item, i) {
+        {faqItems.map(function(item, i) {
           return (
             <div key={i} style={{borderTop: i===0 ? "1px solid rgba(0,0,0,0.08)" : "none", borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
               <button onClick={function(){ setOpenFaq(openFaq===i ? null : i); }} style={{width:"100%",padding:"20px 4px",display:"flex",justifyContent:"space-between",alignItems:"center",background:"none",border:"none",fontSize:"16px",cursor:"pointer",textAlign:"left",fontFamily:"Playfair Display, serif"}}>
@@ -938,6 +958,10 @@ export default function Olawin() {
     );
   }
 
+  const showWA = socialConfig && socialConfig.whatsapp && socialConfig.whatsapp.enabled && socialConfig.whatsapp.phone;
+  const showIG = socialConfig && socialConfig.instagram && socialConfig.instagram.enabled && socialConfig.instagram.username;
+  const igUrl = showIG ? "https://instagram.com/" + socialConfig.instagram.username.replace(/^@/, "") : "";
+
   return (
     <div ref={topRef} style={{background:C_BG,minHeight:"100vh",color:"#1A1A1A"}}>
       <style>{CSS}</style>
@@ -946,15 +970,21 @@ export default function Olawin() {
       <footer style={{borderTop:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 20px":"48px",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:"20px",textAlign:isMobile?"center":"left"}}>
         <div>
           <OlawinLogo size={26}></OlawinLogo>
-          <div style={{fontSize:"10px",color:"rgba(0,0,0,0.28)",marginTop:"6px"}}>{t.footer.copyright}</div>
+          <div style={{fontSize:"10px",color:"rgba(0,0,0,0.28)",marginTop:"6px"}}>{footerCopyright}</div>
         </div>
-        <div style={{display:"flex",gap:"20px"}}>
+        <div style={{display:"flex",gap:"20px",alignItems:"center",flexWrap:"wrap",justifyContent:"center"}}>
           <button onClick={function(){ goTo("mytickets"); }} className="nav-link">{t.nav.myTickets}</button>
           <button onClick={function(){ goTo("faq"); }} className="nav-link">{t.nav.faq}</button>
           <button onClick={function(){ goTo("legal"); }} className="nav-link">{t.nav.legal}</button>
-          <a href="mailto:contact@olawin.org" style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",textDecoration:"none",textTransform:"uppercase"}}>{t.footer.contact}</a>
+          <a href={"mailto:" + footerContactEmail} style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",textDecoration:"none",textTransform:"uppercase"}}>{t.footer.contact}</a>
+          {showIG ? (
+            <a href={igUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{display:"inline-flex",alignItems:"center",padding:"4px",borderRadius:"50%",transition:"opacity 0.2s"}} onMouseEnter={function(e){e.currentTarget.style.opacity="0.6";}} onMouseLeave={function(e){e.currentTarget.style.opacity="1";}}>
+              <InstagramIcon size={18}></InstagramIcon>
+            </a>
+          ) : null}
         </div>
       </footer>
+      {showWA ? <WhatsAppButton phone={socialConfig.whatsapp.phone} message={socialConfig.whatsapp.message}></WhatsAppButton> : null}
     </div>
   );
 }
