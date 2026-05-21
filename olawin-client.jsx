@@ -376,6 +376,9 @@ export default function Olawin() {
     getDoc(doc(db,"settings","content")).then(function(snap) {
       if (snap.exists()) setContentConfig(snap.data());
     }).catch(function(err) { console.error("Content load error:", err); });
+    getDoc(doc(db,"settings","legal")).then(function(snap) {
+      if (snap.exists()) setLegalConfig(snap.data());
+    }).catch(function(err) { console.error("Legal load error:", err); });
   }, []);
 
   const now = Date.now();
