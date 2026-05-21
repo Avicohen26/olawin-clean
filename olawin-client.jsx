@@ -956,7 +956,7 @@ export default function Olawin() {
     pageContent = (
       <div style={{maxWidth:"700px",margin:"0 auto",padding:isMobile?"48px 20px":"80px 32px"}}>
         <h1 style={{fontSize:isMobile?"42px":"56px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px",marginBottom:"40px"}}>{t.legal.title}</h1>
-        <p style={{fontSize:"13px",color:"rgba(0,0,0,0.45)",lineHeight:"1.8"}}>{t.legal.body}</p>
+        <div style={{fontSize:"13px",color:"rgba(0,0,0,0.6)",lineHeight:"1.8",whiteSpace:"pre-wrap",fontFamily:"DM Sans, sans-serif"}}>{(legalConfig && legalConfig[lang]) ? legalConfig[lang] : t.legal.body}</div>
       </div>
     );
   }
