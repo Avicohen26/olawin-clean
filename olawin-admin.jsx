@@ -1227,7 +1227,7 @@ return (
 <table style={{width:"100%",borderCollapse:"collapse"}}>
 <thead>
 <tr style={{borderBottom:`1px solid ${C.border}`}}>
-{["Client","Email","Tickets","N° tickets","Montant","Date"].map(h=>(<th key={h} style={{padding:"14px 18px",textAlign:"left",fontSize:"9px",letterSpacing:"2px",color:C.textLt,fontWeight:"400"}}>{h}</th>))}
+{["Client","Email","Tickets","N° tickets","Montant","Date","Action"].map(h=>(<th key={h} style={{padding:"14px 18px",textAlign:"left",fontSize:"9px",letterSpacing:"2px",color:C.textLt,fontWeight:"400"}}>{h}</th>))}
 </tr>
 </thead>
 <tbody>
