@@ -472,12 +472,9 @@ export default function Olawin() {
   const handlePay = async function() {
     if (!formValid || !activeDraw) return;
     setPaying(true);
-    const used = new Set();
+   const startNum = (activeDraw.soldTickets || 0) + 1;
     const nums = [];
-    while (nums.length < finalQty) {
-      const n = Math.floor(Math.random() * (activeDraw.totalTickets - activeDraw.soldTickets)) + activeDraw.soldTickets + 1;
-      if (!used.has(n)) { used.add(n); nums.push(n); }
-    }
+    for (var qi = 0; qi < finalQty; qi++) { nums.push(startNum + qi); }
     const orderNumber = genOrderNumber();
     try {
       await addDoc(collection(db,"orders"), {
