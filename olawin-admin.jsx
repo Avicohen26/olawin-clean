@@ -1246,6 +1246,7 @@ return (
 </td>
 <td style={{padding:"13px 18px",fontSize:"14px",fontWeight:"600"}}>{fmt(o.amount)}</td>
 <td style={{padding:"13px 18px",fontSize:"12px",color:C.textLt}}>{fmtD(o.createdAt)}</td>
+<td style={{padding:"13px 18px"}}><button onClick={()=>deleteOrder(o.id, o.drawId, o.tickets||0)} style={{background:"rgba(160,0,0,0.06)",color:"rgba(140,0,0,0.7)",border:"1px solid rgba(160,0,0,0.12)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px",cursor:"pointer"}}>🗑</button></td>
 </tr>
 ))}
 </tbody>
