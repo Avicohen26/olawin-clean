@@ -306,12 +306,21 @@ function WhatsAppButton(props) {
 
 function InstagramIcon(props) {
   const size = props.size || 18;
-  const color = props.color || "rgba(0,0,0,0.45)";
+  const gradId = "igGrad" + size;
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <defs>
+        <radialGradient id={gradId} cx="0.3" cy="1" r="1.2">
+          <stop offset="0%" stopColor="#fdf497"></stop>
+          <stop offset="12%" stopColor="#fdf497"></stop>
+          <stop offset="28%" stopColor="#fd5949"></stop>
+          <stop offset="50%" stopColor="#d6249f"></stop>
+          <stop offset="80%" stopColor="#285AEB"></stop>
+        </radialGradient>
+      </defs>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke={"url(#"+gradId+")"} strokeWidth="2" fill="none"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke={"url(#"+gradId+")"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"></path>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" stroke={"url(#"+gradId+")"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></line>
     </svg>
   );
 }
