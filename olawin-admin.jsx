@@ -1158,6 +1158,16 @@ return (
 <button onClick={()=>deleteDraw(d.id)} style={{...btn,background:"rgba(160,0,0,0.06)",color:"rgba(140,0,0,0.7)",border:"1px solid rgba(160,0,0,0.12)",padding:"9px 14px",fontSize:"11px"}}>🗑</button>
 </div>
 </div>
+{d.winner && d.winner.name && (
+<div style={{marginBottom:"16px",padding:"14px 16px",background:"linear-gradient(135deg, rgba(180,140,0,0.1), rgba(140,100,0,0.08))",border:"1px solid rgba(180,140,0,0.25)",borderRadius:"12px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(140,100,0,0.8)",marginBottom:"6px"}}>🏆 GAGNANT</div>
+<div style={{fontSize:"18px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",color:"rgba(120,80,0,1)"}}>{d.winner.name}{d.winner.certificateUrl?(<a href={d.winner.certificateUrl} target="_blank" rel="noopener noreferrer" style={{marginLeft:"12px",fontSize:"11px",color:"rgba(140,100,0,0.9)",textDecoration:"underline"}}>🔒 Certificat</a>):null}</div>
+</div>
+)}
+<div style={{marginBottom:"16px"}}>
+<a href="https://www.randomdraws.com/" target="_blank" rel="noopener noreferrer" style={{...btn,display:"inline-block",background:"#25ab29",color:"#fff",padding:"11px 20px",fontSize:"12px",textDecoration:"none",marginRight:"8px"}}>🎲 LANCER LE TIRAGE (randomdraws.com)</a>
+<button onClick={()=>{const name=prompt("Nom complet du gagnant (ex: Jean Dupont):");if(!name)return;const cert=prompt("URL du certificat randomdraws.com (optionnel):")||"";updateDoc(doc(db,"draws",d.id),{winner:{name:name,certificateUrl:cert,date:new Date().toISOString()},status:"drawn",drawnAt:serverTimestamp()}).then(()=>notify("🏆 Gagnant enregistre : "+name));}} style={{...btn,background:"rgba(180,140,0,0.95)",color:"#fff",padding:"11px 20px",fontSize:"12px"}}>🏆 ENREGISTRER LE GAGNANT</button>
+</div>
 
 {d.winner && (
 <div style={{marginBottom:"16px",padding:"16px",background:"linear-gradient(135deg, rgba(180,140,0,0.1), rgba(140,100,0,0.08))",border:"1px solid rgba(180,140,0,0.25)",borderRadius:"12px"}}>
