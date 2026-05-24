@@ -504,7 +504,7 @@ export default function Olawin() {
   };
 
   const handleSearch = async function() {
-    if (!searchEmail || !searchOrder) return;
+  if (!searchEmail) return;
     setSearching(true);
     setSearchError(false);
     setFoundOrders(null);
