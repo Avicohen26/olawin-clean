@@ -376,7 +376,7 @@ export default function Olawin() {
   const [selectedPack, setSelectedPack] = useState(null);
   const [qty, setQty] = useState(1);
   const [customQty, setCustomQty] = useState("");
-  const [form, setForm] = useState({firstName:"",lastName:"",email:"",phoneCode:"+1",phone:"",address:"",city:"",zip:"",country:""});
+  const [form, setForm] = useState(function(){ try { var s = localStorage.getItem("olawin_client_info"); if (s) { var d = JSON.parse(s); return {firstName:d.firstName||"",lastName:d.lastName||"",email:d.email||"",phoneCode:d.phoneCode||"+1",phone:d.phone||"",address:d.address||"",city:d.city||"",zip:d.zip||"",country:d.country||""}; } } catch(e){} return {firstName:"",lastName:"",email:"",phoneCode:"+1",phone:"",address:"",city:"",zip:"",country:""}; });
   const [openFaq, setOpenFaq] = useState(null);
   const [paying, setPaying] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
