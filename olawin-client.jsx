@@ -546,7 +546,8 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
           <button className="nav-link" onClick={function(){ goTo("mytickets"); }}>{t.nav.myTickets}</button>
           <button className="nav-link" onClick={function(){ goTo("faq"); }}>{t.nav.faq}</button>
           <button className="nav-link" onClick={function(){ goTo("legal"); }}>{t.nav.legal}</button>
-          <LangSwitcher lang={lang} setLang={setLang} isMobile={false}></LangSwitcher>
+<LangSwitcher lang={lang} setLang={setLang} isMobile={false}></LangSwitcher>
+          {navShowIG ? <a href={navIgUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{display:"inline-flex",alignItems:"center",padding:"4px",borderRadius:"50%",transition:"opacity 0.2s"}} onMouseEnter={function(e){e.currentTarget.style.opacity="0.6";}} onMouseLeave={function(e){e.currentTarget.style.opacity="1";}}><InstagramIcon size={20}></InstagramIcon></a> : null}
           <button onClick={scrollToDraws} className="cta-dark" style={{padding:"10px 22px",fontSize:"11px",borderRadius:"8px"}}>{t.nav.buy}</button>
         </div>
       ) : (
