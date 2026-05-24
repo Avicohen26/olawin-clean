@@ -509,16 +509,16 @@ export default function Olawin() {
     setSearchError(false);
     setFoundOrders(null);
     const emailNorm = searchEmail.toLowerCase().trim();
-    const orderNorm = searchOrder.toUpperCase().trim().replace(/^OLA-?/i, "");
     try {
-      const q = query(collection(db,"orders"), where("email","==",emailNorm));
-      const snap = await getDocs(q);
+      const snap = await getDocs(collection(db,"orders"));
       const matches = [];
       snap.forEach(function(docSnap) {
         const data = docSnap.data();
         const docId = docSnap.id;
-        const last6 = docId.slice(-6).toUpperCase();
-       matches.push(Object.assign({ id: docId }, data));
+        const orderEmail = (data.email || "").toLowerCase().trim();
+        if (orderEmail === emailNorm) {
+          matches.push(Object.assign({ id: docId }, data));
+        }
       });
       if (matches.length === 0) {
         setSearchError(true);
