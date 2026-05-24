@@ -518,9 +518,7 @@ export default function Olawin() {
         const data = docSnap.data();
         const docId = docSnap.id;
         const last6 = docId.slice(-6).toUpperCase();
-        if ((data.orderNumber && data.orderNumber.toUpperCase() === orderNorm) || last6 === orderNorm) {
-          matches.push(Object.assign({ id: docId }, data));
-        }
+       matches.push(Object.assign({ id: docId }, data));
       });
       if (matches.length === 0) {
         setSearchError(true);
