@@ -911,6 +911,26 @@ try { await deleteDoc(doc(db,"draws",id)); notify("Supprime","err"); }
 catch (err) { notify("Erreur","err"); }
 };
 
+const deleteOrder = async (orderId, drawId, ticketCount) => {
+if (!window.confirm("Supprimer cette commande ?")) return;
+try {
+await deleteDoc(doc(db,"orders",orderId));
+if (drawId && ticketCount) { await updateDoc(doc(db,"draws",drawId), { soldTickets: increment(-ticketCount) }); }
+notify("Commande supprimee");
+} catch (err) { notify("Erreur","err"); }
+};
+
+const clearDrawOrders = async (drawId) => {
+const toDelete = orders.filter(o => o.drawId === drawId);
+if (toDelete.length === 0) { notify("Aucune commande pour ce tirage"); return; }
+if (!window.confirm("Supprimer les " + toDelete.length + " commandes de ce tirage ET remettre le compteur a zero ?")) return;
+try {
+for (const o of toDelete) { await deleteDoc(doc(db,"orders",o.id)); }
+await updateDoc(doc(db,"draws",drawId), { soldTickets: 0 });
+notify(toDelete.length + " commandes supprimees, compteur a zero");
+} catch (err) { notify("Erreur","err"); }
+};
+
 const saveWinner = async (winnerData) => {
 if (!randomDraw) return;
 await updateDoc(doc(db,"draws",randomDraw.id), {
