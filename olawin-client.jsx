@@ -261,14 +261,32 @@ function DrawCard(props) {
               <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.soldTickets}/{draw.totalTickets}</span>
               <span style={{fontSize:"13px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{pct}%</span>
             </div>
-            <div style={{background:"rgba(255,255,255,0.25)",borderRadius:"2px",height:"3px"}}>
+          <div style={{background:"rgba(255,255,255,0.25)",borderRadius:"2px",height:"3px"}}>
               <div style={{width:pct+"%",height:"100%",background:"#ffffff",borderRadius:"2px"}}></div>
             </div>
           </div>
+          {isFinished && draw.winner && draw.winner.name ? (
+            <div style={{marginTop:"12px",padding:"10px 14px",background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",borderRadius:"10px",border:"1px solid rgba(212,175,55,0.5)"}}>
+              <div style={{fontSize:"9px",letterSpacing:"2px",color:"#D4AF37",marginBottom:"4px",fontWeight:"700"}}>{t.winnerLabel}</div>
+              <div style={{fontSize:"18px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#ffffff",fontWeight:"800",textShadow:TEXT_SHADOW_STRONG}}>🏆 {shortWinnerName(draw.winner.name)}</div>
+              {draw.winner.certificateUrl ? (
+                <a href={draw.winner.certificateUrl} target="_blank" rel="noopener noreferrer" onClick={function(e){e.stopPropagation();}} style={{display:"inline-block",marginTop:"6px",fontSize:"10px",letterSpacing:"1px",color:"#D4AF37",textDecoration:"underline",fontWeight:"600"}}>🔒 {t.verifyCert}</a>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
   );
+}
+
+function shortWinnerName(fullName) {
+  if (!fullName) return "";
+  const parts = fullName.trim().split(" ");
+  if (parts.length === 1) return parts[0];
+  const first = parts[0];
+  const lastInitial = parts[parts.length - 1].charAt(0).toUpperCase();
+  return first + " " + lastInitial + ".";
 }
 
 function LangSwitcher(props) {
