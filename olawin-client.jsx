@@ -551,7 +551,8 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
           <button onClick={scrollToDraws} className="cta-dark" style={{padding:"10px 22px",fontSize:"11px",borderRadius:"8px"}}>{t.nav.buy}</button>
         </div>
       ) : (
-        <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+<div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+          {navShowIG ? <a href={navIgUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{display:"inline-flex",alignItems:"center",padding:"4px"}}><InstagramIcon size={22}></InstagramIcon></a> : null}
           <LangSwitcher lang={lang} setLang={setLang} isMobile={true}></LangSwitcher>
           <button onClick={function(){ setMenuOpen(!menuOpen); }} style={{background:"none",border:"none",cursor:"pointer",padding:"8px",display:"flex",flexDirection:"column",gap:"4px"}}>
             <span style={{width:"22px",height:"2px",background:"#1A1A1A",borderRadius:"2px",transition:"all 0.2s"}}></span>
