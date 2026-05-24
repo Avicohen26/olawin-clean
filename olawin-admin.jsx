@@ -1181,19 +1181,6 @@ return (
 </div>
 )}
 
-{canDraw && (
-<div style={{marginBottom:"16px",padding:"16px",background:"rgba(0,0,0,0.04)",border:`1px solid ${C.border}`,borderRadius:"12px"}}>
-<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:"12px",flexWrap:"wrap"}}>
-<div>
-<div style={{fontSize:"13px",fontWeight:"600",marginBottom:"4px"}}>🎲 Pret pour le tirage !</div>
-<div style={{fontSize:"12px",color:C.textMd}}>La date de cloture est passee. Lancez le tirage avec Random.org.</div>
-</div>
-<button onClick={()=>setRandomDraw(d)} style={{...btn,background:C.btnBg,color:C.btnText,padding:"12px 22px",fontSize:"12px"}}>
-🎲 LANCER LE TIRAGE
-</button>
-</div>
-</div>
-)}
 
 <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"12px",marginBottom:"16px"}}>
 {[{l:"PRIX",v:fmt(d.ticketPrice)},{l:"VENDUS",v:`${d.soldTickets||0}/${d.totalTickets||0}`},{l:"REVENUS",v:fmt((d.soldTickets||0)*(d.ticketPrice||0))},{l:"COMMANDES",v:orders.filter(o=>o.drawId===d.id).length}].map((s,i)=>(
