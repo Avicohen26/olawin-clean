@@ -486,8 +486,9 @@ export default function Olawin() {
         tickets: finalQty, ticketNums: nums, amount: total,
         discount: discount, pack: selectedPack ? selectedPack.qty : null,
         status: "paid", createdAt: serverTimestamp()
-      });
-      await updateDoc(doc(db,"draws",activeDraw.id), { soldTickets: increment(finalQty) });
+    });
+    try { localStorage.setItem("olawin_client_info", JSON.stringify({ firstName: form.firstName, lastName: form.lastName, email: form.email, phoneCode: form.phoneCode, phone: form.phone, address: form.address, zip: form.zip, city: form.city, country: form.country })); } catch (e) {}
+    await updateDoc(doc(db,"draws",activeDraw.id), { soldTickets: increment(finalQty) });
       await Promise.allSettled([
         sendTicketConfirmation({ firstName: form.firstName, lastName: form.lastName, email: form.email, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, drawDate: activeDraw.drawDate, ticketNums: nums, qty: finalQty, total: total, discount: discount, pack: selectedPack ? selectedPack.qty : null, orderNumber: orderNumber }),
         sendAdminNotification({ firstName: form.firstName, lastName: form.lastName, email: form.email, phone: form.phoneCode + " " + form.phone, address: form.address + ", " + form.zip + " " + form.city + ", " + form.country, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, ticketNums: nums, qty: finalQty, total: total, pack: selectedPack ? selectedPack.qty : null, orderId: orderNumber })
