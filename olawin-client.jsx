@@ -522,7 +522,9 @@ export default function Olawin() {
   const steps = (contentConfig && contentConfig.steps && contentConfig.steps[lang] && contentConfig.steps[lang].length > 0) ? contentConfig.steps[lang] : t.steps;
   const faqItems = (contentConfig && contentConfig.faq && contentConfig.faq[lang] && contentConfig.faq[lang].length > 0) ? contentConfig.faq[lang] : t.faq.items;
   const footerCopyright = (contentConfig && contentConfig.footer && contentConfig.footer.copyright) ? contentConfig.footer.copyright : t.footer.copyright;
-  const footerContactEmail = (contentConfig && contentConfig.footer && contentConfig.footer.contactEmail) ? contentConfig.footer.contactEmail : "contact@olawin.org";
+const footerContactEmail = (contentConfig && contentConfig.footer && contentConfig.footer.contactEmail) ? contentConfig.footer.contactEmail : "contact@olawin.org";
+  const navShowIG = socialConfig && socialConfig.instagram && socialConfig.instagram.enabled && socialConfig.instagram.username;
+  const navIgUrl = navShowIG ? "https://instagram.com/" + socialConfig.instagram.username.replace(/^@/, "") : "";
 
   const navContent = (
     <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(216,212,206,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",height:"64px",padding:isMobile?"0 16px":"0 48px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
