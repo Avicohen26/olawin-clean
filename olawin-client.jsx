@@ -17,6 +17,8 @@ const T = {
     partner: "WITH OUR PARTNER",
     partnerMobile: "OUR PARTNER",
     finished: "FINISHED",
+    winnerLabel: "WINNER",
+    verifyCert: "Verify the certificate",
     steps: [
       { title:"Choose", desc:"Select the draw and your tickets." },
       { title:"Pay", desc:"100% secure payment via Stripe." },
