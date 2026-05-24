@@ -91,6 +91,8 @@ const T = {
     partner: "CON NUESTRO SOCIO",
     partnerMobile: "NUESTRO SOCIO",
     finished: "TERMINADO",
+    winnerLabel: "GANADOR",
+    verifyCert: "Verificar el certificado",
     steps: [
       { title:"Elige", desc:"Selecciona el sorteo y tus boletos." },
       { title:"Paga", desc:"Pago 100% seguro via Stripe." },
