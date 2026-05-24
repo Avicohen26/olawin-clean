@@ -52,6 +52,8 @@ const T = {
     partner: "AVEC NOTRE PARTENAIRE",
     partnerMobile: "NOTRE PARTENAIRE",
     finished: "TERMINE",
+    winnerLabel: "GAGNANT",
+    verifyCert: "Verifier le certificat",
     steps: [
       { title:"Choisissez", desc:"Selectionnez le tirage et vos tickets." },
       { title:"Payez", desc:"Paiement 100% securise via Stripe." },
