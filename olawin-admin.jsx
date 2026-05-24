@@ -1189,6 +1189,7 @@ return (
 <a href="https://www.randomdraws.com/" target="_blank" rel="noopener noreferrer" style={{...btn,display:"inline-block",background:"#25ab29",color:"#fff",padding:"11px 20px",fontSize:"12px",textDecoration:"none",marginRight:"8px"}}>🎲 LANCER LE TIRAGE (randomdraws.com)</a>
 <button onClick={()=>{const name=prompt("Nom complet du gagnant (ex: Jean Dupont):");if(!name)return;const cert=prompt("URL du certificat randomdraws.com (optionnel):")||"";updateDoc(doc(db,"draws",d.id),{winner:{name:name,certificateUrl:cert,date:new Date().toISOString()},status:"drawn",drawnAt:serverTimestamp()}).then(()=>notify("🏆 Gagnant enregistre : "+name));}} style={{...btn,background:"rgba(180,140,0,0.95)",color:"#fff",padding:"11px 20px",fontSize:"12px",border:"none",cursor:"pointer"}}>🏆 ENREGISTRER LE GAGNANT</button>
 <button onClick={()=>clearDrawOrders(d.id)} style={{...btn,background:"rgba(160,0,0,0.08)",color:"rgba(140,0,0,0.8)",border:"1px solid rgba(160,0,0,0.15)",padding:"11px 20px",fontSize:"12px",cursor:"pointer",marginLeft:"8px"}}>VIDER LES COMMANDES (TEST)</button>
+</div>
 {d.winner && (
 <div style={{marginBottom:"16px",padding:"16px",background:"linear-gradient(135deg, rgba(180,140,0,0.1), rgba(140,100,0,0.08))",border:"1px solid rgba(180,140,0,0.25)",borderRadius:"12px"}}>
 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"10px"}}>
