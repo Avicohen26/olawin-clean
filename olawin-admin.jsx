@@ -1165,7 +1165,8 @@ return (
 </div>
 )}
 <div style={{marginBottom:"16px"}}>
-<a href="https://www.randomdraws.com/" target="_blank" rel="noopener noreferrer" style={{...btn,display:"inline-block",background:"#25ab29",color:"#fff",padding:"11px 20px",fontSize:"12px",textDecoration:"none",marginRight:"8px"}}>🎲 LANCER LE TIRAGE (randomdraws.com)</a>
+<button onClick={()=>{const dOrders=orders.filter(o=>o.drawId===d.id);let csv="Numero ticket,Prenom,Nom,Email\n";dOrders.forEach(o=>{(o.ticketNums||[]).forEach(n=>{csv+=n+',"'+(o.firstName||"").replace(/"/g,'""')+'","'+(o.lastName||"").replace(/"/g,'""')+'","'+(o.email||"").replace(/"/g,'""')+'"\n';});});const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="participants_"+(d.title||"tirage").replace(/[^a-z0-9]/gi,"_").toLowerCase()+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);notify("CSV telecharge ✓");}} style={{...btn,display:"inline-block",background:"#1A1A1A",color:"#fff",padding:"11px 20px",fontSize:"12px",marginRight:"8px",border:"none",cursor:"pointer"}}>📥 EXPORTER LES PARTICIPANTS (CSV)</button>
+<a href="https://www.randomdraws.com/" target="_blank" rel="noopener noreferrer"
 <button onClick={()=>{const name=prompt("Nom complet du gagnant (ex: Jean Dupont):");if(!name)return;const cert=prompt("URL du certificat randomdraws.com (optionnel):")||"";updateDoc(doc(db,"draws",d.id),{winner:{name:name,certificateUrl:cert,date:new Date().toISOString()},status:"drawn",drawnAt:serverTimestamp()}).then(()=>notify("🏆 Gagnant enregistre : "+name));}} style={{...btn,background:"rgba(180,140,0,0.95)",color:"#fff",padding:"11px 20px",fontSize:"12px"}}>🏆 ENREGISTRER LE GAGNANT</button>
 </div>
 
