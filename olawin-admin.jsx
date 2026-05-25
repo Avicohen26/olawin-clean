@@ -179,9 +179,12 @@ onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.file
 </div>
 {imgTab==="upload" && <button onClick={()=>fileRef.current?.click()} style={{...btn,width:"100%",padding:"11px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"12px"}}>📁 Choisir un fichier</button>}
 {imgTab==="url" && (
+<div>
 <div style={{display:"flex",gap:"8px"}}>
-<input type="text" placeholder="https://..." value={urlInput} onChange={e=>setUrlInput(e.target.value)} style={{...inp,flex:1,fontSize:"13px"}}/>
-<button onClick={()=>set("image",urlInput)} style={{...btn,padding:"11px 18px",background:C.btnBg,color:C.btnText,fontSize:"12px"}}>Appliquer</button>
+<input type="text" placeholder="Collez le lien finissant par .jpg ou .png" value={urlInput} onChange={e=>setUrlInput(e.target.value)} style={{...inp,flex:1,fontSize:"13px"}}/>
+<button onClick={()=>{ if(!urlInput){return;} const img=new Image(); img.onload=function(){ set("image",urlInput); }; img.onerror=function(){ alert("Cette image ne fonctionne pas. Astuce : sur Google Images, faites un clic droit sur la photo puis 'Copier l adresse de l image'. Le lien doit finir par .jpg ou .png. Ou utilisez Unsplash.com / Pexels.com."); }; img.src=urlInput; }} style={{...btn,padding:"11px 18px",background:C.btnBg,color:C.btnText,fontSize:"12px"}}>Appliquer</button>
+</div>
+<div style={{fontSize:"11px",color:C.textLt,marginTop:"8px",lineHeight:"1.5"}}>💡 Astuce : sur Google Images, clic droit sur la photo → "Copier l'adresse de l'image" (le lien doit finir par .jpg/.png). Ou utilisez Unsplash.com / Pexels.com (gratuit).</div>
 </div>
 )}
 {imgTab==="suggest" && (
