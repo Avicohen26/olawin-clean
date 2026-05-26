@@ -805,7 +805,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                           const packTotal = packBase - packSave;
                           const isActive = selectedPack && selectedPack.qty === pack.qty;
                           return (
-                            <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"1px solid " + (isActive?"rgba(0,0,0,0.45)":"rgba(0,0,0,0.09)"),borderRadius:"12px",padding:"14px 16px",background:isActive?"rgba(0,0,0,0.07)":"rgba(0,0,0,0.02)",cursor:"pointer",textAlign:"left",color:"#1A1A1A",fontFamily:"'DM Sans',sans-serif"}}>
+                            <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"2px solid #1A1A1A",borderRadius:"12px",padding:"14px 16px",background:isActive?"#1A1A1A":"transparent",cursor:"pointer",textAlign:"left",color:isActive?"#fff":"#1A1A1A",fontFamily:"'DM Sans',sans-serif"}}>
                               <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
                               <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
                             </button>
