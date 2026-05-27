@@ -807,7 +807,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                           return (
                             <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"2px solid #1A1A1A",borderRadius:"12px",padding:"14px 16px",background:isActive?"#1A1A1A":"transparent",cursor:"pointer",textAlign:"left",color:isActive?"#fff":"#1A1A1A",fontFamily:"'DM Sans',sans-serif"}}>
                               <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
-                              <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}$ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
+                              <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}£ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
                             </button>
                           );
                         })}
@@ -815,7 +815,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                       <div style={{borderTop:"1px solid rgba(0,0,0,0.08)",paddingTop:"16px",marginBottom:"20px"}}>
                         <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
                           <span style={{fontSize:"12px",color:"rgba(0,0,0,0.45)"}}>{t.shop.total}</span>
-                          <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}$</span>
+                          <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}£</span>
                         </div>
                       </div>
                       <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}$</button>
