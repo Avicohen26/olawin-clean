@@ -252,7 +252,7 @@ function DrawCard(props) {
       <div style={{position:"absolute",inset:0,padding:"24px",display:"flex",flexDirection:"column",justifyContent:"space-between",zIndex:3}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"6px"}}>
           <div style={{background:isFinished?"rgba(120,120,120,0.85)":"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"5px 14px",fontSize:"12px",letterSpacing:"1.5px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{isFinished ? t.finished : (draw.country + " " + (draw.location ? draw.location.toUpperCase() : ""))}</div>
-          {!isFinished ? <div style={{background:"#ffffff",border:"1px solid rgba(255,255,255,0.95)",borderRadius:"20px",padding:"5px 14px",fontSize:"15px",color:"#1A1A1A",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1.5px"}}>{draw.ticketPrice}$ / TICKET</div> : null}
+          {!isFinished ? <div style={{background:"#ffffff",border:"1px solid rgba(255,255,255,0.95)",borderRadius:"20px",padding:"5px 14px",fontSize:"15px",color:"#1A1A1A",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1.5px"}}>{draw.ticketPrice}£ / TICKET</div> : null}
         </div>
         <div>
           <div style={{fontSize:"13px",letterSpacing:"1px",color:"#ffffff",marginBottom:"8px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{draw.title ? draw.title.toUpperCase() : ""}</div>
