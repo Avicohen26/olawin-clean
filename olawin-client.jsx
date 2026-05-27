@@ -880,7 +880,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
           </select>
         </div>
         <button onClick={handlePay} disabled={!formValid || paying} className="cta-dark" style={{width:"100%",padding:"17px",fontSize:"12px"}}>
-          {paying ? t.confirm.processing : (t.confirm.pay + " " + total + "$ " + t.confirm.payVia)}
+          {paying ? t.confirm.processing : (t.confirm.pay + " " + total + "£ " + t.confirm.payVia)}
         </button>
       </div>
     );
