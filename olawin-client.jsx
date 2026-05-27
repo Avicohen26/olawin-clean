@@ -818,7 +818,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                           <span style={{fontSize:isMobile?"30px":"36px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{total}£</span>
                         </div>
                       </div>
-                      <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}$</button>
+                      <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}£</button>
                     </div>
                   )}
                 </div>
