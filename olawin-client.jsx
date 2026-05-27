@@ -700,9 +700,6 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
           { val: "100+", lbl: t.stats.countries }
         ].map(function(s, i) {
           return (
-              { val: "100+", lbl: t.stats.countries }
-            ].map(function(s, i) {
-              return (
                 <div key={i} style={{textAlign:"center",padding:isMobile?"16px 12px":"0 24px"}}>
                   <div style={{fontSize:isMobile?"clamp(22px,6vw,28px)":"clamp(28px,3.5vw,44px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{s.val}</div>
                   <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.35)"}}>{s.lbl}</div>
