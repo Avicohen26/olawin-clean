@@ -788,7 +788,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                   ) : (
                     <div>
                       <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
-                      <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.ticketPrice}$ {t.shop.perTicket}</div>
+                      <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.ticketPrice}£ {t.shop.perTicket}</div>
                       <div style={{marginBottom:"20px"}}>
                         <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>
                         <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
