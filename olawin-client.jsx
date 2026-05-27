@@ -652,7 +652,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                 </div>
               ) : null}
               <div style={{display:"flex",alignItems:isMobile?"stretch":"center",gap:"16px",flexWrap:"wrap",flexDirection:isMobile?"column":"row"}}>
-                {featured ? <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket} {featured.ticketPrice}$</button> : null}
+                {featured ? <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket} {featured.ticketPrice}£</button> : null}
                 {featured ? <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.totalTickets - featured.soldTickets} {t.hero.remaining} {featured.totalTickets}</div> : null}
               </div>
             </div>
