@@ -695,7 +695,13 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
           <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
             {[
               { val: String(activeDraws.length), lbl: t.stats.active },
-              { val: activeDraws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + "$", lbl: t.stats.value },
+              { val: activeDraws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + Parfait, on fait simple et rapide ! 🇬🇧
+✏️ Remplacer tous les "$" par "£"
+Dans l'éditeur du client (https://github.com/Avicohen26/olawin-clean/edit/main/olawin-client.jsx) :
+
+Cmd+F → tapez exactement : "$" (avec les guillemets)
+Activez le mode Replace (flèche à gauche)
+Dans le champ Replace, tapez :, lbl: t.stats.value },
               { val: String(activeDraws.reduce(function(s,d){ return s + (d.totalTickets - d.soldTickets); }, 0)), lbl: t.stats.remaining },
               { val: "100+", lbl: t.stats.countries }
             ].map(function(s, i) {
