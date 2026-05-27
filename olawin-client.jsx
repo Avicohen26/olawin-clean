@@ -945,7 +945,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                     </div>
                     <div style={{textAlign:isMobile?"left":"right"}}>
                       <div style={{fontSize:"10px",color:"rgba(0,0,0,0.4)",marginBottom:"4px"}}>{t.myTickets.totalPaid}</div>
-                      <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{order.amount}$</div>
+                      <div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{order.amount}£</div>
                     </div>
                   </div>
                   {orderDate ? (
