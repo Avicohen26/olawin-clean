@@ -237,7 +237,9 @@ onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.file
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"14px"}}>INFORMATIONS</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
 {[
-{k:"title",l:"NOM DU TIRAGE",t:"text",ph:"Séjour Prestige..."},
+{k:"title",l:"NOM DU TIRAGE (FR)",t:"text",ph:"Séjour Prestige..."},
+{k:"titleEn",l:"NOM DU TIRAGE (EN)",t:"text",ph:"Prestige Stay..."},
+{k:"titleEs",l:"NOM DU TIRAGE (ES)",t:"text",ph:"Estancia Prestige..."},
 {k:"location",l:"DESTINATION",t:"text",ph:"Dubaï..."},
 {k:"country",l:"PAYS (emoji 🇦🇪)",t:"text",ph:"🇦🇪"},
 {k:"prize",l:"PRIX À GAGNER",t:"text",ph:"Bon hôtel 10 000$"},
