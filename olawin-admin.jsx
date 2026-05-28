@@ -240,7 +240,7 @@ onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.file
 {k:"title",l:"NOM DU TIRAGE",t:"text",ph:"Séjour Prestige..."},
 {k:"location",l:"DESTINATION",t:"text",ph:"Dubaï..."},
 {k:"country",l:"PAYS (emoji 🇦🇪)",t:"text",ph:"🇦🇪"},
-{k:"prize",l:"PRIX À GAGNER",t:"text",ph:"Bon hôtel 10 000$"},
+{k:"prize",l:"PRIX À GAGNER",t:"text",ph:"Bon hôtel 10 000£"},
 {k:"partner",l:"PARTENAIRE",t:"text",ph:"PrivateHonors.com"},
 {k:"emoji",l:"EMOJI",t:"text",ph:"🏝️"},
 {k:"ticketPrice",l:"PRIX TICKET (£)",t:"number",ph:"100"},
