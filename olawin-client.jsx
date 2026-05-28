@@ -650,7 +650,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
               <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
                 {trd(heroData,"title") ? trd(heroData,"title").toUpperCase() : ""}
                 <br></br>
-                <span style={{color:"#ffffff",opacity:0.85}}>{heroData && heroData.location ? heroData.location.toUpperCase() : ""}</span>
+                <span style={{color:"#ffffff",opacity:0.85}}>{trd(heroData,"location") ? trd(heroData,"location").toUpperCase() : ""}</span>
               </h1>
               <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{trd(heroData,"description")}</p>
               {heroEndDate ? (
