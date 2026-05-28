@@ -759,7 +759,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
             {activeDraw.image ? <img src={activeDraw.image} alt={activeDraw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}></img> : null}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}></div>
             <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
-              <div style={{background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"6px 14px",fontSize:"13px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{activeDraw.country} {activeDraw.location ? activeDraw.location.toUpperCase() : ""}</div>
+              <div style={{background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"6px 14px",fontSize:"13px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{activeDraw.country} {trd(activeDraw,"location") ? trd(activeDraw,"location").toUpperCase() : ""}</div>
               <button onClick={function(){ goTo("home"); }} style={{background:"rgba(0,0,0,0.45)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:"20px",padding:"6px 14px",color:"#ffffff",fontSize:"12px",cursor:"pointer",fontWeight:"600",textShadow:TEXT_SHADOW_STRONG}}>{t.shop.back}</button>
             </div>
           </div>
