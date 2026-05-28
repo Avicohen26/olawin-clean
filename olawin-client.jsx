@@ -117,8 +117,7 @@ const T = {
     footer: { copyright:"2026 Olawin.", contact:"Contacto" }
   }
 };
-
-function trd(draw, key, lang){ if(!draw) return ""; var sfx = lang==="en" ? "En" : lang==="es" ? "Es" : ""; return draw[key+sfx] || draw[key] || ""; }
+function trd(draw, key){ if(!draw) return ""; var L=""; try{ L=localStorage.getItem("olawin_lang")||""; }catch(e){} var sfx = L==="en" ? "En" : L==="es" ? "Es" : ""; return draw[key+sfx] || draw[key] || ""; }
 const QUIZ = [{q:{fr:"Dans quel pays se trouve Marrakech ?",en:"In which country is Marrakech located?",es:"En que pais se encuentra Marrakech?"},opts:["Maroc","Tunisie","Egypte","Algerie"],a:0},{q:{fr:"Dans quel pays se trouve Dubai ?",en:"In which country is Dubai located?",es:"En que pais se encuentra Dubai?"},opts:["Emirats Arabes Unis","Qatar","Oman","Koweit"],a:0},{q:{fr:"Dans quel pays se trouve Bali ?",en:"In which country is Bali located?",es:"En que pais se encuentra Bali?"},opts:["Indonesie","Thailande","Malaisie","Philippines"],a:0},{q:{fr:"Dans quel pays se trouve Santorin ?",en:"In which country is Santorini located?",es:"En que pais se encuentra Santorini?"},opts:["Grece","Italie","Espagne","Turquie"],a:0},{q:{fr:"Dans quel pays se trouve Cancun ?",en:"In which country is Cancun located?",es:"En que pais se encuentra Cancun?"},opts:["Mexique","Bresil","Cuba","Perou"],a:0},{q:{fr:"Dans quel pays se trouve Venise ?",en:"In which country is Venice located?",es:"En que pais se encuentra Venecia?"},opts:["Italie","France","Croatie","Grece"],a:0},{q:{fr:"Dans quel pays se trouve Le Cap ?",en:"In which country is Cape Town located?",es:"En que pais se encuentra Ciudad del Cabo?"},opts:["Afrique du Sud","Kenya","Namibie","Maroc"],a:0},{q:{fr:"Dans quel pays se trouve Bangkok ?",en:"In which country is Bangkok located?",es:"En que pais se encuentra Bangkok?"},opts:["Thailande","Vietnam","Cambodge","Laos"],a:0}];
 const PACKS = [
 { qty: 15, discount: 10 },
