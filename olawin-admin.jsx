@@ -269,8 +269,12 @@ if (sugg) set("image", sugg);
 ))}
 </div>
 <div style={{marginTop:"12px"}}>
-<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px"}}>DESCRIPTION</div>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px"}}>DESCRIPTION (FR)</div>
 <textarea placeholder="Description..." value={f.description||""} onChange={e=>set("description",e.target.value)} rows={3} style={{...inp,resize:"vertical"}}/>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px",marginTop:"12px"}}>DESCRIPTION (EN)</div>
+<textarea placeholder="Description..." value={f.descriptionEn||""} onChange={e=>set("descriptionEn",e.target.value)} rows={3} style={{...inp,resize:"vertical"}}/>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px",marginTop:"12px"}}>DESCRIPTION (ES)</div>
+<textarea placeholder="Description..." value={f.descriptionEs||""} onChange={e=>set("descriptionEs",e.target.value)} rows={3} style={{...inp,resize:"vertical"}}/>
 </div>
 <div style={{marginTop:"12px"}}>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px"}}>DÉGRADÉ (CSS)</div>
