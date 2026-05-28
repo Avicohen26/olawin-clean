@@ -26,7 +26,7 @@ btnBg: "#1A1A1A",
 btnText: "#F0EDE7",
 };
 
-const fmt = (n) => `£{(n||0).toLocaleString("fr-FR")}`;
+const fmt = (n) => `£${(n||0).toLocaleString("fr-FR")}`;
 const fmtD = (d) => {
 if (!d) return "—";
 try {
