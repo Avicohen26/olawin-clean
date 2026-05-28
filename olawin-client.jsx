@@ -652,7 +652,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                 <br></br>
                 <span style={{color:"#ffffff",opacity:0.85}}>{heroData && heroData.location ? heroData.location.toUpperCase() : ""}</span>
               </h1>
-              <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{heroData && heroData.description}</p>
+              <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{trd(heroData,"description")}</p>
               {heroEndDate ? (
                 <div style={{marginBottom:"20px",padding:"12px 16px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"12px",display:"inline-block"}}>
                   <Countdown endDate={heroEndDate} t={t} compact={false}></Countdown>
