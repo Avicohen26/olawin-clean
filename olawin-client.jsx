@@ -1002,7 +1002,21 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
 
   return (
     <div ref={topRef} style={{background:C_BG,minHeight:"100vh",color:"#1A1A1A"}}>
-      <style>{CSS}</style>
+      <style>{CSS}</style>{!ageVerified && (
+<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:99999,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
+<div style={{background:"#E8E4DC",borderRadius:"18px",maxWidth:"420px",width:"100%",padding:"40px 32px",textAlign:"center"}}>
+<div style={{marginBottom:"18px"}}><OlawinLogo size={32}></OlawinLogo></div>
+<div style={{fontSize:"11px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",marginBottom:"10px"}}>{lang==="en"?"AGE VERIFICATION":lang==="es"?"VERIFICACION DE EDAD":"VERIFICATION D'AGE"}</div>
+<div style={{fontSize:"21px",fontWeight:"500",color:"#1A1A1A",marginBottom:"12px",fontFamily:"'DM Sans',sans-serif"}}>{lang==="en"?"Are you over 18?":lang==="es"?"Tienes mas de 18 anos?":"Avez-vous plus de 18 ans ?"}</div>
+<div style={{fontSize:"14px",color:"rgba(0,0,0,0.6)",lineHeight:"1.6",marginBottom:"26px"}}>{ageWarning ? (lang==="en"?"You must be 18 or older to take part in Olawin draws. Please come back when you reach the legal age.":lang==="es"?"Debes tener 18 anos o mas para participar en los sorteos Olawin. Vuelve cuando tengas la edad legal.":"Vous devez avoir 18 ans ou plus pour participer aux tirages Olawin. Revenez lorsque vous aurez l'age legal.") : (lang==="en"?"Participation in Olawin draws is strictly reserved for adults (18 years and older).":lang==="es"?"La participacion en los sorteos Olawin esta reservada a personas mayores de edad (18 anos o mas).":"La participation aux tirages Olawin est strictement reservee aux personnes majeures (18 ans et plus).")}</div>
+<div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
+<button onClick={function(){ try { localStorage.setItem("olawin_age_ok","1"); } catch(e){} setAgeVerified(true); }} style={{background:"#1A1A1A",color:"#E8E4DC",border:"none",borderRadius:"12px",padding:"15px",fontSize:"13px",fontWeight:"500",letterSpacing:"1px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>{lang==="en"?"I AM 18 OR OLDER":lang==="es"?"TENGO 18 ANOS O MAS":"J'AI PLUS DE 18 ANS"}</button>
+<button onClick={function(){ setAgeWarning(true); }} style={{background:"transparent",color:"#1A1A1A",border:"1.5px solid rgba(0,0,0,0.25)",borderRadius:"12px",padding:"15px",fontSize:"13px",fontWeight:"500",letterSpacing:"1px",cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>{lang==="en"?"I AM UNDER 18":lang==="es"?"TENGO MENOS DE 18":"J'AI MOINS DE 18 ANS"}</button>
+</div>
+<div style={{fontSize:"11px",color:"rgba(0,0,0,0.35)",lineHeight:"1.5",marginTop:"22px"}}>{lang==="en"?"By continuing, you confirm you meet the legal age requirement. Play responsibly.":lang==="es"?"Al continuar, confirmas que cumples con la edad legal requerida. Juega con moderacion.":"En continuant, vous confirmez avoir l'age legal requis. Jouez avec moderation."}</div>
+</div>
+</div>
+)}
       {navContent}
       {pageContent}
       <footer style={{borderTop:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 20px":"48px",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:"20px",textAlign:isMobile?"center":"left"}}>
