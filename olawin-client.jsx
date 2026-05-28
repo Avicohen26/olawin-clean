@@ -886,7 +886,17 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
             {COUNTRIES.map(function(c) { return <option key={c} value={c}>{c}</option>; })}
           </select>
         </div>
-        <button onClick={handlePay} disabled={!formValid || paying} className="cta-dark" style={{width:"100%",padding:"17px",fontSize:"12px"}}>
+        <div style={{marginBottom:"20px",padding:"18px",border:"1px solid rgba(0,0,0,0.12)",borderRadius:"14px",background:"rgba(0,0,0,0.02)"}}>
+<div style={{fontSize:"13px",fontWeight:600,fontFamily:"'DM Sans',sans-serif",marginBottom:"12px",color:"#1A1A1A"}}>{QUIZ[quizIdx].q[lang]}</div>
+<div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
+{QUIZ[quizIdx].opts.map(function(opt,oi){ return (
+<button key={oi} type="button" onClick={function(){ if(oi===QUIZ[quizIdx].a){ setQuizOk(true); setQuizError(false); } else { setQuizError(true); } }} style={{padding:"12px 14px",borderRadius:"10px",border:quizOk&&oi===QUIZ[quizIdx].a?"2px solid #1A8A3A":"2px solid #1A1A1A",background:quizOk&&oi===QUIZ[quizIdx].a?"#1A8A3A":"transparent",color:quizOk&&oi===QUIZ[quizIdx].a?"#fff":"#1A1A1A",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"13px",textAlign:"left"}}>{opt}</button>
+); })}
+</div>
+{quizError ? <div style={{marginTop:"10px",fontSize:"12px",color:"#C0392B",fontFamily:"'DM Sans',sans-serif"}}>{lang==="fr"?"Mauvaise réponse, réessayez.":lang==="es"?"Respuesta incorrecta, inténtalo de nuevo.":"Wrong answer, try again."}</div> : null}
+{quizOk ? <div style={{marginTop:"10px",fontSize:"12px",color:"#1A8A3A",fontFamily:"'DM Sans',sans-serif"}}>{lang==="fr"?"Bonne réponse !":lang==="es"?"¡Respuesta correcta!":"Correct!"}</div> : null}
+</div>
+<button onClick={handlePay} disabled={!formValid || paying} className="cta-dark" style={{width:"100%",padding:"17px",fontSize:"12px"}}>
           {paying ? t.confirm.processing : (t.confirm.pay + " " + total + "£ " + t.confirm.payVia)}
         </button>
       </div>
