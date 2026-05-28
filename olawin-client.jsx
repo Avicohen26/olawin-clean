@@ -386,6 +386,8 @@ export default function Olawin() {
   const [searching, setSearching] = useState(false);
   const [foundOrders, setFoundOrders] = useState(null);
   const [searchError, setSearchError] = useState(false);
+  const [ageVerified, setAgeVerified] = useState(function(){ try { return localStorage.getItem("olawin_age_ok") === "1"; } catch(e){ return false; } });
+  const [ageWarning, setAgeWarning] = useState(false);
   const topRef = useRef();
   const drawsRef = useRef();
 
