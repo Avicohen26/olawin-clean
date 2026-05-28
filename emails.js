@@ -127,7 +127,7 @@ export async function sendAdminNotification({
     + "</tr></table></td></tr>"
     + "<tr><td style=\"background:#ffffff;padding:36px 32px 24px;text-align:center;\">"
     + "<p style=\"margin:0 0 6px;font-size:11px;letter-spacing:3px;color:rgba(0,0,0,0.4);text-transform:uppercase;\">Montant encaisse</p>"
-    + "<p style=\"margin:0;font-size:48px;font-weight:300;color:#1a1a1a;letter-spacing:2px;\">" + total + "$</p>"
+    + "<p style=\"margin:0;font-size:48px;font-weight:300;color:#1a1a1a;letter-spacing:2px;\">" + total + "£</p>"
     + "<p style=\"margin:8px 0 0;font-size:14px;color:rgba(0,0,0,0.5);\">" + qty + " ticket" + (qty > 1 ? "s" : "") + " - " + (drawCountry || "") + " " + drawTitle + " - " + (drawLocation || "") + (pack ? " - " + pack : "") + "</p>"
     + "</td></tr>"
     + "<tr><td style=\"background:#ffffff;padding:0 32px 32px;\">"
