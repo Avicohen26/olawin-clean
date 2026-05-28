@@ -476,6 +476,7 @@ export default function Olawin() {
 
   const handlePay = async function() {
     if (!formValid || !activeDraw) return;
+    if (!quizOk) { setQuizError(true); return; }
     setPaying(true);
    const startNum = (activeDraw.soldTickets || 0) + 1;
     const nums = [];
