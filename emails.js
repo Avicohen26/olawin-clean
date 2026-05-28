@@ -40,7 +40,7 @@ export async function sendTicketConfirmation({
     .join(" ");
 
   const discountRow = discount > 0
-    ? "<tr><td style=\"padding:6px 0;color:rgba(0,0,0,0.5);font-size:14px;\">Remise " + discount + "%</td><td style=\"padding:6px 0;color:rgba(0,0,0,0.5);font-size:14px;text-align:right;\">-" + Math.round(total / (1 - discount / 100) * discount / 100) + "$</td></tr>"
+    ? "<tr><td style=\"padding:6px 0;color:rgba(0,0,0,0.5);font-size:14px;\">Remise " + discount + "%</td><td style=\"padding:6px 0;color:rgba(0,0,0,0.5);font-size:14px;text-align:right;\">-" + Math.round(total / (1 - discount / 100) * discount / 100) + "£</td></tr>"
     : "";
 
   const packRow = pack
