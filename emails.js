@@ -151,7 +151,7 @@ export async function sendAdminNotification({
 
   return sendEmail({
     to: ADMIN_EMAIL,
-    subject: "Nouvelle vente " + total + "$ - " + firstName + " " + lastName + " - " + qty + " ticket" + (qty > 1 ? "s" : ""),
+    subject: "Nouvelle vente " + total + "£ - " + firstName + " " + lastName + " - " + qty + " ticket" + (qty > 1 ? "s" : ""),
     html: html,
   });
 }
