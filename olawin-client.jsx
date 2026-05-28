@@ -388,6 +388,9 @@ export default function Olawin() {
   const [searchError, setSearchError] = useState(false);
   const [ageVerified, setAgeVerified] = useState(function(){ try { return localStorage.getItem("olawin_age_ok") === "1"; } catch(e){ return false; } });
   const [ageWarning, setAgeWarning] = useState(false);
+  const [quizIdx] = useState(function(){ return Math.floor(Math.random()*QUIZ.length); });
+  const [quizOk, setQuizOk] = useState(false);
+  const [quizError, setQuizError] = useState(false);
   const topRef = useRef();
   const drawsRef = useRef();
 
