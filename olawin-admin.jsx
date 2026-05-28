@@ -243,7 +243,7 @@ onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.file
 {k:"prize",l:"PRIX À GAGNER",t:"text",ph:"Bon hôtel 10 000$"},
 {k:"partner",l:"PARTENAIRE",t:"text",ph:"PrivateHonors.com"},
 {k:"emoji",l:"EMOJI",t:"text",ph:"🏝️"},
-{k:"ticketPrice",l:"PRIX TICKET ($)",t:"number",ph:"100"},
+{k:"ticketPrice",l:"PRIX TICKET (£)",t:"number",ph:"100"},
 {k:"totalTickets",l:"TOTAL TICKETS",t:"number",ph:"200"},
 {k:"endDate",l:"DATE CLÔTURE",t:"date"},
 {k:"drawDate",l:"DATE DU TIRAGE",t:"date"},
