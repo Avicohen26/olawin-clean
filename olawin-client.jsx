@@ -257,7 +257,7 @@ function DrawCard(props) {
         </div>
         <div>
           <div style={{fontSize:"13px",letterSpacing:"1px",color:"#ffffff",marginBottom:"8px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{draw.title ? draw.title.toUpperCase() : ""}</div>
-          <div style={{fontSize:"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#ffffff",lineHeight:0.95,marginBottom:"18px",fontWeight:"900",textShadow:TEXT_SHADOW_STRONG}}>{trd(draw,"title") ? trd(draw,"title").toUpperCase() : ""}</div>
+          <div style={{fontSize:"clamp(28px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",color:"#ffffff",lineHeight:0.95,marginBottom:"18px",fontWeight:"900",textShadow:TEXT_SHADOW_STRONG}}>{trd(draw,"prize") ? trd(draw,"prize").toUpperCase() : ""}</div>
           {!isFinished && draw.drawDate ? (
             <div style={{marginBottom:"12px",padding:"8px 12px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",borderRadius:"8px",border:"1px solid rgba(255,255,255,0.2)",textAlign:"center"}}>
               <Countdown endDate={draw.drawDate} t={t} compact={true}></Countdown>
