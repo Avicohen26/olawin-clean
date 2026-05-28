@@ -81,7 +81,7 @@ export async function sendTicketConfirmation({
     + packRow
     + discountRow
     + orderRow
-    + "<tr style=\"border-top:1px solid rgba(0,0,0,0.08);\"><td style=\"padding:14px 0 0;color:#1a1a1a;font-size:16px;font-weight:700;\">Total paye</td><td style=\"padding:14px 0 0;color:#1a1a1a;font-size:22px;font-weight:300;text-align:right;letter-spacing:1px;\">" + total + "$</td></tr>"
+    + "<tr style=\"border-top:1px solid rgba(0,0,0,0.08);\"><td style=\"padding:14px 0 0;color:#1a1a1a;font-size:16px;font-weight:700;\">Total paye</td><td style=\"padding:14px 0 0;color:#1a1a1a;font-size:22px;font-weight:300;text-align:right;letter-spacing:1px;\">" + total + "£</td></tr>"
     + "</table></td></tr>"
     + "<tr><td style=\"background:#1a1a1a;padding:32px 40px;\">"
     + "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>"
