@@ -562,6 +562,24 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
   const navShowIG = socialConfig && socialConfig.instagram && socialConfig.instagram.enabled && socialConfig.instagram.username;
   const navIgUrl = navShowIG ? "https://instagram.com/" + socialConfig.instagram.username.replace(/^@/, "") : "";
 
+  const comingSoonContent = (
+    <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(20,20,20,0.55)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"24px"}}>
+      <div style={{maxWidth:"460px",width:"100%",background:"#E8E4DC",borderRadius:"22px",padding:isMobile?"36px 24px":"48px 40px",textAlign:"center",boxShadow:"0 30px 80px rgba(0,0,0,0.4)",border:"1px solid rgba(0,0,0,0.08)"}}>
+        <OlawinLogo size={isMobile?42:52}></OlawinLogo>
+        <div style={{fontSize:"10px",letterSpacing:"4px",color:"rgba(0,0,0,0.4)",marginTop:"20px",marginBottom:"10px",fontFamily:"DM Sans, sans-serif"}}>{lang==="fr"?"BIENTÔT DISPONIBLE":lang==="es"?"PRÓXIMAMENTE":"COMING SOON"}</div>
+        <h2 style={{fontSize:isMobile?"clamp(28px,7vw,36px)":"clamp(32px,4vw,42px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:1,marginBottom:"18px",color:"#1A1A1A"}}>{lang==="fr"?"GAGNEZ VOS PLUS BEAUX VOYAGES":lang==="es"?"GANE SUS MEJORES VIAJES":"WIN YOUR MOST BEAUTIFUL JOURNEYS"}</h2>
+        <p style={{fontSize:"14px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"rgba(0,0,0,0.55)",lineHeight:"1.7",marginBottom:"28px"}}>{lang==="fr"?"Le site sera bientôt disponible. Restez connectés pour ne rien manquer du lancement.":lang==="es"?"El sitio estará disponible pronto. Manténgase conectado para no perderse el lanzamiento.":"The site will be available soon. Stay connected so you don't miss the launch."}</p>
+        <div style={{display:"flex",flexDirection:"column",gap:"12px",alignItems:"center"}}>
+          <a href="https://instagram.com/olawin.official" target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",justifyContent:"center",gap:"10px",background:"#1A1A1A",color:"#E8E4DC",textDecoration:"none",padding:"14px 28px",borderRadius:"12px",fontSize:"12px",fontFamily:"DM Sans, sans-serif",fontWeight:600,letterSpacing:"2.5px",minWidth:"220px"}}>
+            <InstagramIcon size={18}></InstagramIcon>
+            <span>{lang==="fr"?"SUIVEZ-NOUS":lang==="es"?"SÍGANOS":"FOLLOW US"}</span>
+          </a>
+          <div style={{fontSize:"11px",color:"rgba(0,0,0,0.4)",fontFamily:"DM Sans, sans-serif",letterSpacing:"1px"}}>@olawin.official</div>
+        </div>
+      </div>
+    </div>
+  );
+
   const navContent = (
     <nav style={{position:"sticky",top:0,zIndex:100,background:"rgba(216,212,206,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.09)",height:"64px",padding:isMobile?"0 16px":"0 48px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
       <div style={{display:"flex",alignItems:"center",gap:isMobile?"10px":"20px"}}>
