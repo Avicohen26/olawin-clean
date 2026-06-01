@@ -1053,8 +1053,9 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
 </div>
 </div>
 )}
-      {navContent}
-      {pageContent}
+      {comingSoonContent}
+        {navContent}
+        {pageContent}
       <footer style={{borderTop:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 20px":"48px",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:"20px",textAlign:isMobile?"center":"left"}}>
         <div>
           <OlawinLogo size={26}></OlawinLogo>
