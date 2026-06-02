@@ -791,6 +791,10 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
                 <h1 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(42px,5.5vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px",color:"#1A1A1A",fontWeight:"900"}}>{trd(activeDraw,"title") ? trd(activeDraw,"title").toUpperCase() : ""}</h1>
                 <div style={{fontSize:isMobile?"clamp(24px,6vw,32px)":"clamp(28px,3vw,40px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#1A1A1A",marginBottom:"24px",fontWeight:"800"}}>{trd(activeDraw,"prize") ? trd(activeDraw,"prize").toUpperCase() : ""}</div>
                 <p style={{fontSize:"15px",color:"rgba(0,0,0,0.65)",lineHeight:"1.8",marginBottom:"24px"}}>{trd(activeDraw,"description")}</p>
+                <div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"24px",padding:"10px 14px",background:"rgba(0,0,0,0.04)",border:"1px solid rgba(0,0,0,0.08)",borderRadius:"10px",width:"fit-content"}}>
+                  <span style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(0,0,0,0.45)",fontFamily:"DM Sans, sans-serif",fontWeight:500,textTransform:"uppercase"}}>{lang==="fr"?"Avec":lang==="es"?"Con":"With"}</span>
+                  <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"22px",width:"auto",objectFit:"contain"}}></img>
+                </div>
                 {activeDraw.drawDate && !isPast ? (
                   <div style={{marginBottom:"24px",padding:"16px 20px",background:"#1A1A1A",borderRadius:"12px",display:"inline-block"}}>
                     <div style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(255,255,255,0.5)",marginBottom:"6px"}}>{t.shop.drawDate}</div>
