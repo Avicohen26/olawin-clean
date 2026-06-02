@@ -562,7 +562,17 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
   const navShowIG = socialConfig && socialConfig.instagram && socialConfig.instagram.enabled && socialConfig.instagram.username;
   const navIgUrl = navShowIG ? "https://instagram.com/" + socialConfig.instagram.username.replace(/^@/, "") : "";
 
-  const comingSoonContent = (
+  const comingSoonBypass = (function(){
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var p = params.get("preview");
+      if (p === "olawin2026") { localStorage.setItem("olawin_preview", "olawin2026"); return true; }
+      if (p === "reset") { localStorage.removeItem("olawin_preview"); return false; }
+      return localStorage.getItem("olawin_preview") === "olawin2026";
+    } catch(e) { return false; }
+  })();
+
+  const comingSoonContent = comingSoonBypass ? null : (
     <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(20,20,20,0.55)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"24px"}}>
       <div style={{maxWidth:"460px",width:"100%",background:"#E8E4DC",borderRadius:"22px",padding:isMobile?"36px 24px":"48px 40px",textAlign:"center",boxShadow:"0 30px 80px rgba(0,0,0,0.4)",border:"1px solid rgba(0,0,0,0.08)"}}>
         <OlawinLogo size={isMobile?42:52}></OlawinLogo>
