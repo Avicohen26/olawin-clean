@@ -508,6 +508,7 @@ export default function Olawin() {
     var sep = stripeUrl.indexOf("?") >= 0 ? "&" : "?";
     window.location.href = stripeUrl + sep + "client_reference_id=" + encodeURIComponent(pendingOrderNumber) + "&prefilled_email=" + encodeURIComponent(form.email.toLowerCase().trim());
   };
+  const __SUPPRIMER_TOUT_CE_QUI_SUIT_JUSQUAU_VRAI_HANDLESEARCH__ = null;
   const handleSearch = async function() {
     try {
       await addDoc(collection(db,"orders"), {
