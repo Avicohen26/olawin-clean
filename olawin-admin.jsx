@@ -284,7 +284,7 @@ if (sugg) set("image", sugg);
 <div style={{marginBottom:"20px"}}>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"12px"}}>LIENS STRIPE (optionnel)</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>
-{[1,3,5,10,15,25,50].map(n => (
+{[1,2,3,4,5,6,7,8,9,10,15,25,50].map(n => (
 <div key={n} style={{display:"grid",gridTemplateColumns:"52px 1fr",gap:"7px",alignItems:"center"}}>
 <div style={{background:"rgba(0,0,0,0.05)",border:`1px solid ${C.border}`,borderRadius:"7px",padding:"8px",textAlign:"center",fontSize:"12px",color:C.textMd}}>{n}x</div>
 <input type="text" placeholder="buy.stripe.com/..." value={f.stripeLinks?.[n]||""} onChange={e=>set("stripeLinks",{...(f.stripeLinks||{}),[n]:e.target.value})} style={{...inp,fontSize:"11px",padding:"9px 10px"}}/>
