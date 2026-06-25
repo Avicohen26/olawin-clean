@@ -500,7 +500,7 @@ export default function Olawin() {
    const startNum = (activeDraw.soldTickets || 0) + 1;
     const nums = [];
     for (var qi = 0; qi < finalQty; qi++) { nums.push(startNum + qi); }
-    const orderNumber = genOrderNumber();
+    const orderNumber_legacy = genOrderNumber();
     try {
       await addDoc(collection(db,"orders"), {
         orderNumber: orderNumber,
