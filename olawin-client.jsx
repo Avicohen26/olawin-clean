@@ -481,7 +481,28 @@ export default function Olawin() {
     var stripeUrl = activeDraw.stripeLinks && activeDraw.stripeLinks[finalQty];
     if (!stripeUrl) { alert("Lien de paiement indisponible pour cette quantité. Contactez-nous."); return; }
     var pendingOrderNumber = genOrderNumber();
-    try { localStorage.setItem("olawin_pending_order", JSON.stringify({ orderNumber: pendingOrderNumber, drawId: activeDraw.id, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, drawDate: activeDraw.drawDate, firstName: form.firstName, lastName: form.lastName, email: form.email.toLowerCase().trim(), phoneCode: form.phoneCode, phone: form.phone, address: form.address, zip: form.zip, city: form.city, country: form.country, qty: finalQty, amount: total, discount: discount, pack: selectedPack ? selectedPack.qty : null, createdAt: Date.now() })); } catch(e) {}
+    try {
+      await addDoc(collection(db,"orders"), {
+        orderNumber: pendingOrderNumber,
+        drawId: activeDraw.id,
+        drawTitle: activeDraw.title,
+        drawLocation: activeDraw.location,
+        drawCountry: activeDraw.country,
+        drawDate: activeDraw.drawDate,
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email.toLowerCase().trim(),
+        phone: form.phoneCode + " " + form.phone,
+        address: form.address + ", " + form.zip + " " + form.city + ", " + form.country,
+        tickets: finalQty,
+        amount: total,
+        discount: discount,
+        pack: selectedPack ? selectedPack.qty : null,
+        status: "pending",
+        createdAt: serverTimestamp()
+      });
+    } catch(err) { console.error("Pending order error:", err); setPaying(false); alert("Erreur, veuillez réessayer."); return; }
+    try { localStorage.setItem("olawin_pending_order", JSON.stringify({ orderNumber: pendingOrderNumber, drawId: activeDraw.id, qty: finalQty, amount: total })); } catch(e) {}
     try { localStorage.setItem("olawin_client_info", JSON.stringify({ firstName: form.firstName, lastName: form.lastName, email: form.email, phoneCode: form.phoneCode, phone: form.phone, address: form.address, zip: form.zip, city: form.city, country: form.country })); } catch (e) {}
     var sep = stripeUrl.indexOf("?") >= 0 ? "&" : "?";
     window.location.href = stripeUrl + sep + "client_reference_id=" + encodeURIComponent(pendingOrderNumber) + "&prefilled_email=" + encodeURIComponent(form.email.toLowerCase().trim());
