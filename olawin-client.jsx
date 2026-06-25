@@ -479,6 +479,14 @@ export default function Olawin() {
     if (!formValid || !activeDraw) return;
     if (!quizOk) { setQuizError(true); return; }
     var stripeUrl = activeDraw.stripeLinks && activeDraw.stripeLinks[finalQty];
+    if (!stripeUrl) { alert("Lien de paiement indisponible pour cette quantité. Contactez-nous."); return; }
+    var pendingOrderNumber = genOrderNumber();
+    try { localStorage.setItem("olawin_pending_order", JSON.stringify({ orderNumber: pendingOrderNumber, drawId: activeDraw.id, drawTitle: activeDraw.title, drawLocation: activeDraw.location, drawCountry: activeDraw.country, drawDate: activeDraw.drawDate, firstName: form.firstName, lastName: form.lastName, email: form.email.toLowerCase().trim(), phoneCode: form.phoneCode, phone: form.phone, address: form.address, zip: form.zip, city: form.city, country: form.country, qty: finalQty, amount: total, discount: discount, pack: selectedPack ? selectedPack.qty : null, createdAt: Date.now() })); } catch(e) {}
+    try { localStorage.setItem("olawin_client_info", JSON.stringify({ firstName: form.firstName, lastName: form.lastName, email: form.email, phoneCode: form.phoneCode, phone: form.phone, address: form.address, zip: form.zip, city: form.city, country: form.country })); } catch (e) {}
+    var sep = stripeUrl.indexOf("?") >= 0 ? "&" : "?";
+    window.location.href = stripeUrl + sep + "client_reference_id=" + encodeURIComponent(pendingOrderNumber) + "&prefilled_email=" + encodeURIComponent(form.email.toLowerCase().trim());
+    return;
+    setPaying(true);
     if (!stripeUrl) { alert(t.confirm.bookingError || "Lien de paiement indisponible pour cette quantité. Contactez-nous."); return; }
     setPaying(true);
     var orderNumber = genOrderNumber();
