@@ -508,7 +508,7 @@ export default function Olawin() {
     var sep = stripeUrl.indexOf("?") >= 0 ? "&" : "?";
     window.location.href = stripeUrl + sep + "client_reference_id=" + encodeURIComponent(pendingOrderNumber) + "&prefilled_email=" + encodeURIComponent(form.email.toLowerCase().trim());
   };
-    var pendingOrderNumber = genOrderNumber();
+  const handleSearch = async function() {
     try {
       await addDoc(collection(db,"orders"), {
         orderNumber: pendingOrderNumber,
