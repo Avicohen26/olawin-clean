@@ -267,6 +267,30 @@ if (sugg) set("image", sugg);
 if (fi.k==="location") {
 const d = (e.target.value||"").toLowerCase();
 const emojiMap = {
+  "maurice":"🏝️","seychelles":"🏝️","bora bora":"🏝️","tahiti":"🏝️","polynesie":"🏝️","polynésie":"🏝️","maldives":"🏝️",
+  "miami":"🏖️","cancun":"🏖️","caraibes":"🏖️","caraïbes":"🏖️","republique dominicaine":"🏖️","république dominicaine":"🏖️","bahamas":"🏖️",
+  "los angeles":"🌴","californie":"🌴","bali":"🌴","thailande":"🌴","thaïlande":"🌴","phuket":"🌴",
+  "las vegas":"🎰",
+  "canada":"🍁",
+  "australie":"🦘","sydney":"🦘",
+  "angleterre":"🇬🇧","londres":"🇬🇧","royaume-uni":"🇬🇧",
+  "new york":"🗽","etats-unis":"🗽","états-unis":"🗽","usa":"🗽",
+  "dubai":"🏙️","dubaï":"🏙️","abu dhabi":"🏙️","singapour":"🏙️",
+  "tokyo":"🗼","japon":"🗼",
+  "paris":"🗼","france":"🇫🇷",
+  "italie":"🍝","rome":"🍝","venise":"🛶",
+  "grece":"🏛️","grèce":"🏛️","santorin":"🏛️",
+  "maroc":"🕌","marrakech":"🕌","egypte":"🏜️","égypte":"🏜️",
+  "laponie":"❄️","suisse":"🏔️","alpes":"⛷️",
+  "espagne":"🇪🇸","barcelone":"🇪🇸","ibiza":"🪩"
+};
+let foundEmoji = "";
+for (const key in emojiMap) { if (d.includes(key)) { foundEmoji = emojiMap[key]; break; } }
+if (foundEmoji) set("emoji", foundEmoji);
+}
+if (fi.k==="location") {
+const d = (e.target.value||"").toLowerCase();
+const emojiMap = {
   "maurice":"🏝️","maldives":"🏝️","seychelles":"🏝️","bora bora":"🏝️","tahiti":"🏝️","polynesie":"🏝️","polynésie":"🏝️",
   "bali":"🌴","thailande":"🌴","thaïlande":"🌴","phuket":"🌴","caraibes":"🌴","caraïbes":"🌴","republique dominicaine":"🌴","république dominicaine":"🌴","cancun":"🌴","mexique":"🌴",
   "dubai":"🏙️","dubaï":"🏙️","abu dhabi":"🏙️","singapour":"🏙️","hong kong":"🏙️",
