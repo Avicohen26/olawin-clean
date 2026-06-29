@@ -279,6 +279,16 @@ if (sugg) set("image", sugg);
   if (!(f.descriptionEn||"").trim()) set("descriptionEn", tplEn);
   if (!(f.descriptionEs||"").trim()) set("descriptionEs", tplEs);
 }} style={{...btn,width:"100%",padding:"10px",marginBottom:"12px",background:C.btnBg,color:C.btnText,fontSize:"11px",letterSpacing:"1px"}}>✨ Générer les descriptions (FR/EN/ES)</button>
+<button onClick={()=>{
+  var dest = f.location || "[DESTINATION]";
+  var val = f.prize || "[VALEUR]";
+  var tplFr = "Vivez l'évasion à " + dest + " ! 🌊🌴 Un séjour de rêve d'une valeur de " + val + " vous attend, entre plages paradisiaques, lagons turquoise et douceur de vivre. ✨ À partager en couple ou en famille. Participez et laissez le rêve devenir réalité ! 🌟";
+  var tplEn = "Experience the escape to " + dest + "! 🌊🌴 A dream getaway worth " + val + " awaits you, with paradise beaches, turquoise lagoons and a sweet way of life. ✨ To share as a couple or with your family. Enter now and let the dream come true! 🌟";
+  var tplEs = "¡Vive la evasión en " + dest + "! 🌊🌴 Te espera una escapada de ensueño valorada en " + val + ", entre playas paradisíacas, lagunas turquesas y dulzura de vivir. ✨ Para disfrutar en pareja o en familia. ¡Participa y haz realidad el sueño! 🌟";
+  if (!(f.description||"").trim()) set("description", tplFr);
+  if (!(f.descriptionEn||"").trim()) set("descriptionEn", tplEn);
+  if (!(f.descriptionEs||"").trim()) set("descriptionEs", tplEs);
+}} style={{...btn,width:"100%",padding:"10px",marginBottom:"12px",background:C.btnBg,color:C.btnText,fontSize:"11px",letterSpacing:"1px"}}>✨ Générer les descriptions (FR/EN/ES)</button>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px"}}>DESCRIPTION (FR)</div>
 <textarea placeholder="Description..." value={f.description||""} onChange={e=>set("description",e.target.value)} rows={3} style={{...inp,resize:"vertical"}}/>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px",marginTop:"12px"}}>DESCRIPTION (EN)</div>
