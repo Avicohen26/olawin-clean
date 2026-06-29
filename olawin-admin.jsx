@@ -1362,6 +1362,13 @@ return (
 <tr key={o.id} className="row" style={{borderBottom:`1px solid rgba(0,0,0,0.05)`}}>
 <td style={{padding:"13px 18px",fontSize:"13px",fontWeight:"500"}}>{o.firstName} {o.lastName}</td>
 <td style={{padding:"13px 18px",fontSize:"12px",color:C.textMd}}>{o.email}</td>
+<td style={{padding:"13px 18px"}}>
+{o.status==="paid" ? (
+<span style={{background:"rgba(34,170,90,0.12)",color:"#1a8a4a",border:"1px solid rgba(34,170,90,0.3)",borderRadius:"20px",padding:"3px 10px",fontSize:"11px",fontWeight:"600",whiteSpace:"nowrap"}}>✓ Payé</span>
+) : (
+<span style={{background:"rgba(230,150,20,0.12)",color:"#b8780f",border:"1px solid rgba(230,150,20,0.3)",borderRadius:"20px",padding:"3px 10px",fontSize:"11px",fontWeight:"600",whiteSpace:"nowrap"}}>⏳ En attente</span>
+)}
+</td>
 <td style={{padding:"13px 18px",fontSize:"13px",color:C.textMd}}>{o.tickets||0}x</td>
 <td style={{padding:"13px 18px"}}>
 <div style={{display:"flex",gap:"3px",flexWrap:"wrap",maxWidth:"180px"}}>
