@@ -490,7 +490,7 @@ export default function Olawin() {
           drawCountry: activeDraw.country,
           drawDate: activeDraw.drawDate,
           tickets: finalQty,
-          unitPrice: activeDraw.price,
+          unitPrice: activeDraw.ticketPrice,
           currency: activeDraw.currency || "gbp",
           firstName: form.firstName,
           lastName: form.lastName,
