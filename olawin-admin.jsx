@@ -264,6 +264,26 @@ if (fi.k==="location" && !f.image) {
 const sugg = getPhoto(e.target.value);
 if (sugg) set("image", sugg);
 }
+if (fi.k==="location") {
+const d = (e.target.value||"").toLowerCase();
+const emojiMap = {
+  "maurice":"🏝️","maldives":"🏝️","seychelles":"🏝️","bora bora":"🏝️","tahiti":"🏝️","polynesie":"🏝️","polynésie":"🏝️",
+  "bali":"🌴","thailande":"🌴","thaïlande":"🌴","phuket":"🌴","caraibes":"🌴","caraïbes":"🌴","republique dominicaine":"🌴","république dominicaine":"🌴","cancun":"🌴","mexique":"🌴",
+  "dubai":"🏙️","dubaï":"🏙️","abu dhabi":"🏙️","singapour":"🏙️","hong kong":"🏙️",
+  "new york":"🗽","etats-unis":"🗽","états-unis":"🗽","usa":"🗽","miami":"🌴","los angeles":"🌴",
+  "tokyo":"🗼","japon":"🗼","paris":"🗼","france":"🗼",
+  "italie":"🍝","rome":"🍝","venise":"🛶",
+  "grece":"🏛️","grèce":"🏛️","santorin":"🏛️",
+  "egypte":"🏜️","égypte":"🏜️","maroc":"🕌","marrakech":"🕌",
+  "laponie":"❄️","finlande":"❄️","norvege":"🏔️","norvège":"🏔️","suisse":"🏔️","alpes":"⛷️",
+  "londres":"🇬🇧","royaume-uni":"🇬🇧",
+  "espagne":"🇪🇸","barcelone":"🇪🇸","ibiza":"🪩",
+  "las vegas":"🎰"
+};
+let foundEmoji = "";
+for (const key in emojiMap) { if (d.includes(key)) { foundEmoji = emojiMap[key]; break; } }
+if (foundEmoji) set("emoji", foundEmoji);
+}
 }} style={inp}/>
 </div>
 ))}
