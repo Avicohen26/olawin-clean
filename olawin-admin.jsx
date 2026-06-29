@@ -313,16 +313,7 @@ if (foundEmoji) set("emoji", foundEmoji);
 ))}
 </div>
 <div style={{marginTop:"12px"}}>
-<button onClick={()=>{
-  var dest = f.location || "[DESTINATION]";
-  var val = f.prize || "[VALEUR]";
-  var tplFr = "Vivez l'évasion à " + dest + " ! 🌊🌴 Un séjour de rêve d'une valeur de " + val + " vous attend, entre plages paradisiaques, lagons turquoise et douceur de vivre. ✨ À partager en couple ou en famille. Participez et laissez le rêve devenir réalité ! 🌟";
-  var tplEn = "___EN___";
-  var tplEs = "___ES___";
-  if (!(f.description||"").trim()) set("description", tplFr);
-  if (!(f.descriptionEn||"").trim()) set("descriptionEn", tplEn);
-  if (!(f.descriptionEs||"").trim()) set("descriptionEs", tplEs);
-}} style={{...btn,width:"100%",padding:"10px",marginBottom:"12px",background:C.btnBg,color:C.btnText,fontSize:"11px",letterSpacing:"1px"}}>✨ Générer les descriptions (FR/EN/ES)</button>
+
 <button onClick={()=>{
   var dest = f.location || "[DESTINATION]";
   var val = f.prize || "[VALEUR]";
