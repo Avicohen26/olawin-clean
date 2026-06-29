@@ -282,7 +282,7 @@ if (sugg) set("image", sugg);
 </div>
 </div>
 <div style={{marginBottom:"20px"}}>
-<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"12px"}}>LIENS STRIPE (optionnel)</div>
+<div style={{display:"none",fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"12px"}}>LIENS STRIPE (optionnel)</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"8px"}}>
 {[].map(n => (
 <div key={n} style={{display:"grid",gridTemplateColumns:"52px 1fr",gap:"7px",alignItems:"center"}}>
