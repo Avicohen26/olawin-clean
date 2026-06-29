@@ -72,9 +72,21 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Calcul du montant total (en centimes pour Stripe)
+   // Calcul du montant total (en centimes pour Stripe)
+    // SÉCURITÉ : on lit le vrai prix dans Firebase, on ne fait PAS confiance au navigateur
     const finalQty = Number(tickets);
-    const finalUnitPrice = Number(unitPrice);
+
+    const drawSnap = await db.collection("draws").doc(drawId).get();
+    if (!drawSnap.exists) {
+      return res.status(400).json({ error: "Tirage introuvable" });
+    }
+    const serverDraw = drawSnap.data();
+    const serverUnitPrice = Number(serverDraw.ticketPrice);
+    if (!serverUnitPrice || serverUnitPrice <= 0) {
+      return res.status(400).json({ error: "Prix du tirage invalide" });
+    }
+
+    const finalUnitPrice = serverUnitPrice;
     const totalAmount = Math.round(finalUnitPrice * finalQty * 100);
 
     // Générer un numéro de commande unique
