@@ -87,7 +87,15 @@ export default async function handler(req, res) {
     }
 
     const finalUnitPrice = serverUnitPrice;
-    const totalAmount = Math.round(finalUnitPrice * finalQty * 100);
+
+    // SÉCURITÉ : la remise est validée côté serveur selon les paliers officiels.
+    // On NE fait PAS confiance au discount envoyé par le navigateur.
+    const PACK_DISCOUNTS = { 15: 10, 25: 15, 50: 20 };
+    const serverDiscount = PACK_DISCOUNTS[finalQty] || 0;
+
+    const baseAmount = finalUnitPrice * finalQty;
+    const discountedAmount = baseAmount - (baseAmount * serverDiscount / 100);
+    const totalAmount = Math.round(discountedAmount * 100);
 
     // Générer un numéro de commande unique
     const orderNumber = genOrderNumber();
