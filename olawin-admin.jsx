@@ -1285,33 +1285,6 @@ return (
 <div style={{marginBottom:"16px"}}>
 <button onClick={()=>{const NL=String.fromCharCode(10);const dOrders=orders.filter(o=>o.drawId===d.id);let totalTicketsVendus=0;dOrders.forEach(o=>{totalTicketsVendus+=(o.ticketNums||[]).length;});let csv="Numero ticket,Prenom,Nom,Email"+NL;dOrders.forEach(o=>{(o.ticketNums||[]).forEach(n=>{csv+=n+',"'+(o.firstName||"")+'","'+(o.lastName||"")+'","'+(o.email||"")+'"'+NL;});});const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="participants-"+((d.title||"tirage").replace(/[^a-zA-Z0-9]/g,"-"))+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);const recap="=== INFOS POUR RANDOMDRAWS ==="+NL+NL+"Nom du tirage : "+(d.title||"-")+NL+"Prix a gagner : "+(d.prize||"-")+NL+"Nombre de participants (entrees) : "+totalTicketsVendus+NL+"Numero le plus haut : "+totalTicketsVendus+NL+"Date du tirage : "+(d.drawDate||"-")+NL+NL+"-> Televerse le fichier CSV telecharge sur randomdraws.com"+NL+"-> Nombre d'entrees a indiquer : "+totalTicketsVendus;window.prompt("Copie ces infos pour randomdraws (Cmd+C) :", recap);notify("CSV telecharge + infos pretes");}} style={{...btn,display:"inline-block",background:"#1A1A1A",color:"#fff",padding:"11px 20px",fontSize:"12px",marginRight:"8px",border:"none",cursor:"pointer"}}>📥 EXPORTER PARTICIPANTS + INFOS</button><a href="https://www.randomdraws.com/" target="_blank" rel="noopener noreferrer" style={{...btn,display:"inline-block",background:"#25ab29",color:"#fff",padding:"11px 20px",fontSize:"12px",textDecoration:"none",marginRight:"8px"}}>🎲 LANCER LE TIRAGE (randomdraws.com)</a>
 <button onClick={()=>{const name=prompt("Nom complet du gagnant (ex: Jean Dupont):");if(!name)return;const cert=prompt("URL du certificat randomdraws.com (optionnel):")||"";updateDoc(doc(db,"draws",d.id),{winner:{name:name,certificateUrl:cert,date:new Date().toISOString()},status:"drawn",drawnAt:serverTimestamp()}).then(()=>notify("🏆 Gagnant enregistre : "+name));}} style={{...btn,background:"rgba(180,140,0,0.95)",color:"#fff",padding:"11px 20px",fontSize:"12px",border:"none",cursor:"pointer"}}>🏆 ENREGISTRER LE GAGNANT</button>
-
-</div>
-{d.winner && (
-<div style={{marginBottom:"16px",padding:"16px",background:"linear-gradient(135deg, rgba(180,140,0,0.1), rgba(140,100,0,0.08))",border:"1px solid rgba(180,140,0,0.25)",borderRadius:"12px"}}>
-<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"10px"}}>
-<div>
-<div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(140,100,0,0.8)",marginBottom:"6px"}}>🏆 GAGNANT</div>
-<div style={{fontSize:"18px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"2px",color:"rgba(120,80,0,1)",marginBottom:"4px"}}>{d.winner.name}</div>
-<div style={{fontSize:"12px",color:"rgba(140,100,0,0.85)"}}>📧 {d.winner.email} · 🎟️ Ticket #{d.winner.num}</div>
-</div>
-</div>
-</div>
-)}
-
-
-<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"12px",marginBottom:"16px"}}>
-{[{l:"PRIX",v:fmt(d.ticketPrice)},{l:"VENDUS",v:`${d.soldTickets||0}/${d.totalTickets||0}`},{l:"REVENUS",v:fmt((d.soldTickets||0)*(d.ticketPrice||0))},{l:"COMMANDES",v:orders.filter(o=>o.drawId===d.id).length}].map((s,i)=>(
-<div key={i} style={{background:C.cardAlt,border:`1px solid ${C.border}`,borderRadius:"10px",padding:"14px"}}>
-<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"5px"}}>{s.l}</div>
-<div style={{fontSize:"20px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"1px"}}>{s.v}</div>
-</div>
-))}
-</div>
-<div style={{background:"rgba(0,0,0,0.08)",borderRadius:"3px",height:"4px"}}>
-<div style={{width:`${pct}%`,height:"100%",background:C.btnBg,borderRadius:"3px"}}/>
-</div>
-<div style={{display:"flex",justifyContent:"space-between",marginTop:"6px"}}>
 <span style={{fontSize:"11px",color:C.textLt}}>Cloture: {fmtD(d.endDate)} · Tirage: {fmtD(d.drawDate)}</span>
 <span style={{fontSize:"11px",color:C.textMd,fontWeight:"500"}}>{pct}% vendus</span>
 </div>
