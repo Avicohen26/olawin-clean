@@ -13,7 +13,7 @@ if (!getApps().length) {
 const db = getFirestore();
 
 const RD_BASE = "https://api.randomdraws.com/";
-const DRAW_ID = "4EOkMMU00Xrus1qzLhaQ"; // tirage Maurice (test)
+const DRAW_ID = "4EOkMMU00Xrus1qzLhaQ";
 
 async function getToken() {
   const res = await fetch(RD_BASE + "tokens", {
@@ -40,7 +40,7 @@ async function buildEntries(drawId) {
     const o = doc.data();
     const nums = o.ticketNums || [];
     nums.forEach(n => {
-      rows.push(`${n},"${o.firstName||""}","${o.lastName||""}","${o.email||""}"`);
+      rows.push(n + ',"' + (o.firstName||"") + '","' + (o.lastName||"") + '","' + (o.email||"") + '"');
     });
   });
   return rows.join("\n");
@@ -101,17 +101,14 @@ async function getWinnersCsv(token, rdDrawId) {
   return raw;
 }
 
-// Parse le CSV des gagnants et enregistre le 1er gagnant dans le tirage Firebase
 async function saveWinnerToFirebase(drawId, winnersCsv) {
   const lines = winnersCsv.trim().split("\n");
   if (lines.length < 2) throw new Error("Aucun gagnant dans le CSV");
-  const cells = lines[1].split(",").map(c => c.replace(/^"|"$/g, "").trim());
-  // Colonnes : PrizeId, WinnerNo, EntryNo, Numero ticket, Prenom, Nom, Email
+  const cells = lines[1].split(",").map(function(c){ return c.replace(/^"|"$/g, "").trim(); });
   const num = cells[3];
   const prenom = cells[4];
   const nom = cells[5];
   const email = cells[6];
-
   await db.collection("draws").doc(drawId).update({
     winner: {
       name: (prenom + " " + nom).trim(),
@@ -131,37 +128,27 @@ export default async function handler(req, res) {
   }
   try {
     const steps = {};
-
     const token = await getToken();
-    steps.auth = "OK (token recu)";
-
+    steps.auth = "OK";
     const csv = await buildEntries(DRAW_ID);
     const filename = await uploadEntries(token, csv);
     steps.upload = filename;
-
     const rdDrawId = await createDraft(token, filename);
     steps.draftCreated = rdDrawId;
-
     await confirmDraw(token, rdDrawId);
     steps.confirmed = "OK";
-
-    await new Promise(r => setTimeout(r, 3000));
-
-    let winners = "";
+    await new Promise(function(r){ setTimeout(r, 3000); });
     try {
-      winners = await getWinnersCsv(token, rdDrawId);
+      const winners = await getWinnersCsv(token, rdDrawId);
       steps.winners = winners || "(vide)";
       const saved = await saveWinnerToFirebase(DRAW_ID, winners);
       steps.savedToFirebase = saved;
     } catch (e) {
       steps.winners = "Erreur : " + e.message;
     }
-
     return res.status(200).json({ ok: true, steps: steps });
   } catch (err) {
     console.error("create-random-draw error:", err);
     return res.status(500).json({ error: err.message });
-  }
-}
   }
 }
