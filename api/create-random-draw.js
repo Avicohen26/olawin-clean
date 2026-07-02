@@ -29,17 +29,21 @@ async function getToken() {
   return JSON.parse(raw).token;
 }
 
-function buildTestEntries() {
-  return [
-    "Numero ticket,Prenom,Nom,Email",
-    '1,"Alice","Test","alice@test.com"',
-    '2,"Bob","Test","bob@test.com"',
-    '3,"Chloe","Test","chloe@test.com"',
-    '4,"David","Test","david@test.com"',
-    '5,"Emma","Test","emma@test.com"',
-  ].join("\n");
+async function buildEntries(drawId) {
+  const snap = await db.collection("orders")
+    .where("drawId", "==", drawId)
+    .where("status", "==", "paid")
+    .get();
+  const rows = ["Numero ticket,Prenom,Nom,Email"];
+  snap.forEach(doc => {
+    const o = doc.data();
+    const nums = o.ticketNums || [];
+    nums.forEach(n => {
+      rows.push(`${n},"${o.firstName||""}","${o.lastName||""}","${o.email||""}"`);
+    });
+  });
+  return rows.join("\n");
 }
-
 async function uploadEntries(token, csvContent) {
   const form = new FormData();
   const blob = new Blob([csvContent], { type: "text/csv" });
