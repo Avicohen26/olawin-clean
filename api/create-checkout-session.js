@@ -132,7 +132,7 @@ export default async function handler(req, res) {
             currency: (currency || "gbp").toLowerCase(),
             product_data: {
               name: "Olawin - " + finalQty + " article" + (finalQty > 1 ? "s" : ""),
-              description: "Tirage du " + (drawDate || ""),
+              description: Thanks 
             },
             unit_amount: totalAmount,
           },
