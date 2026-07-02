@@ -109,7 +109,7 @@ export default async function handler(req, res) {
     const token = await getToken();
     steps.auth = "OK (token recu)";
 
-    const csv = buildTestEntries();
+    const csv = await buildEntries("4EOkMMU00Xrus1qzLhaQ");
     const filename = await uploadEntries(token, csv);
     steps.upload = filename;
 
