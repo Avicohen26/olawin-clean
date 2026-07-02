@@ -13,6 +13,7 @@ if (!getApps().length) {
 const db = getFirestore();
 
 const RD_BASE = "https://api.randomdraws.com/";
+const DRAW_ID = "4EOkMMU00Xrus1qzLhaQ"; // tirage Maurice (test)
 
 async function getToken() {
   const res = await fetch(RD_BASE + "tokens", {
@@ -44,6 +45,7 @@ async function buildEntries(drawId) {
   });
   return rows.join("\n");
 }
+
 async function uploadEntries(token, csvContent) {
   const form = new FormData();
   const blob = new Blob([csvContent], { type: "text/csv" });
@@ -99,6 +101,30 @@ async function getWinnersCsv(token, rdDrawId) {
   return raw;
 }
 
+// Parse le CSV des gagnants et enregistre le 1er gagnant dans le tirage Firebase
+async function saveWinnerToFirebase(drawId, winnersCsv) {
+  const lines = winnersCsv.trim().split("\n");
+  if (lines.length < 2) throw new Error("Aucun gagnant dans le CSV");
+  const cells = lines[1].split(",").map(c => c.replace(/^"|"$/g, "").trim());
+  // Colonnes : PrizeId, WinnerNo, EntryNo, Numero ticket, Prenom, Nom, Email
+  const num = cells[3];
+  const prenom = cells[4];
+  const nom = cells[5];
+  const email = cells[6];
+
+  await db.collection("draws").doc(drawId).update({
+    winner: {
+      name: (prenom + " " + nom).trim(),
+      email: email,
+      num: num,
+      date: new Date().toISOString(),
+    },
+    status: "drawn",
+    drawnAt: new Date().toISOString(),
+  });
+  return { name: (prenom + " " + nom).trim(), num: num, email: email };
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -109,7 +135,7 @@ export default async function handler(req, res) {
     const token = await getToken();
     steps.auth = "OK (token recu)";
 
-    const csv = await buildEntries("4EOkMMU00Xrus1qzLhaQ");
+    const csv = await buildEntries(DRAW_ID);
     const filename = await uploadEntries(token, csv);
     steps.upload = filename;
 
@@ -124,14 +150,18 @@ export default async function handler(req, res) {
     let winners = "";
     try {
       winners = await getWinnersCsv(token, rdDrawId);
-      steps.winners = winners || "(vide - tirage peut-etre pas encore termine)";
+      steps.winners = winners || "(vide)";
+      const saved = await saveWinnerToFirebase(DRAW_ID, winners);
+      steps.savedToFirebase = saved;
     } catch (e) {
-      steps.winners = "Pas encore dispo : " + e.message;
+      steps.winners = "Erreur : " + e.message;
     }
 
     return res.status(200).json({ ok: true, steps: steps });
   } catch (err) {
     console.error("create-random-draw error:", err);
     return res.status(500).json({ error: err.message });
+  }
+}
   }
 }
