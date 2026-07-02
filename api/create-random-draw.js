@@ -13,7 +13,6 @@ if (!getApps().length) {
 const db = getFirestore();
 
 const RD_BASE = "https://api.randomdraws.com/";
-const DRAW_ID = "4EOkMMU00Xrus1qzLhaQ";
 
 async function getToken() {
   const res = await fetch(RD_BASE + "tokens", {
@@ -36,10 +35,10 @@ async function buildEntries(drawId) {
     .where("status", "==", "paid")
     .get();
   const rows = ["Numero ticket,Prenom,Nom,Email"];
-  snap.forEach(doc => {
+  snap.forEach(function(doc) {
     const o = doc.data();
     const nums = o.ticketNums || [];
-    nums.forEach(n => {
+    nums.forEach(function(n) {
       rows.push(n + ',"' + (o.firstName||"") + '","' + (o.lastName||"") + '","' + (o.email||"") + '"');
     });
   });
@@ -60,7 +59,7 @@ async function uploadEntries(token, csvContent) {
   return JSON.parse(raw).filename;
 }
 
-async function createDraft(token, filename) {
+async function createScheduledDraw(token, filename, drawName, scheduleDate) {
   const res = await fetch(RD_BASE + "draws", {
     method: "POST",
     headers: {
@@ -68,12 +67,14 @@ async function createDraft(token, filename) {
       "Authorization": "Bearer " + token,
     },
     body: JSON.stringify({
-      name: "Test Olawin",
+      name: (drawName || "Tirage Olawin").slice(0, 50),
       organisation: "Olawin",
       uploadFilename: filename,
       headerRowsIncluded: true,
-      prizes: [{ id: 1, quantity: 1, reserves: 0, description: "Prix Test" }],
-      isScheduled: false,
+      prizes: [{ id: 1, quantity: 1, reserves: 0, description: "Prix Olawin" }],
+      isScheduled: true,
+      scheduleDate: scheduleDate,
+      timezone: "Europe/Paris",
     }),
   });
   const raw = await res.text();
@@ -103,7 +104,7 @@ async function getWinnersCsv(token, rdDrawId) {
 
 async function saveWinnerToFirebase(drawId, winnersCsv) {
   const lines = winnersCsv.trim().split("\n");
-  if (lines.length < 2) throw new Error("Aucun gagnant dans le CSV");
+  if (lines.length < 2) throw new Error("Aucun gagnant (tirage pas encore effectue ?)");
   const cells = lines[1].split(",").map(function(c){ return c.replace(/^"|"$/g, "").trim(); });
   const num = cells[3];
   const prenom = cells[4];
@@ -127,33 +128,44 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
   try {
-    const drawId = (req.body && req.body.drawId) || DRAW_ID;
-    const confirmed = req.body && req.body.confirmed;
+    const body = req.body || {};
+    const drawId = body.drawId;
+    const action = body.action;
+    const confirmed = body.confirmed;
 
-    if (!confirmed) {
-      return res.status(400).json({ error: "Confirmation requise avant de lancer le tirage." });
-    }
+    if (!drawId) return res.status(400).json({ error: "drawId manquant." });
+    if (!confirmed) return res.status(400).json({ error: "Confirmation requise." });
 
-    const steps = {};
+    const drawSnap = await db.collection("draws").doc(drawId).get();
+    if (!drawSnap.exists) return res.status(404).json({ error: "Tirage introuvable." });
+    const draw = drawSnap.data();
+
     const token = await getToken();
-    steps.auth = "OK";
-    const csv = await buildEntries(drawId);
-    const filename = await uploadEntries(token, csv);
-    steps.upload = filename;
-    const rdDrawId = await createDraft(token, filename);
-    steps.draftCreated = rdDrawId;
-    await confirmDraw(token, rdDrawId);
-    steps.confirmed = "OK";
-    await new Promise(function(r){ setTimeout(r, 3000); });
-    try {
-      const winners = await getWinnersCsv(token, rdDrawId);
-      steps.winners = winners || "(vide)";
-      const saved = await saveWinnerToFirebase(drawId, winners);
-      steps.savedToFirebase = saved;
-    } catch (e) {
-      steps.winners = "Erreur : " + e.message;
+
+    // ACTION 1 : PROGRAMMER le tirage
+    if (action === "schedule") {
+      const csv = await buildEntries(drawId);
+      const filename = await uploadEntries(token, csv);
+      const scheduleDate = new Date(draw.drawDate + "T12:00:00").toISOString();
+      const rdDrawId = await createScheduledDraw(token, filename, draw.title, scheduleDate);
+      await confirmDraw(token, rdDrawId);
+      await db.collection("draws").doc(drawId).update({
+        randomdrawsId: rdDrawId,
+        randomdrawsScheduledFor: draw.drawDate,
+      });
+      return res.status(200).json({ ok: true, action: "scheduled", rdDrawId: rdDrawId, scheduledFor: draw.drawDate });
     }
-    return res.status(200).json({ ok: true, steps: steps });
+
+    // ACTION 2 : RECUPERER le gagnant (apres la date)
+    if (action === "getWinner") {
+      const rdDrawId = draw.randomdrawsId;
+      if (!rdDrawId) return res.status(400).json({ error: "Ce tirage n'a pas ete programme via l'API." });
+      const winners = await getWinnersCsv(token, rdDrawId);
+      const saved = await saveWinnerToFirebase(drawId, winners);
+      return res.status(200).json({ ok: true, action: "winner", winner: saved });
+    }
+
+    return res.status(400).json({ error: "Action inconnue." });
   } catch (err) {
     console.error("create-random-draw error:", err);
     return res.status(500).json({ error: err.message });
