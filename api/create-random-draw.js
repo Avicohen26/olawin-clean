@@ -127,10 +127,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
   try {
+    const drawId = (req.body && req.body.drawId) || DRAW_ID;
+    const confirmed = req.body && req.body.confirmed;
+
+    if (!confirmed) {
+      return res.status(400).json({ error: "Confirmation requise avant de lancer le tirage." });
+    }
+
     const steps = {};
     const token = await getToken();
     steps.auth = "OK";
-    const csv = await buildEntries(DRAW_ID);
+    const csv = await buildEntries(drawId);
     const filename = await uploadEntries(token, csv);
     steps.upload = filename;
     const rdDrawId = await createDraft(token, filename);
@@ -141,7 +148,7 @@ export default async function handler(req, res) {
     try {
       const winners = await getWinnersCsv(token, rdDrawId);
       steps.winners = winners || "(vide)";
-      const saved = await saveWinnerToFirebase(DRAW_ID, winners);
+      const saved = await saveWinnerToFirebase(drawId, winners);
       steps.savedToFirebase = saved;
     } catch (e) {
       steps.winners = "Erreur : " + e.message;
