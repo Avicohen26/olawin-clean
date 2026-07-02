@@ -1285,33 +1285,7 @@ return (
 <div style={{marginBottom:"16px"}}>
 <button onClick={()=>{const NL=String.fromCharCode(10);const dOrders=orders.filter(o=>o.drawId===d.id);let totalTicketsVendus=0;dOrders.forEach(o=>{totalTicketsVendus+=(o.ticketNums||[]).length;});let csv="Numero ticket,Prenom,Nom,Email"+NL;dOrders.forEach(o=>{(o.ticketNums||[]).forEach(n=>{csv+=n+',"'+(o.firstName||"")+'","'+(o.lastName||"")+'","'+(o.email||"")+'"'+NL;});});const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="participants-"+((d.title||"tirage").replace(/[^a-zA-Z0-9]/g,"-"))+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);const recap="=== INFOS POUR RANDOMDRAWS ==="+NL+NL+"Nom du tirage : "+(d.title||"-")+NL+"Prix a gagner : "+(d.prize||"-")+NL+"Nombre de participants (entrees) : "+totalTicketsVendus+NL+"Numero le plus haut : "+totalTicketsVendus+NL+"Date du tirage : "+(d.drawDate||"-")+NL+NL+"-> Televerse le fichier CSV telecharge sur randomdraws.com"+NL+"-> Nombre d'entrees a indiquer : "+totalTicketsVendus;window.prompt("Copie ces infos pour randomdraws (Cmd+C) :", recap);notify("CSV telecharge + infos pretes");}} style={{...btn,display:"inline-block",background:"#1A1A1A",color:"#fff",padding:"11px 20px",fontSize:"12px",marginRight:"8px",border:"none",cursor:"pointer"}}>📥 EXPORTER PARTICIPANTS + INFOS</button><a href="https://www.randomdraws.com/" target="_blank" rel="noopener noreferrer" style={{...btn,display:"inline-block",background:"#25ab29",color:"#fff",padding:"11px 20px",fontSize:"12px",textDecoration:"none",marginRight:"8px"}}>🎲 LANCER LE TIRAGE (randomdraws.com)</a>
 <button onClick={()=>{const name=prompt("Nom complet du gagnant (ex: Jean Dupont):");if(!name)return;const cert=prompt("URL du certificat randomdraws.com (optionnel):")||"";updateDoc(doc(db,"draws",d.id),{winner:{name:name,certificateUrl:cert,date:new Date().toISOString()},status:"drawn",drawnAt:serverTimestamp()}).then(()=>notify("🏆 Gagnant enregistre : "+name));}} style={{...btn,background:"rgba(180,140,0,0.95)",color:"#fff",padding:"11px 20px",fontSize:"12px",border:"none",cursor:"pointer"}}>🏆 ENREGISTRER LE GAGNANT</button>
-<button onClick={async()=>{
-  if(!window.confirm("PROGRAMMER le tirage automatique pour la date du concours ?\n\nLes participants seront envoyes et le tirage aura lieu automatiquement a la date prevue.")) return;
-  if(!window.confirm("Es-tu VRAIMENT sur ? En production, cette action consomme 1 credit.")) return;
-  notify("Programmation en cours...");
-  try {
-    const r = await fetch("/api/create-random-draw",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({drawId:d.id,action:"schedule",confirmed:true})});
-    const data = await r.json();
-    if(data.ok && data.action==="scheduled"){
-      notify("✅ Tirage programme pour le "+data.scheduledFor);
-    } else {
-      alert("Reponse : "+JSON.stringify(data));
-    }
-  } catch(e){ alert("Erreur : "+e.message); }
-}} style={{...btn,background:"#25ab29",color:"#fff",padding:"11px 20px",fontSize:"12px",border:"none",cursor:"pointer",marginLeft:"8px"}}>📅 PROGRAMMER LE TIRAGE (API)</button>
-<button onClick={async()=>{
-  if(!window.confirm("Recuperer le gagnant de ce tirage ?\n\nA utiliser uniquement APRES la date du tirage.")) return;
-  notify("Recuperation du gagnant...");
-  try {
-    const r = await fetch("/api/create-random-draw",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({drawId:d.id,action:"getWinner",confirmed:true})});
-    const data = await r.json();
-    if(data.ok && data.winner){
-      notify("🏆 Gagnant : "+data.winner.name);
-    } else {
-      alert("Reponse : "+JSON.stringify(data));
-    }
-  } catch(e){ alert("Erreur : "+e.message); }
-}} style={{...btn,background:"rgba(0,90,180,0.9)",color:"#fff",padding:"11px 20px",fontSize:"12px",border:"none",cursor:"pointer",marginLeft:"8px"}}>🏆 RECUPERER LE GAGNANT (API)</button>
+
 </div>
 {d.winner && (
 <div style={{marginBottom:"16px",padding:"16px",background:"linear-gradient(135deg, rgba(180,140,0,0.1), rgba(140,100,0,0.08))",border:"1px solid rgba(180,140,0,0.25)",borderRadius:"12px"}}>
