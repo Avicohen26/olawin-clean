@@ -616,8 +616,7 @@ const footerContactEmail = (contentConfig && contentConfig.footer && contentConf
     } catch(e) { return false; }
   })();
 
-  const comingSoonContent = comingSoonBypass ? null : (
-    <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(20,20,20,0.55)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"24px"}}>
+const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset:0,zIndex:9999,background:"rgba(20,20,20,0.55)",backdropFilter:"blur(14px)",WebkitBackdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"24px"}}>
       <div style={{maxWidth:"460px",width:"100%",background:"#E8E4DC",borderRadius:"22px",padding:isMobile?"36px 24px":"48px 40px",textAlign:"center",boxShadow:"0 30px 80px rgba(0,0,0,0.4)",border:"1px solid rgba(0,0,0,0.08)"}}>
         <OlawinLogo size={isMobile?42:52}></OlawinLogo>
 <div style={{display:"flex",justifyContent:"center",gap:"6px",marginTop:"20px",marginBottom:"14px"}}>
