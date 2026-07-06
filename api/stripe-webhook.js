@@ -115,36 +115,54 @@ export default async function handler(req, res) {
     // Envoyer les emails (via l'endpoint Resend existant)
     try {
       const baseUrl = "https://" + (req.headers.host || "olawin.org");
+     const ticketsHtml = ticketNums.map(function(n){ return '<span style="display:inline-block;background:#f0ede6;border:1px solid #ddd;border-radius:8px;padding:8px 14px;margin:4px;font-family:monospace;font-size:15px;font-weight:bold;color:#1a1a1a;">#' + n + '</span>'; }).join("");
+      const clientHtml =
+        '<div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif;background:#f5f2ec;border-radius:16px;overflow:hidden;">' +
+          '<div style="background:#111;padding:32px;text-align:center;">' +
+            '<span style="background:#f5e6a0;color:#111;font-size:26px;font-weight:bold;letter-spacing:6px;padding:6px 16px;">OLAWIN</span>' +
+          '</div>' +
+          '<div style="background:#fff;padding:40px 32px;text-align:center;">' +
+            '<div style="font-size:40px;margin-bottom:16px;">🎟️</div>' +
+            '<div style="font-size:11px;letter-spacing:3px;color:#999;margin-bottom:12px;">PAIEMENT CONFIRMÉ</div>' +
+            '<div style="font-size:30px;color:#111;margin-bottom:16px;">Bonne chance, ' + (orderData.firstName || "") + ' !</div>' +
+            '<div style="font-size:15px;color:#555;margin-bottom:28px;">Vos ' + orderData.tickets + ' ticket(s) pour le tirage <strong>' + (orderData.drawTitle || "") + '</strong> sont enregistrés.</div>' +
+            '<div style="background:#faf8f3;border:1px solid #eee;border-radius:12px;padding:24px;margin-bottom:24px;">' +
+              '<div style="font-size:11px;letter-spacing:3px;color:#999;margin-bottom:16px;">VOS NUMÉROS DE TICKETS</div>' +
+              ticketsHtml +
+            '</div>' +
+            '<div style="font-size:13px;color:#888;">Commande ' + orderNumber + ' · Conservez cet email, vos numéros sont votre preuve de participation.</div>' +
+          '</div>' +
+          '<div style="background:#111;padding:20px;text-align:center;font-size:12px;color:#888;">L\'équipe Olawin</div>' +
+        '</div>';
+      const adminHtml =
+        '<div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif;background:#fff;border:1px solid #eee;border-radius:12px;padding:32px;">' +
+          '<div style="background:#111;color:#f5e6a0;font-weight:bold;letter-spacing:4px;padding:8px 14px;display:inline-block;margin-bottom:20px;">OLAWIN</div>' +
+          '<h2 style="color:#111;">Nouvelle commande payée</h2>' +
+          '<p><strong>Commande :</strong> ' + orderNumber + '</p>' +
+          '<p><strong>Client :</strong> ' + (orderData.firstName || "") + ' ' + (orderData.lastName || "") + '</p>' +
+          '<p><strong>Email :</strong> ' + orderData.email + '</p>' +
+          '<p><strong>Téléphone :</strong> ' + (orderData.phone || "—") + '</p>' +
+          '<p><strong>Tirage :</strong> ' + (orderData.drawTitle || "") + '</p>' +
+          '<p><strong>Tickets :</strong> ' + orderData.tickets + ' — Numéros : ' + ticketNums.join(", ") + '</p>' +
+          '<p><strong>Montant :</strong> ' + orderData.amount + '£</p>' +
+        '</div>';
       await Promise.allSettled([
-        // Email client
         fetch(baseUrl + "/api/send-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             to: orderData.email,
             subject: "Confirmation de votre commande Olawin — " + orderNumber,
-            html: "<h2>Merci pour votre commande !</h2>" +
-              "<p>Bonjour " + (orderData.firstName || "") + ",</p>" +
-              "<p>Votre paiement de <strong>" + orderData.amount + "£</strong> a bien été reçu.</p>" +
-              "<p><strong>Tirage :</strong> " + (orderData.drawTitle || "") + "</p>" +
-              "<p><strong>Numéros de tickets :</strong> " + ticketNums.join(", ") + "</p>" +
-              "<p><strong>Numéro de commande :</strong> " + orderNumber + "</p>" +
-              "<p>Bonne chance !</p><p>L'équipe Olawin</p>",
+            html: clientHtml,
           }),
         }),
-        // Email admin
         fetch(baseUrl + "/api/send-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             to: "contact@olawin.org",
             subject: "[Olawin] Nouvelle commande payée — " + orderNumber,
-            html: "<h2>Nouvelle commande payée</h2>" +
-              "<p><strong>Commande :</strong> " + orderNumber + "</p>" +
-              "<p><strong>Client :</strong> " + (orderData.firstName || "") + " " + (orderData.lastName || "") + " — " + orderData.email + "</p>" +
-              "<p><strong>Tirage :</strong> " + (orderData.drawTitle || "") + "</p>" +
-              "<p><strong>Tickets :</strong> " + orderData.tickets + " — Numéros : " + ticketNums.join(", ") + "</p>" +
-              "<p><strong>Montant :</strong> " + orderData.amount + "£</p>",
+            html: adminHtml,
           }),
         }),
       ]);
