@@ -1158,7 +1158,7 @@ return (
 <h1 style={{fontSize:"32px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginBottom:"4px"}}>Bonjour 👋</h1>
 <p style={{color:C.textMd,fontSize:"13px"}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</p>
 </div>
-<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"14px",marginBottom:"36px"}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"14px",marginBottom:"36px"}}>
 <StatCard icon="💰" label="REVENUS" value={fmt(totalRevenue)} sub={`${orders.length} commandes`}/>
 <StatCard icon="🎟️" label="TICKETS" value={totalTickets} sub="tous tirages"/>
   <StatCard icon="▣" label="TIRAGES ACTIFS" value={activeDraws} sub={`${draws.length} au total`}/>
