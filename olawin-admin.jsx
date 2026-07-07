@@ -1347,7 +1347,7 @@ return (
 <td style={{padding:"13px 18px",whiteSpace:"nowrap"}}>
 {o.status!=="paid" && (()=>{
   const prenom = o.firstName||"";
-  const tel = (o.phone||"").replace(/[^0-9]/g,"").replace(/^0/,"33");
+const tel = (o.phone||"").replace(/[^0-9]/g,"");
   const msgWa = encodeURIComponent("Bonjour "+prenom+", votre commande Olawin n'a pas ete finalisee. Vous pouvez la completer ici : https://www.olawin.org");
   const msgMail = encodeURIComponent("Bonjour "+prenom+",\n\nVotre commande Olawin n'a pas ete finalisee. Vous pouvez la completer sur https://www.olawin.org\n\nL'equipe Olawin");
   return (<>
