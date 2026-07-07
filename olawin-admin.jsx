@@ -1218,7 +1218,7 @@ return (
 </tr>
 </thead>
 <tbody>
-{orders.slice(0,5).map(o=>(
+{orders.filter(o=>o.status==="paid").slice(0,5).map(o=>(
 <tr key={o.id} className="row" style={{borderBottom:`1px solid rgba(0,0,0,0.05)`}}>
 <td style={{padding:"12px 20px",fontSize:"13px",fontWeight:"500"}}>{o.firstName} {o.lastName}</td>
 <td style={{padding:"12px 20px",fontSize:"13px",color:C.textMd}}>{o.tickets||0}x</td>
