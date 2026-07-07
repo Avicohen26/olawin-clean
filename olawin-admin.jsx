@@ -1159,7 +1159,7 @@ return (
 <p style={{color:C.textMd,fontSize:"13px"}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</p>
 </div>
 <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"14px",marginBottom:"36px"}}>
-<StatCard icon="💰" label="REVENUS" value={fmt(totalRevenue)} sub={`${orders.length} commandes`}/>
+<StatCard icon="💰" label="REVENUS" value={fmt(totalRevenue)} sub={`${paidOrders.length} commandes`}/>
 <StatCard icon="🎟️" label="TICKETS" value={totalTickets} sub="tous tirages"/>
   <StatCard icon="▣" label="TIRAGES ACTIFS" value={activeDraws} sub={`${draws.length} au total`}/>
 <StatCard icon="👥" label="PARTICIPANTS" value={orders.length} sub="acheteurs"/>
