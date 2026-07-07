@@ -264,9 +264,8 @@ function DrawCard(props) {
             </div>
           ) : null}
           <div style={{marginBottom:"4px"}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:"7px",alignItems:"baseline"}}>
-              <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.soldTickets}/{draw.totalTickets}</span>
-              <span style={{fontSize:"13px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{pct}%</span>
+           <div style={{display:"flex",justifyContent:"flex-start",marginBottom:"7px",alignItems:"baseline"}}>
+              <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.totalTickets} tickets</span>
             </div>
           <div style={{background:"rgba(255,255,255,0.25)",borderRadius:"2px",height:"3px"}}>
               <div style={{width:pct+"%",height:"100%",background:"#ffffff",borderRadius:"2px"}}></div>
