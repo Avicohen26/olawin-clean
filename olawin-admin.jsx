@@ -1162,7 +1162,8 @@ return (
 <StatCard icon="💰" label="REVENUS" value={fmt(totalRevenue)} sub={`${paidOrders.length} commandes`}/>
 <StatCard icon="🎟️" label="TICKETS" value={totalTickets} sub="tous tirages"/>
   <StatCard icon="▣" label="TIRAGES ACTIFS" value={activeDraws} sub={`${draws.length} au total`}/>
-<StatCard icon="👥" label="PARTICIPANTS" value={orders.length} sub="acheteurs"/>
+<StatCard icon="👥" label="PARTICIPANTS" value={paidOrders.length} sub="acheteurs"/>
+<StatCard icon="⏳" label="EN ATTENTE" value={orders.filter(o=>o.status!=="paid").length} sub="a relancer"/>
 </div>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
 <div>
