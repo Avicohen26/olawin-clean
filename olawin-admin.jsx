@@ -1061,8 +1061,9 @@ setShowCGV(false);
 notify("CGV mises a jour ✓");
 };
 
-const totalRevenue = orders.reduce((s,o)=>s+(o.amount||0),0);
-const totalTickets = orders.reduce((s,o)=>s+(o.tickets||0),0);
+const paidOrders = orders.filter(o=>o.status==="paid");
+const totalRevenue = paidOrders.reduce((s,o)=>s+(o.amount||0),0);
+const totalTickets = paidOrders.reduce((s,o)=>s+(o.tickets||0),0);
 const activeDraws = draws.filter(d=>d.status==="active").length;
 const filtered = orders.filter(o=>{
 const s = orderSearch.toLowerCase();
