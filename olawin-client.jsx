@@ -80,7 +80,7 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
   },
   es: {
     nav: { draws:"Sorteos", faq:"FAQ", legal:"Legal", buy:"COMPRAR", myTickets:"MIS BOLETOS" },
-    hero: { live:"SORTEO EL", buyTicket:"COMPRAR UN BOLETO", remaining:"boletos restantes de" },
+    hero: { live:"SORTEO EL", buyTicket:"COMPRAR UN BOLETO", remaining:"boletos restantes de", ticketsWord:"boletos" },
     section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO", upcoming:"PROXIMOS", past:"SORTEOS PASADOS" },
     countdown: { d:"d", h:"h", m:"m", s:"s", closed:"VENTAS CERRADAS", drawing:"SORTEO INMINENTE" },
     stats: { active:"SORTEOS ACTIVOS", value:"VALOR TOTAL", remaining:"BOLETOS DISPONIBLES", countries:"PAISES ELEGIBLES" },
