@@ -44,8 +44,7 @@ const T = {
   },
   fr: {
     nav: { draws:"Tirages", faq:"FAQ", legal:"Legal", buy:"ACHETER", myTickets:"MES TICKETS" },
-    hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets restants sur" },
-    section: { thisWeek:"CETTE SEMAINE", allDraws:"TOUS LES TIRAGES", activeDraws:"tirage(s) actif(s)", howItWorks:"COMMENT CA MARCHE", process:"PROCESSUS", upcoming:"A VENIR", past:"TIRAGES PASSES" },
+hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets restants sur", ticketsWord:"tickets" },    section: { thisWeek:"CETTE SEMAINE", allDraws:"TOUS LES TIRAGES", activeDraws:"tirage(s) actif(s)", howItWorks:"COMMENT CA MARCHE", process:"PROCESSUS", upcoming:"A VENIR", past:"TIRAGES PASSES" },
     countdown: { d:"j", h:"h", m:"m", s:"s", closed:"VENTES FERMEES", drawing:"TIRAGE IMMINENT" },
     stats: { active:"TIRAGES ACTIFS", value:"VALEUR TOTALE", remaining:"TICKETS RESTANTS", countries:"PAYS ELIGIBLES" },
     cta: { tryLuck:"TENTEZ VOTRE CHANCE", viewDraws:"VOIR LES TIRAGES", active:"tirage(s) actif(s)" },
