@@ -1345,29 +1345,14 @@ return (
 <td style={{padding:"13px 18px",fontSize:"14px",fontWeight:"600"}}>{fmt(o.amount)}</td>
 <td style={{padding:"13px 18px",fontSize:"12px",color:C.textLt}}>{fmtD(o.createdAt)}</td>
 <td style={{padding:"13px 18px",whiteSpace:"nowrap"}}>
-{o.status!=="paid" && (()=>{
-  const prenom = o.firstName||"";
-const tel = (o.phone||"").replace(/[^0-9]/g,"");
-  const msgWa = encodeURIComponent("Bonjour "+prenom+", votre commande Olawin n'a pas ete finalisee. Vous pouvez la completer ici : https://www.olawin.org");
-  const msgMail = encodeURIComponent("Bonjour "+prenom+",\n\nVotre commande Olawin n'a pas ete finalisee. Vous pouvez la completer sur https://www.olawin.org\n\nL'equipe Olawin");
-  return (<>
-    <a href={"https://wa.me/"+tel+"?text="+msgWa} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",marginRight:"6px",display:"inline-block",background:"rgba(37,180,80,0.1)",color:"#1a8a4a",border:"1px solid rgba(37,180,80,0.25)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px"}}>💬 WA</a>
-   <td style={{padding:"13px 18px",whiteSpace:"nowrap"}}>
-{o.status!=="paid" && (()=>{
-  const prenom = o.firstName||"";
-  const tel = (o.phone||"").replace(/[^0-9]/g,"");
-  const msgWa = encodeURIComponent("Bonjour "+prenom+", votre commande Olawin n'a pas ete finalisee. Vous pouvez la completer ici : https://www.olawin.org");
-  const msgMail = encodeURIComponent("Bonjour "+prenom+",\n\nVotre commande Olawin n'a pas ete finalisee. Vous pouvez la completer sur https://www.olawin.org\n\nL'equipe Olawin");
-  return (<>
-    <a href={"https://wa.me/"+tel+"?text="+msgWa} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",marginRight:"6px",display:"inline-block",background:"rgba(37,180,80,0.1)",color:"#1a8a4a",border:"1px solid rgba(37,180,80,0.25)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px"}}>💬 WA</a>
-    <a href={"mailto:"+(o.email||"")+"?subject=Votre commande Olawin&body="+msgMail} style={{textDecoration:"none",marginRight:"6px",display:"inline-block",background:"rgba(0,90,180,0.08)",color:"rgba(0,70,150,0.9)",border:"1px solid rgba(0,90,180,0.2)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px"}}>✉️ Mail</a>
-  </>);
-})()}
+{o.status!=="paid" ? (
+<span>
+<a href={"https://wa.me/"+((o.phone||"").replace(/[^0-9]/g,""))+"?text="+encodeURIComponent("Bonjour "+(o.firstName||"")+", votre commande Olawin n'a pas ete finalisee. Completez-la ici : https://www.olawin.org")} target="_blank" rel="noopener noreferrer" style={{textDecoration:"none",marginRight:"6px",background:"rgba(37,180,80,0.1)",color:"#1a8a4a",border:"1px solid rgba(37,180,80,0.25)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px"}}>💬 WA</a>
+<a href={"mailto:"+(o.email||"")+"?subject=Votre commande Olawin&body="+encodeURIComponent("Bonjour "+(o.firstName||"")+", votre commande Olawin n'a pas ete finalisee. Completez-la sur https://www.olawin.org")} style={{textDecoration:"none",marginRight:"6px",background:"rgba(0,90,180,0.08)",color:"rgba(0,70,150,0.9)",border:"1px solid rgba(0,90,180,0.2)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px"}}>✉️ Mail</a>
+</span>
+) : null}
 <button onClick={()=>deleteOrder(o.id, o.drawId, o.tickets||0)} style={{background:"rgba(160,0,0,0.06)",color:"rgba(140,0,0,0.7)",border:"1px solid rgba(160,0,0,0.12)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px",cursor:"pointer"}}>🗑</button>
 </td></tr>
-))}
-</tbody>
-</table>
 </div>
 )}
 </div>
