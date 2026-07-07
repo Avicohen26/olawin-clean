@@ -7,7 +7,7 @@ import { sendTicketConfirmation, sendAdminNotification } from "./emails";
 const T = {
   en: {
     nav: { draws:"Draws", faq:"FAQ", legal:"Legal", buy:"BUY", myTickets:"MY TICKETS" },
-    hero: { live:"DRAWING ON", buyTicket:"BUY A TICKET", remaining:"tickets remaining out of" },
+    hero: { live:"DRAWING ON", buyTicket:"BUY A TICKET", remaining:"tickets remaining out of", ticketsWord:"tickets" },
     section: { thisWeek:"THIS WEEK", allDraws:"ALL DRAWS", activeDraws:"active draws", howItWorks:"HOW IT WORKS", process:"PROCESS", upcoming:"UPCOMING", past:"PAST DRAWS" },
     countdown: { d:"d", h:"h", m:"m", s:"s", closed:"SALES CLOSED", drawing:"DRAW SOON" },
     stats: { active:"ACTIVE DRAWS", value:"TOTAL VALUE", remaining:"TICKETS LEFT", countries:"ELIGIBLE COUNTRIES" },
