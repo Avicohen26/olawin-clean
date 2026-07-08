@@ -449,7 +449,7 @@ export default function Olawin() {
   const total = baseTotal - savings;
   const pct = activeDraw ? Math.round((activeDraw.soldTickets / activeDraw.totalTickets) * 100) : 0;
   const formValid = form.firstName && form.lastName && form.email && form.phone && form.address && form.city && form.country;
-  const featured = activeDraws[0] || null;
+  const featured = activeDraws.length > 0 ? activeDraws.slice().sort(function(a,b){ return new Date(a.drawDate) - new Date(b.drawDate); })[0] : null;
   const heroData = heroConfig && heroConfig.enabled ? heroConfig : featured;
   const localeMap = { en:"en-US", fr:"fr-FR", es:"es-ES" };
   const fmtDate = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"short"}) : ""; };
