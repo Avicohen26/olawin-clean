@@ -735,6 +735,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
 {featured ? <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.totalTickets} {t.hero.ticketsWord}</div> : null}
 </div>
 </div>
+{activeDraws.length > 1 && !isMobile ? <div onClick={scrollToDraws} style={{position:"absolute",bottom:"28px",left:"50%",transform:"translateX(-50%)",cursor:"pointer",fontSize:"12px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG,zIndex:5,textAlign:"center"}}>↓ {t.section.allDraws}<span style={{display:"block",marginTop:"4px",fontSize:"20px",animation:"bounceDown 1.6s ease-in-out infinite"}}>⌄</span></div> : null}
           </section>
 
           {activeDraws.length > 0 ? (
