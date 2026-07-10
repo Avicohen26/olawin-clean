@@ -393,7 +393,7 @@ export default function Olawin() {
   const topRef = useRef();
   const drawsRef = useRef();
 
-  useEffect(function() {
+ useEffect(function() {
     const q = query(collection(db,"draws"), orderBy("createdAt","desc"));
     const unsub = onSnapshot(q, function(snap) {
       const data = snap.docs.map(function(d) { return Object.assign({ id: d.id }, d.data()); });
@@ -402,6 +402,20 @@ export default function Olawin() {
     }, function(err) { console.error("Firebase error:", err); setLoading(false); });
     return function() { unsub(); };
   }, []);
+  useEffect(function() {
+    if (draws.length === 0) return;
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var drawId = params.get("draw");
+      if (drawId) {
+        var found = draws.find(function(d){ return d.id === drawId; });
+        if (found) {
+          setSelectedDraw(found);
+          setPage("shop");
+        }
+      }
+    } catch(e) {}
+  }, [draws]);
 
   useEffect(function() {
     getDoc(doc(db,"settings","hero")).then(function(snap) {
