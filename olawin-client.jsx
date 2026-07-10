@@ -882,8 +882,8 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                           return (
                             <button key={pack.qty} onClick={function(){ setSelectedPack(isActive ? null : pack); setQty(0); setCustomQty(""); }} style={{border:"2px solid #1A1A1A",borderRadius:"12px",padding:"14px 16px",background:isActive?"#1A1A1A":"transparent",cursor:"pointer",textAlign:"left",color:isActive?"#fff":"#1A1A1A",fontFamily:"'DM Sans',sans-serif"}}>
                               <div style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"4px"}}>{pack.qty} {t.shop.tickets.toUpperCase()}</div>
-                              <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}£ <span style={{fontSize:"11px",color:"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
-                            </button>
+<div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{packTotal}£ <span style={{fontSize:"11px",color:isActive?"rgba(255,255,255,0.5)":"rgba(0,0,0,0.4)"}}>-{pack.discount}%</span></div>
+                              <div style={{fontSize:"11px",fontFamily:"'DM Sans',sans-serif",letterSpacing:"1px",marginTop:"4px",color:isActive?"rgba(255,255,255,0.7)":"rgba(0,0,0,0.5)"}}>🎯 {Math.round(pack.qty / activeDraw.totalTickets * 1000) / 10}% {t.shop.chances || "de chances"}</div>                            </button>
                           );
                         })}
                       </div>
