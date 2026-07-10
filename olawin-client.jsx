@@ -851,16 +851,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                     <div style={{fontSize:"10px",letterSpacing:"2px",color:"rgba(255,255,255,0.5)",marginBottom:"6px"}}>{t.shop.drawDate}</div>
                     <Countdown endDate={activeDraw.drawDate} t={t} compact={false}></Countdown>
                   </div>
-                ) : null}
-                <div style={{display:"flex",alignItems:"center",gap:isMobile?"16px":"24px"}}>
-                  <ArcProgress pct={pct} label={SOLD_LABEL}></ArcProgress>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:"18px",color:"#1A1A1A",marginBottom:"8px",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px"}}>{activeDraw.soldTickets}/{activeDraw.totalTickets} {t.shop.tickets.toUpperCase()}</div>
-                    <div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"3px"}}>
-                      <div style={{width:pct+"%",height:"100%",background:"#1A1A1A",borderRadius:"2px"}}></div>
-                    </div>
-                  </div>
-                  </div>
+                ) : null} 
               </div>
               <div style={{position:isMobile?"static":"sticky",top:"84px",height:"fit-content"}}>
                 <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"20px",padding:isMobile?"24px 20px":"36px",background:"rgba(0,0,0,0.02)",boxShadow:"0 32px 80px rgba(0,0,0,0.08)"}}>
