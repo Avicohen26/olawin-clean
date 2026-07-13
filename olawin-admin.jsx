@@ -1174,8 +1174,7 @@ return (
 <StatCard icon="🎟️" label="TICKETS" value={totalTickets} sub="tous tirages"/>
   <StatCard icon="▣" label="TIRAGES ACTIFS" value={activeDraws} sub={`${draws.length} au total`}/>
 <StatCard icon="👥" label="PARTICIPANTS" value={paidOrders.length} sub="acheteurs"/>
-<StatCard icon="⏳" label="EN ATTENTE" value={orders.filter(o=>o.status!=="paid").length} sub="a relancer"/>
-</div>
+<StatCard icon="⏳" label="EN ATTENTE" value={visibleOrders.filter(o=>o.status!=="paid").length} sub="a relancer"/></div>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
 <div>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt}}>TIRAGES</div>
