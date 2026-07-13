@@ -1065,7 +1065,18 @@ const paidOrders = orders.filter(o=>o.status==="paid");
 const totalRevenue = paidOrders.reduce((s,o)=>s+(o.amount||0),0);
 const totalTickets = paidOrders.reduce((s,o)=>s+(o.tickets||0),0);
 const activeDraws = draws.filter(d=>d.status==="active").length;
-const filtered = orders.filter(o=>{
+const norm = (v)=>(v||"").toString().toLowerCase().replace(/\s/g,"");
+const paidEmails = new Set(paidOrders.map(o=>norm(o.email)).filter(Boolean));
+const paidPhones = new Set(paidOrders.map(o=>norm(o.phone)).filter(Boolean));
+const visibleOrders = orders.filter(o=>{
+  if (o.status==="paid") return true;
+  const e = norm(o.email);
+  const p = norm(o.phone);
+  if (e && paidEmails.has(e)) return false;
+  if (p && paidPhones.has(p)) return false;
+  return true;
+});
+const filtered = visibleOrders.filter(o=>{
 const s = orderSearch.toLowerCase();
 return (o.firstName||"").toLowerCase().includes(s) ||
 (o.lastName||"").toLowerCase().includes(s) ||
