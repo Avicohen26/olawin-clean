@@ -789,8 +789,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
           <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
 {[
           { val: String(activeDraws.length), lbl: t.stats.active },
-          { val: activeDraws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + "£", lbl: t.stats.value },
-          { val: "100+", lbl: t.stats.countries }
+{ val: "$" + activeDraws.reduce(function(s,d){ var n = parseInt((d.prize||"").replace(/[^0-9]/g,""),10) || 0; return s + n; }, 0).toLocaleString(localeMap[lang]), lbl: t.stats.value },          { val: "100+", lbl: t.stats.countries }
         ].map(function(s, i) {
           return (
                 <div key={i} style={{textAlign:"center",padding:isMobile?"16px 12px":"0 24px"}}>
