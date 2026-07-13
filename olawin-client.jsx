@@ -790,7 +790,6 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
 {[
           { val: String(activeDraws.length), lbl: t.stats.active },
           { val: activeDraws.reduce(function(s,d){ return s + (d.ticketPrice * d.totalTickets); }, 0).toLocaleString(localeMap[lang]) + "£", lbl: t.stats.value },
-          { val: String(activeDraws.reduce(function(s,d){ return s + (d.totalTickets - d.soldTickets); }, 0)), lbl: t.stats.remaining },
           { val: "100+", lbl: t.stats.countries }
         ].map(function(s, i) {
           return (
