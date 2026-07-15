@@ -1175,6 +1175,9 @@ return (
   <StatCard icon="▣" label="TIRAGES ACTIFS" value={activeDraws} sub={`${draws.length} au total`}/>
 <StatCard icon="👥" label="PARTICIPANTS" value={paidOrders.length} sub="acheteurs"/>
 <StatCard icon="⏳" label="EN ATTENTE" value={visibleOrders.filter(o=>o.status!=="paid").length} sub="a relancer"/></div>
+<div style={{marginBottom:"36px"}}>
+<a href="https://vercel.com/avianglais-7761s-projects/olawin-clean/analytics?environment=all" target="_blank" rel="noopener noreferrer" style={{...btn,display:"inline-block",background:C.card,color:C.text,border:`1px solid ${C.border}`,padding:"12px 20px",fontSize:"12px",textDecoration:"none"}}>📊 VOIR LES STATISTIQUES DU SITE</a>
+</div>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
 <div>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt}}>TIRAGES</div>
