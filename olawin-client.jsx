@@ -68,7 +68,6 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
     faq: {
       title:"FAQ",
       items: [
-        items: [
         { q:"Comment fonctionne le tirage?", a:"A la date de cloture, un tirage aleatoire certifie est effectue en live sur nos reseaux." },
         { q:"Quand je recois mon ticket?", a:"Immediatement apres paiement Stripe, un email de confirmation vous est envoye automatiquement." },
         { q:"Que se passe-t-il si les tickets ne sont pas tous vendus?", a:"La date du tirage peut etre repoussee : le tirage a lieu des que tous les tickets sont vendus. Si le nombre de tickets requis n'est pas atteint, vous etes automatiquement rembourse." },
