@@ -105,10 +105,10 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
     faq: {
       title:"FAQ",
       items: [
-        { q:"Como funciona el sorteo?", a:"En la fecha de cierre, se realiza un sorteo aleatorio certificado en vivo en nuestras redes." },
+        { q:"Como funciona el sorteo?", a:"En la fecha de cierre, el sorteo se realiza en directo en nuestras redes con randomdraws.com. Randomdraws.com es una herramienta independiente dedicada a los sorteos aleatorios, que garantiza un resultado imparcial y transparente. Asi, cada sorteo es 100% aleatorio y verificable por todos." },
         { q:"Cuando recibo mi boleto?", a:"Inmediatamente despues del pago con Stripe, se envia un email de confirmacion automaticamente." },
-        { q:"Que pasa si no se venden todos los boletos?", a:"El sorteo se realiza igualmente. Tus posibilidades aumentan." },
-        { q:"Como uso el bono PrivateHonors?", a:"El ganador recibe un codigo por email en las 48h." },
+        { q:"Que pasa si no se venden todos los boletos?", a:"La fecha del sorteo puede aplazarse: el sorteo se realiza en cuanto se venden todos los boletos. Si no se alcanza el numero de boletos necesario, se te reembolsa automaticamente." },
+        { q:"Como uso el bono PrivateHonors?", a:"El dia del sorteo, el ganador recibe un mensaje por WhatsApp y nuestro equipo organiza directamente el viaje con el." },
         { q:"Es seguro el pago?", a:"100%. Stripe no almacena ningun dato bancario." }
       ]
     },
