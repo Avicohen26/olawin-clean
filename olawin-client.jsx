@@ -758,7 +758,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                   </div>
                   <div style={{fontSize:"12px",color:"rgba(0,0,0,0.4)"}}>{activeDraws.length} {t.section.activeDraws}</div>
                 </div>
-                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
+                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":(activeDraws.length<=2?"repeat(2,1fr)":"repeat(3,1fr)"),gap:"16px"}}>
                   {activeDraws.map(function(draw) {
                     return <DrawCard key={draw.id} draw={draw} t={t} onClick={function(){ setSelectedDraw(draw); goTo("shop"); }}></DrawCard>;
                   })}
