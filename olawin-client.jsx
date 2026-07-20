@@ -32,10 +32,10 @@ const T = {
     faq: {
       title:"FAQ",
       items: [
-        { q:"How does the draw work?", a:"At the closing date, a certified random draw is performed live on our channels." },
+        { q:"How does the draw work?", a:"On the closing date, the draw takes place live on our social media using randomdraws.com. Randomdraws.com is an independent tool dedicated to random draws, ensuring an impartial and transparent result. Every draw is therefore 100% random and verifiable by anyone." },
         { q:"When do I receive my ticket?", a:"Immediately after Stripe payment, a confirmation email is sent automatically." },
-        { q:"What happens if not all tickets are sold?", a:"The draw still takes place. Your chances increase." },
-        { q:"How do I use the PrivateHonors voucher?", a:"The winner receives a code by email within 48h." },
+        { q:"What happens if not all tickets are sold?", a:"The draw date can be postponed: the draw takes place as soon as all tickets are sold. If the required number of tickets is not reached, you are automatically refunded." },
+        { q:"How do I use the PrivateHonors voucher?", a:"On the day of the draw, the winner receives a WhatsApp message and our team arranges the trip directly with them." },
         { q:"Is payment secure?", a:"100%. Stripe does not store any banking data." }
       ]
     },
