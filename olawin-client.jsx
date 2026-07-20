@@ -786,18 +786,21 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
 {[
           { val: String(activeDraws.length), lbl: t.stats.active },
 { val: "$" + activeDraws.reduce(function(s,d){ var n = parseInt((d.prize||"").replace(/[^0-9]/g,""),10) || 0; return s + n; }, 0).toLocaleString(localeMap[lang]), lbl: t.stats.value },          { val: "100+", lbl: t.stats.countries },
-          { val: (
-            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:"7px"}}>
-              <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.35)",fontFamily:"system-ui,-apple-system,sans-serif"}}>{lang==="en"?"CERTIFIED BY":lang==="es"?"CERTIFICADOS POR":"CERTIFIÉS PAR"}</span>
-              <div style={{display:"flex",alignItems:"center",gap:isMobile?"5px":"7px"}}>
-                <svg width={isMobile?"22":"26"} height={isMobile?"22":"26"} viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="11" fill="none" stroke="#111" strokeWidth="1.4"></circle>
-                  <path fill="#111" transform="translate(3.6,3.6) scale(0.7)" d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"></path>
-                </svg>
-                <span style={{fontFamily:"'Arial Black',Helvetica,sans-serif",fontWeight:"800",fontSize:isMobile?"12px":"14px",letterSpacing:"-0.3px",color:"#111",whiteSpace:"nowrap"}}>randomdraws.com</span>
-              </div>
+         { val: (
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:isMobile?"7px":"9px"}}>
+              <svg width={isMobile?"26":"32"} height={isMobile?"26":"32"} viewBox="0 0 40 40" fill="none">
+                <circle cx="20" cy="20" r="18.5" fill="none" stroke="#1a1a1a" strokeWidth="1.8"></circle>
+                <g transform="translate(8,8)" stroke="#1a1a1a" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"></path>
+                  <path d="m18 2 4 4-4 4"></path>
+                  <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"></path>
+                  <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"></path>
+                  <path d="m18 14 4 4-4 4"></path>
+                </g>
+              </svg>
+              <span style={{fontFamily:"'Arial Black',Helvetica,sans-serif",fontWeight:"800",fontSize:isMobile?"15px":"19px",letterSpacing:"-0.5px",color:"#1a1a1a",whiteSpace:"nowrap"}}>randomdraws.com</span>
             </div>
-          ), lbl: "" }
+          ), lbl: (lang==="en"?"CERTIFIED BY":lang==="es"?"CERTIFICADOS POR":"CERTIFIÉS PAR") }
         ].map(function(s, i) {
           return (
                 <div key={i} style={{textAlign:"center",padding:isMobile?"16px 12px":"0 24px"}}>
