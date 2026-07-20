@@ -265,9 +265,6 @@ function DrawCard(props) {
            <div style={{display:"flex",justifyContent:"flex-start",marginBottom:"7px",alignItems:"baseline"}}>
               <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.totalTickets} tickets</span>
             </div>
-          <div style={{background:"rgba(255,255,255,0.25)",borderRadius:"2px",height:"3px"}}>
-              <div style={{width:pct+"%",height:"100%",background:"#ffffff",borderRadius:"2px"}}></div>
-            </div>
           </div>
           {isFinished && draw.winner && draw.winner.name ? (
             <div style={{marginTop:"12px",padding:"10px 14px",background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",borderRadius:"10px",border:"1px solid rgba(212,175,55,0.5)"}}>
