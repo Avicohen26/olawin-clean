@@ -84,7 +84,7 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
     section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO", upcoming:"PROXIMOS", past:"SORTEOS PASADOS" },
     countdown: { d:"d", h:"h", m:"m", s:"s", closed:"VENTAS CERRADAS", drawing:"SORTEO INMINENTE" },
     stats: { active:"SORTEOS ACTIVOS", value:"VALOR TOTAL", remaining:"BOLETOS DISPONIBLES", countries:"PAISES ELEGIBLES" },
-    cta: { tryLuck:"PRUEBA TU SUERTE", viewDraws:"VER SORTEOS", active:"sorteo(s) activo(s)" },
+cta: { tryLuck:"PRUEBA TU SUERTE", viewDraws:"VER SORTEOS", active:"sorteo(s) activo(s)", buyHint:"Haz clic para comprar tus boletos" },
     empty: { title:"NINGUN SORTEO EN CURSO", sub:"Vuelve pronto, nuevos sorteos cada semana!" },
     loading: "CARGANDO...",
     partner: "CON NUESTRO SOCIO",
