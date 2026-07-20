@@ -785,7 +785,19 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
           <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
 {[
           { val: String(activeDraws.length), lbl: t.stats.active },
-{ val: "$" + activeDraws.reduce(function(s,d){ var n = parseInt((d.prize||"").replace(/[^0-9]/g,""),10) || 0; return s + n; }, 0).toLocaleString(localeMap[lang]), lbl: t.stats.value },          { val: "100+", lbl: t.stats.countries }
+{ val: "$" + activeDraws.reduce(function(s,d){ var n = parseInt((d.prize||"").replace(/[^0-9]/g,""),10) || 0; return s + n; }, 0).toLocaleString(localeMap[lang]), lbl: t.stats.value },          { val: "100+", lbl: t.stats.countries },
+          { val: (
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:"7px"}}>
+              <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.35)",fontFamily:"system-ui,-apple-system,sans-serif"}}>{lang==="en"?"CERTIFIED BY":lang==="es"?"CERTIFICADOS POR":"CERTIFIÉS PAR"}</span>
+              <div style={{display:"flex",alignItems:"center",gap:isMobile?"5px":"7px"}}>
+                <svg width={isMobile?"22":"26"} height={isMobile?"22":"26"} viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="11" fill="none" stroke="#111" strokeWidth="1.4"></circle>
+                  <path fill="#111" transform="translate(3.6,3.6) scale(0.7)" d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"></path>
+                </svg>
+                <span style={{fontFamily:"'Arial Black',Helvetica,sans-serif",fontWeight:"800",fontSize:isMobile?"12px":"14px",letterSpacing:"-0.3px",color:"#111",whiteSpace:"nowrap"}}>randomdraws.com</span>
+              </div>
+            </div>
+          ), lbl: "" }
         ].map(function(s, i) {
           return (
                 <div key={i} style={{textAlign:"center",padding:isMobile?"16px 12px":"0 24px"}}>
