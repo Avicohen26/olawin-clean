@@ -11,7 +11,7 @@ const T = {
     section: { thisWeek:"THIS WEEK", allDraws:"ALL DRAWS", activeDraws:"active draws", howItWorks:"HOW IT WORKS", process:"PROCESS", upcoming:"UPCOMING", past:"PAST DRAWS" },
     countdown: { d:"d", h:"h", m:"m", s:"s", closed:"SALES CLOSED", drawing:"DRAW SOON" },
     stats: { active:"ACTIVE DRAWS", value:"TOTAL VALUE", remaining:"TICKETS LEFT", countries:"ELIGIBLE COUNTRIES" },
-    cta: { tryLuck:"TRY YOUR LUCK", viewDraws:"VIEW DRAWS", active:"active draw" },
+    cta: { tryLuck:"TRY YOUR LUCK", viewDraws:"VIEW DRAWS", active:"active draw", buyHint:"Click to buy your tickets" },
     empty: { title:"NO DRAW IN PROGRESS", sub:"Come back soon, new draws every week!" },
     loading: "LOADING...",
     partner: "WITH OUR PARTNER",
