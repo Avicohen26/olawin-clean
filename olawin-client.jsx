@@ -71,7 +71,7 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
         { q:"Comment fonctionne le tirage?", a:"A la date de cloture, un tirage aleatoire certifie est effectue en live sur nos reseaux." },
         { q:"Quand je recois mon ticket?", a:"Immediatement apres paiement Stripe, un email de confirmation vous est envoye automatiquement." },
         { q:"Que se passe-t-il si les tickets ne sont pas tous vendus?", a:La date du tirage peut etre repoussee : le tirage a lieu des que tous les tickets sont vendus. Si le nombre de tickets requis n'est pas atteint, vous etes automatiquement rembourse. },
-        { q:"Comment utiliser le bon PrivateHonors?", a:"Le gagnant recoit un code par email dans les 48h." },
+        { q:"Comment utiliser le bon PrivateHonors?", a:Le jour du tirage, le gagnant recoit un message sur WhatsApp et notre equipe organise directement le voyage avec lui. },
         { q:"Le paiement est-il securise?", a:"100%. Stripe ne stocke aucune donnee bancaire." }
       ]
     },
