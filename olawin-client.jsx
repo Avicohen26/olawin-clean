@@ -68,7 +68,7 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
     faq: {
       title:"FAQ",
       items: [
-        { q:"Comment fonctionne le tirage?", a:"A la date de cloture, un tirage aleatoire certifie est effectue en live sur nos reseaux." },
+        { q:"Comment fonctionne le tirage?", a:"A la date de cloture, le tirage est effectue en direct sur nos reseaux avec randomdraws.com. Randomdraws.com est un outil independant dedie aux tirages au sort aleatoires, qui garantit un resultat impartial et transparent. Chaque tirage est ainsi 100% aleatoire et verifiable par tous." },
         { q:"Quand je recois mon ticket?", a:"Immediatement apres paiement Stripe, un email de confirmation vous est envoye automatiquement." },
         { q:"Que se passe-t-il si les tickets ne sont pas tous vendus?", a:"La date du tirage peut etre repoussee : le tirage a lieu des que tous les tickets sont vendus. Si le nombre de tickets requis n'est pas atteint, vous etes automatiquement rembourse." },
         { q:"Comment utiliser le bon PrivateHonors?", a:"Le jour du tirage, le gagnant recoit un message sur WhatsApp et notre equipe organise directement le voyage avec lui." },
