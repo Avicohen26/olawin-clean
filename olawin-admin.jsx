@@ -1073,7 +1073,47 @@ const activeDraws = draws.filter(d=>d.status==="active").length;
 const norm = (v)=>(v||"").toString().toLowerCase().replace(/\s/g,"");
 const paidEmails = new Set(paidOrders.map(o=>norm(o.email)).filter(Boolean));
 const paidPhones = new Set(paidOrders.map(o=>norm(o.phone)).filter(Boolean));
-const visibleOrders = orders.filter(o=>{
+const _unsubSet = new Set((unsubList||[]).map(e=>norm(e)));
+const _seenC = new Set();
+const campaignRecipients = [];
+paidOrders.forEach(o=>{ const raw=(o.email||"").trim(); if(!raw) return; const k=norm(raw); if(_seenC.has(k)||_unsubSet.has(k)) return; _seenC.add(k); campaignRecipients.push(raw); });
+const CAMPAIGN_FROM = "Olawin <contact@olawin.org>";
+const buildEmailHtml = (bodyText, toEmail) => {
+  const safe = (bodyText||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+  const unsub = "mailto:contact@olawin.org?subject="+encodeURIComponent("Se desinscrire")+"&body="+encodeURIComponent("Merci de me desinscrire : "+toEmail);
+  return '<div style="max-width:560px;margin:0 auto;font-family:Arial,sans-serif;color:#1a1a1a;padding:24px;"><div style="font-size:26px;font-weight:800;margin-bottom:20px;">Olawin</div><div style="font-size:15px;line-height:1.6;">'+safe+'</div><div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e2dc;font-size:11px;color:#999999;">Tu recois cet email car tu es client Olawin. <a href="'+unsub+'" style="color:#999999;">Se desinscrire</a>.</div></div>';
+};
+const _sleep = (ms)=>new Promise(res=>setTimeout(res,ms));
+const _sendOne = async (toEmail, subject, html) => {
+  const r = await fetch("/api/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({to:toEmail,from:CAMPAIGN_FROM,subject:subject,html:html})});
+  if(!r.ok){ const d=await r.json().catch(()=>({})); throw new Error(d.error||("HTTP "+r.status)); }
+  return r.json();
+};
+const sendCampaignTest = async () => {
+  if(!campaignTest.trim()){ notify("Entre un email de test","err"); return; }
+  if(!campaignSubject||!campaignBody){ notify("Objet et message requis","err"); return; }
+  setCampaignSending(true);
+  try{ await _sendOne(campaignTest.trim(),"[TEST] "+campaignSubject,buildEmailHtml(campaignBody,campaignTest.trim())); notify("Email de test envoye ✓"); }
+  catch(e){ notify("Erreur test: "+e.message,"err"); }
+  setCampaignSending(false);
+};
+const sendCampaign = async () => {
+  if(!campaignSubject||!campaignBody){ notify("Objet et message requis","err"); return; }
+  const list = campaignRecipients;
+  if(!list.length){ notify("Aucun destinataire","err"); return; }
+  if(!window.confirm("Envoyer cet email a "+list.length+" client(s) ?")) return;
+  setCampaignSending(true);
+  let ok=0, fail=0;
+  for(let i=0;i<list.length;i++){
+    setCampaignProgress("Envoi "+(i+1)+"/"+list.length+" ("+ok+" ok, "+fail+" echecs)...");
+    try{ await _sendOne(list[i],campaignSubject,buildEmailHtml(campaignBody,list[i])); ok++; }
+    catch(e){ fail++; console.error("send fail",list[i],e); }
+    await _sleep(600);
+  }
+  setCampaignProgress("Termine : "+ok+" envoyes, "+fail+" echecs.");
+  setCampaignSending(false);
+  notify("Campagne terminee : "+ok+" envoyes"+(fail?(", "+fail+" echecs"):""));
+};const visibleOrders = orders.filter(o=>{
   if (o.status==="paid") return true;
   const e = norm(o.email);
   const p = norm(o.phone);
