@@ -1215,6 +1215,32 @@ return (
 <p style={{fontSize:"12px",letterSpacing:"3px",color:C.textLt}}>CHARGEMENT FIREBASE...</p>
 </div>
 )}
+{tab==="campaigns" && !loading && (
+<div style={{animation:"fadeUp 0.4s ease",maxWidth:"680px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>MARKETING</div>
+<h1 style={{fontSize:"34px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"8px"}}>CAMPAGNE EMAIL</h1>
+<p style={{fontSize:"13px",color:C.textMd,marginBottom:"24px"}}>Envoie un email a tes clients (ceux qui ont deja paye). Un lien de desinscription est ajoute automatiquement a chaque email.</p>
+<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"16px 20px",marginBottom:"20px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+<div>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px"}}>DESTINATAIRES</div>
+<div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1px"}}>{campaignRecipients.length} client(s)</div>
+</div>
+<button onClick={exportClientsCsv} style={{...btn,padding:"10px 16px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"12px"}}>⤓ Exporter les emails (CSV)</button>
+</div>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>OBJET DE L'EMAIL</div>
+<input value={campaignSubject} onChange={e=>setCampaignSubject(e.target.value)} placeholder="Ex: Nouveau tirage exclusif cette semaine !" style={{...inp,marginBottom:"16px"}}/>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>MESSAGE</div>
+<textarea value={campaignBody} onChange={e=>setCampaignBody(e.target.value)} placeholder="Ecris ton message ici..." rows={9} style={{...inp,marginBottom:"8px",resize:"vertical",lineHeight:"1.6"}}/>
+<div style={{fontSize:"11px",color:C.textLt,marginBottom:"20px"}}>Astuce : ecris simplement, la mise en forme (logo + pied de page) est ajoutee automatiquement.</div>
+<div style={{display:"flex",gap:"10px",marginBottom:"16px",flexWrap:"wrap"}}>
+<input value={campaignTest} onChange={e=>setCampaignTest(e.target.value)} placeholder="ton@email.com (test)" style={{...inp,flex:1,minWidth:"200px",marginBottom:0}}/>
+<button onClick={sendCampaignTest} disabled={campaignSending} style={{...btn,padding:"12px 18px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"12px"}}>Envoyer un test</button>
+</div>
+{campaignProgress && <div style={{fontSize:"12px",color:C.textMd,marginBottom:"14px"}}>{campaignProgress}</div>}
+<button onClick={sendCampaign} disabled={campaignSending||!campaignSubject||!campaignBody||campaignRecipients.length===0} style={{...btn,width:"100%",padding:"16px",background:C.btnBg,color:C.btnText,fontSize:"13px",opacity:(campaignSending||!campaignSubject||!campaignBody||campaignRecipients.length===0)?0.5:1}}>{campaignSending?"ENVOI EN COURS...":("ENVOYER A "+campaignRecipients.length+" CLIENT(S) →")}</button>
+<div style={{fontSize:"11px",color:C.textLt,marginTop:"12px",lineHeight:"1.5"}}>⚠️ RGPD : n'envoie qu'a tes clients (offres similaires), garde le lien de desinscription, et n'importe jamais de listes achetees.</div>
+</div>
+)}
 
 {!loading && tab==="dashboard" && (
 <div style={{animation:"fadeUp 0.4s ease"}}>
