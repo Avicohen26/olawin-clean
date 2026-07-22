@@ -16,6 +16,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const CAMPAIGN_SECRET = process.env.CAMPAIGN_SECRET;
+  if (!CAMPAIGN_SECRET || req.headers["x-olawin-token"] !== CAMPAIGN_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
   if (!RESEND_API_KEY) {
