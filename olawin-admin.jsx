@@ -1080,7 +1080,9 @@ const paidPhones = new Set(paidOrders.map(o=>norm(o.phone)).filter(Boolean));
 const _unsubSet = new Set((unsubList||[]).map(e=>norm(e)));
 const _seenC = new Set();
 const campaignRecipients = [];
-paidOrders.forEach(o=>{ const raw=(o.email||"").trim(); if(!raw) return; const k=norm(raw); if(_seenC.has(k)||_unsubSet.has(k)) return; _seenC.add(k); campaignRecipients.push(raw); });
+const _addRcpt = (raw)=>{ raw=(raw||"").trim(); if(!raw) return; const k=norm(raw); if(_seenC.has(k)||_unsubSet.has(k)) return; _seenC.add(k); campaignRecipients.push(raw); };
+paidOrders.forEach(o=>_addRcpt(o.email));
+(contacts||[]).forEach(_addRcpt);
 const CAMPAIGN_FROM = "Olawin <contact@olawin.org>";
 const exportClientsCsv = () => {
   const rows = [["email","prenom","nom","telephone"]];
