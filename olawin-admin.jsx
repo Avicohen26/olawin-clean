@@ -1078,7 +1078,16 @@ const _seenC = new Set();
 const campaignRecipients = [];
 paidOrders.forEach(o=>{ const raw=(o.email||"").trim(); if(!raw) return; const k=norm(raw); if(_seenC.has(k)||_unsubSet.has(k)) return; _seenC.add(k); campaignRecipients.push(raw); });
 const CAMPAIGN_FROM = "Olawin <contact@olawin.org>";
-const buildEmailHtml = (bodyText, toEmail) => {
+const exportClientsCsv = () => {
+  const rows = [["email","prenom","nom","telephone"]];
+  const seen = new Set();
+  paidOrders.forEach(o=>{ const email=(o.email||"").trim(); if(!email) return; const k=norm(email); if(seen.has(k)) return; seen.add(k); rows.push([email,(o.firstName||""),(o.lastName||""),((o.phoneCode||"")+" "+(o.phone||"")).trim()]); });
+  const csv = rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(",")).join("\n");
+  const blob = new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a"); a.href=url; a.download="clients-olawin.csv"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};const buildEmailHtml = (bodyText, toEmail) => {
   const safe = (bodyText||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
   const unsub = "mailto:contact@olawin.org?subject="+encodeURIComponent("Se desinscrire")+"&body="+encodeURIComponent("Merci de me desinscrire : "+toEmail);
   return '<div style="max-width:560px;margin:0 auto;font-family:Arial,sans-serif;color:#1a1a1a;padding:24px;"><div style="font-size:26px;font-weight:800;margin-bottom:20px;">Olawin</div><div style="font-size:15px;line-height:1.6;">'+safe+'</div><div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e2dc;font-size:11px;color:#999999;">Tu recois cet email car tu es client Olawin. <a href="'+unsub+'" style="color:#999999;">Se desinscrire</a>.</div></div>';
