@@ -1095,7 +1095,8 @@ const exportClientsCsv = () => {
 };
 const _sleep = (ms)=>new Promise(res=>setTimeout(res,ms));
 const _sendOne = async (toEmail, subject, html) => {
-  const r = await fetch("/api/send-email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({to:toEmail,from:CAMPAIGN_FROM,subject:subject,html:html})});
+  if(!campaignKey){ throw new Error("Cle d'envoi manquante — entre-la en bas de la page"); }
+  const r = await fetch("/api/send-email",{method:"POST",headers:{"Content-Type":"application/json","x-olawin-token":campaignKey},body:JSON.stringify({to:toEmail,from:CAMPAIGN_FROM,subject:subject,html:html})});
   if(!r.ok){ const d=await r.json().catch(()=>({})); throw new Error(d.error||("HTTP "+r.status)); }
   return r.json();
 };
