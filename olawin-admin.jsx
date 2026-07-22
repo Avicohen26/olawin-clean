@@ -1242,8 +1242,8 @@ return (
 <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"16px 20px",marginBottom:"20px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
 <div>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px"}}>DESTINATAIRES</div>
-<div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1px"}}>{campaignRecipients.length} client(s)</div>
-</div>
+<div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1px"}}>{campaignRecipients.length} destinataire(s)</div>
+{contacts.length>0 && <div style={{fontSize:"11px",color:C.textLt,marginTop:"4px"}}>dont {contacts.length} importe(s)</div>}</div>
 <button onClick={exportClientsCsv} style={{...btn,padding:"10px 16px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"12px"}}>⤓ Exporter les emails (CSV)</button>
 </div>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>CLE D'ENVOI (secrete)</div>
