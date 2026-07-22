@@ -1084,7 +1084,19 @@ const _addRcpt = (raw)=>{ raw=(raw||"").trim(); if(!raw) return; const k=norm(ra
 paidOrders.forEach(o=>_addRcpt(o.email));
 (contacts||[]).forEach(_addRcpt);
 const CAMPAIGN_FROM = "Olawin <contact@olawin.org>";
-const exportClientsCsv = () => {
+const importContacts = async (file) => {
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const found = (text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g)||[]);
+    if(!found.length){ notify("Aucun email trouve dans le fichier","err"); return; }
+    const seen=new Set(); const clean=[];
+    [...(contacts||[]), ...found].forEach(e=>{ const raw=(e||"").trim(); if(!raw) return; const k=norm(raw); if(seen.has(k)) return; seen.add(k); clean.push(raw); });
+    setContacts(clean);
+    await setDoc(doc(db,"settings","contacts"), { emails: clean, updatedAt: serverTimestamp() });
+    notify(found.length+" email(s) importe(s) — "+clean.length+" contacts au total ✓");
+  }catch(e){ notify("Erreur import: "+e.message,"err"); }
+};const exportClientsCsv = () => {
   const rows = [["email","prenom","nom","telephone"]];
   const seen = new Set();
   paidOrders.forEach(o=>{ const email=(o.email||"").trim(); if(!email) return; const k=norm(email); if(seen.has(k)) return; seen.add(k); rows.push([email,(o.firstName||""),(o.lastName||""),((o.phoneCode||"")+" "+(o.phone||"")).trim()]); });
