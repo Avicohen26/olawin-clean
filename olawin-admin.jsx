@@ -991,7 +991,8 @@ getDoc(doc(db,"settings","social")).then(snap => { if (snap.exists()) setSocialD
 getDoc(doc(db,"settings","content")).then(snap => { if (snap.exists()) setContentData(snap.data()); }).catch(()=>{});
 getDoc(doc(db,"settings","legal")).then(snap => { if (snap.exists()) setLegalData(snap.data()); }).catch(()=>{});
 getDoc(doc(db,"settings","unsubscribed")).then(snap => { if (snap.exists()) setUnsubList(snap.data().emails||[]); }).catch(()=>{});
-try{ const _ck=localStorage.getItem("olawin_campaign_key"); if(_ck) setCampaignKey(_ck); }catch(_e){}return () => { unsubD(); unsubO(); };
+try{ const _ck=localStorage.getItem("olawin_campaign_key"); if(_ck) setCampaignKey(_ck); }catch(_e){}
+getDoc(doc(db,"settings","contacts")).then(snap => { if (snap.exists()) setContacts(snap.data().emails||[]); }).catch(()=>{});return () => { unsubD(); unsubO(); };
 }, [authed]);
 
 const saveDraw = async (d) => {
