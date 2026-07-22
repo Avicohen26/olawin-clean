@@ -1244,8 +1244,10 @@ return (
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"6px"}}>DESTINATAIRES</div>
 <div style={{fontSize:"24px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"1px"}}>{campaignRecipients.length} destinataire(s)</div>
 {contacts.length>0 && <div style={{fontSize:"11px",color:C.textLt,marginTop:"4px"}}>dont {contacts.length} importe(s)</div>}</div>
-<button onClick={exportClientsCsv} style={{...btn,padding:"10px 16px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"12px"}}>⤓ Exporter les emails (CSV)</button>
-</div>
+<div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
+<label style={{...btn,padding:"10px 16px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"12px",cursor:"pointer"}}>⤴ Importer (.csv)<input type="file" accept=".csv,.txt" style={{display:"none"}} onChange={e=>{importContacts(e.target.files[0]); e.target.value="";}}/></label>
+<button onClick={exportClientsCsv} style={{...btn,padding:"10px 16px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"12px"}}>⤓ Exporter (CSV)</button>
+</div></div>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>CLE D'ENVOI (secrete)</div>
 <input type="password" value={campaignKey} onChange={e=>{setCampaignKey(e.target.value);try{localStorage.setItem("olawin_campaign_key",e.target.value);}catch(_e){}}} placeholder="colle ta cle CAMPAIGN_SECRET ici" style={{...inp,marginBottom:"16px"}}/><div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>OBJET DE L'EMAIL</div><input value={campaignSubject} onChange={e=>setCampaignSubject(e.target.value)} placeholder="Ex: Nouveau tirage exclusif cette semaine !" style={{...inp,marginBottom:"16px"}}/>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>MESSAGE</div>
