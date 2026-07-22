@@ -149,7 +149,7 @@ export default async function handler(req, res) {
       await Promise.allSettled([
         fetch(baseUrl + "/api/send-email", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-olawin-token": process.env.CAMPAIGN_SECRET },
           body: JSON.stringify({
             to: orderData.email,
             subject: "Confirmation de votre commande Olawin — " + orderNumber,
@@ -158,7 +158,7 @@ export default async function handler(req, res) {
         }),
         fetch(baseUrl + "/api/send-email", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "x-olawin-token": process.env.CAMPAIGN_SECRET },
           body: JSON.stringify({
             to: "contact@olawin.org",
             subject: "[Olawin] Nouvelle commande payée — " + orderNumber,
