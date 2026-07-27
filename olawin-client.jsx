@@ -146,8 +146,33 @@ function genOrderNumber() {
   return out;
 }
 
-function ReferralPage(props) {
-  const t = props.t; const lang = props.lang; const isMobile = props.isMobile; const goTo = props.goTo;
+function CheckoutBonus(props) {
+  const email = props.email;
+  const lang = props.lang;
+  const [q, setQ] = useState(null);
+  useEffect(function(){
+    if(!email || email.indexOf("@")<1 || email.indexOf(".")<0){ setQ(null); return; }
+    var cancelled = false;
+    var timer = setTimeout(function(){
+      var refCode = "";
+      try{ var _p = new URLSearchParams(window.location.search); refCode = _p.get("ref") || localStorage.getItem("olawin_ref") || ""; }catch(e){}
+      fetch("/api/quote", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email: email.toLowerCase().trim(), ref: refCode }) })
+        .then(function(r){ return r.json(); })
+        .then(function(d){ if(!cancelled) setQ(d); })
+        .catch(function(){ if(!cancelled) setQ(null); });
+    }, 700);
+    return function(){ cancelled = true; clearTimeout(timer); };
+  }, [email]);
+  if(!q || (!q.refDiscount && !q.freeApplied)) return null;
+  var L = function(fr,en,es){ return lang==="en"?en:lang==="es"?es:fr; };
+  return (
+    <div style={{background:"#e8f5e9",border:"1px solid #a5d6a7",borderRadius:"10px",padding:"12px 16px",marginBottom:"16px"}}>
+      {q.refDiscount>0 ? <div style={{fontSize:"13px",color:"#2e7d32",fontWeight:"700",marginBottom:q.freeApplied>0?"5px":"0"}}>{L("🎁 -10% parrainage applique au paiement","🎁 -10% referral discount applied at payment","🎁 -10% padrinazgo aplicado al pagar")}</div> : null}
+      {q.freeApplied>0 ? <div style={{fontSize:"13px",color:"#2e7d32",fontWeight:"700"}}>{L("🎁 +"+q.freeApplied+" ticket(s) gratuit(s) ajoute(s) a ta commande","🎁 +"+q.freeApplied+" free ticket(s) added to your order","🎁 +"+q.freeApplied+" boleto(s) gratis anadido(s)")}</div> : null}
+    </div>
+  );
+}
+function ReferralPage(props) {  const t = props.t; const lang = props.lang; const isMobile = props.isMobile; const goTo = props.goTo;
   const [rpEmail, setRpEmail] = useState("");
   const [rpLoading, setRpLoading] = useState(false);
   const [rpData, setRpData] = useState(null);
