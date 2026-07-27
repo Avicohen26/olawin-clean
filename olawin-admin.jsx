@@ -1087,6 +1087,25 @@ const _addRcpt = (raw)=>{ raw=(raw||"").trim(); if(!raw) return; const k=norm(ra
 paidOrders.forEach(o=>_addRcpt(o.email));
 (contacts||[]).forEach(_addRcpt);
 const CAMPAIGN_FROM = "Olawin <contact@olawin.org>";
+const createAffiliate = async () => {
+  const c = (affCode||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
+  if(!c){ notify("Code invalide (lettres/chiffres)","err"); return; }
+  if(!affName.trim()){ notify("Nom requis","err"); return; }
+  const p = Number(affPct); if(!p || p<=0 || p>100){ notify("Commission invalide (1-100)","err"); return; }
+  await setDoc(doc(db,"affiliates",c), { code:c, name:affName.trim(), commissionPct:p, paidCommission:0, active:true, createdAt: serverTimestamp() }, { merge:true });
+  setAffName(""); setAffCode(""); setAffPct("");
+  notify("Influenceur cree ✓");
+};
+const markAffiliatePaid = async (aff, totalCommission) => {
+  if(!window.confirm("Marquer la commission comme payee ? Le montant du repassera a 0.")) return;
+  await updateDoc(doc(db,"affiliates",aff.id), { paidCommission: totalCommission });
+  notify("Marque paye ✓");
+};
+const deleteAffiliate = async (id) => {
+  if(!window.confirm("Supprimer cet influenceur ?")) return;
+  await deleteDoc(doc(db,"affiliates",id));
+  notify("Supprime","err");
+};
 const importContacts = async (file) => {
   if(!file) return;
   try{
