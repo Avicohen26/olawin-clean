@@ -512,6 +512,7 @@ export default function Olawin() {
           city: form.city,
           country: form.country,
           discount: discount,
+          ref: (function(){ try{ var _p=new URLSearchParams(window.location.search); var _r=_p.get("ref")||localStorage.getItem("olawin_ref")||""; if(_r){ localStorage.setItem("olawin_ref", _r); } return _r; }catch(e){ return ""; } })(),
           pack: selectedPack ? selectedPack.qty : null
         })
       });
