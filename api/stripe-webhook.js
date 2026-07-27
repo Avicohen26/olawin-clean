@@ -110,7 +110,7 @@ export default async function handler(req, res) {
 
     // Incrémenter le compteur de tickets vendus du tirage
     await drawRef.update({
-      soldTickets: FieldValue.increment(orderData.tickets),
+      soldTickets: FieldValue.increment(totalEntries),
     });
 
     // === Parrainage & fidelite : comptage (Phase 1, sans recompense) ===
