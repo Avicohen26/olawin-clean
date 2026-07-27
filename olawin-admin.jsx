@@ -1321,8 +1321,9 @@ return (
 const paidO = orders.filter(function(o){ return o.status==="paid" && (o.referredBy||"").toString().toLowerCase()===(aff.code||"").toLowerCase(); });
 const sales = paidO.length;
 const ca = paidO.reduce(function(s,o){ return s + Number(o.amount||0); }, 0);
-const commission = Math.round(ca * Number(aff.commissionPct||0) / 100 * 100)/100;
-const due = Math.round((commission - Number(aff.paidCommission||0))*100)/100;
+const tks = paidO.reduce(function(s,o){ return s + Number(o.tickets||0); }, 0);
+const cval = Number(aff.commissionValue!=null?aff.commissionValue:(aff.commissionPct||0));
+const commission = aff.commissionType==="perticket" ? Math.round(tks*cval*100)/100 : Math.round(ca*cval/100*100)/100;const due = Math.round((commission - Number(aff.paidCommission||0))*100)/100;
 return (
 <div key={aff.id} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"18px 20px",marginBottom:"12px"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"12px"}}>
