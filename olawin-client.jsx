@@ -1034,6 +1034,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
           <label style={LBL}>{t.confirm.email}</label>
           <input type="email" value={form.email} onChange={function(e){ updateForm("email", e.target.value); }} style={INP}></input>
         </div>
+        <CheckoutBonus email={form.email} lang={lang}></CheckoutBonus>
         <div style={{marginBottom:"16px"}}>
           <label style={LBL}>{t.confirm.phone}</label>
           <div style={{display:"flex",gap:"8px"}}>
