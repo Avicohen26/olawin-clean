@@ -1313,8 +1313,8 @@ return (
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"12px"}}>NOUVEL INFLUENCEUR</div>
 <div style={{display:"grid",gridTemplateColumns:"1.3fr 1fr 80px 140px auto",gap:"10px",alignItems:"end"}}><div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>NOM</div><input value={affName} onChange={e=>setAffName(e.target.value)} placeholder="Marie Dupont" style={{...inp}}/></div>
 <div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>CODE (lien)</div><input value={affCode} onChange={e=>setAffCode(e.target.value)} placeholder="MARIE" style={{...inp}}/></div>
-<div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>COMMISSION %</div><input value={affPct} onChange={e=>setAffPct(e.target.value)} placeholder="10" style={{...inp}}/></div>
-<button onClick={createAffiliate} style={{...btn,padding:"13px 20px",background:C.btnBg,color:C.btnText,fontSize:"12px"}}>Creer</button>
+<div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>VALEUR</div><input value={affPct} onChange={e=>setAffPct(e.target.value)} placeholder={affType==="percent"?"10":"2"} style={{...inp}}/></div>
+<div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>TYPE</div><select value={affType} onChange={e=>setAffType(e.target.value)} style={{...inp}}><option value="percent">% du CA</option><option value="perticket">£ / ticket</option></select></div><button onClick={createAffiliate} style={{...btn,padding:"13px 20px",background:C.btnBg,color:C.btnText,fontSize:"12px"}}>Creer</button>
 </div>
 </div>
 {affiliates.length===0 ? <div style={{fontSize:"13px",color:C.textLt,textAlign:"center",padding:"30px"}}>Aucun influenceur pour le moment.</div> : affiliates.map(function(aff){
