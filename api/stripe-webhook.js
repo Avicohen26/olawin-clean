@@ -92,9 +92,10 @@ export default async function handler(req, res) {
     const drawRef = db.collection("draws").doc(orderData.drawId);
     const drawSnap = await drawRef.get();
     const drawData = drawSnap.exists ? drawSnap.data() : {};
+    const totalEntries = Number(orderData.tickets || 0) + Number(orderData.freeTickets || 0);
     const startNum = (drawData.soldTickets || 0) + 1;
     const ticketNums = [];
-    for (let i = 0; i < orderData.tickets; i++) {
+    for (let i = 0; i < totalEntries; i++) {
       ticketNums.push(startNum + i);
     }
 
