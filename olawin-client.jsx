@@ -195,8 +195,24 @@ function ReferralPage(props) {  const t = props.t; const lang = props.lang; cons
     <div style={{maxWidth:"560px",margin:"0 auto",padding:isMobile?"40px 20px":"60px 32px"}}>
       <button onClick={function(){ goTo("home"); }} style={{background:"none",border:"none",color:"rgba(0,0,0,0.38)",cursor:"pointer",fontSize:"11px",letterSpacing:"2px",marginBottom:"32px"}}>{L("< ACCUEIL","< HOME","< INICIO")}</button>
       <h2 style={{fontSize:isMobile?"32px":"40px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"8px"}}>{L("MON PARRAINAGE","MY REFERRALS","MI PADRINAZGO")}</h2>
-      <p style={{fontSize:"14px",color:"rgba(0,0,0,0.55)",marginBottom:"28px",lineHeight:"1.6"}}>{L("Invite tes amis avec ton lien perso. 4 amis qui achetent = 1 ticket gratuit. Et tous les 10 tickets achetes, 1 ticket offert !","Invite your friends with your personal link. 4 friends who buy = 1 free ticket. And every 10 tickets bought, 1 free ticket!","Invita a tus amigos con tu enlace. 4 amigos que compren = 1 boleto gratis. Y por cada 10 boletos, 1 boleto gratis!")}</p>
-      {!rpData ? (
+<p style={{fontSize:"15px",color:"rgba(0,0,0,0.6)",marginBottom:"24px",lineHeight:"1.6"}}>{L("Parraine tes amis et gagne des tickets gratuits pour tes tirages preferes. C'est simple et rapide :","Refer your friends and earn free tickets for your favorite draws. Simple and quick:","Invita a tus amigos y gana boletos gratis para tus sorteos favoritos. Facil y rapido:")}</p>
+<div style={{display:"flex",flexDirection:"column",gap:"14px",marginBottom:"32px"}}>
+{[
+{n:"1",t:L("Recupere ton lien","Get your link","Consigue tu enlace"),d:L("Entre ton email ci-dessous pour obtenir ton lien de parrainage personnel.","Enter your email below to get your personal referral link.","Ingresa tu email para obtener tu enlace personal.")},
+{n:"2",t:L("Partage-le","Share it","Compartelo"),d:L("Envoie ton lien a tes amis (WhatsApp, Instagram, SMS...).","Send your link to your friends (WhatsApp, Instagram, SMS...).","Envia tu enlace a tus amigos (WhatsApp, Instagram, SMS...).")},
+{n:"3",t:L("Ton ami gagne -10%","Your friend gets -10%","Tu amigo gana -10%"),d:L("Quand un ami passe par ton lien, il beneficie de -10% sur son 1er achat. Un bon argument pour le convaincre !","When a friend uses your link, they get -10% on their first purchase. A great reason to convince them!","Cuando un amigo usa tu enlace, obtiene -10% en su primera compra.")},
+{n:"4",t:L("Tu gagnes des tickets gratuits","You earn free tickets","Ganas boletos gratis"),d:L("4 amis qui achetent = 1 ticket gratuit. Et tous les 10 tickets que TU achetes = 1 ticket gratuit en plus !","4 friends who buy = 1 free ticket. And every 10 tickets YOU buy = 1 extra free ticket!","4 amigos que compran = 1 boleto gratis. Y cada 10 boletos que TU compras = 1 boleto gratis mas!")},
+{n:"5",t:L("Tout est automatique","Fully automatic","Todo automatico"),d:L("Tes tickets gratuits s'ajoutent tout seuls a ta prochaine commande. Rien a faire !","Your free tickets are automatically added to your next order. Nothing to do!","Tus boletos gratis se anaden automaticamente a tu proximo pedido.")}
+].map(function(step,i){ return (
+<div key={i} style={{display:"flex",gap:"14px",alignItems:"flex-start"}}>
+<div style={{flexShrink:0,width:"32px",height:"32px",borderRadius:"50%",background:"#1A1A1A",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"Bebas Neue, sans-serif",fontSize:"17px"}}>{step.n}</div>
+<div>
+<div style={{fontSize:"15px",fontWeight:"700",marginBottom:"3px",color:"#1A1A1A"}}>{step.t}</div>
+<div style={{fontSize:"13px",color:"rgba(0,0,0,0.55)",lineHeight:"1.5"}}>{step.d}</div>
+</div>
+</div>
+); })}
+</div>      {!rpData ? (
         <div>
           <label style={LBL}>{L("TON EMAIL","YOUR EMAIL","TU EMAIL")}</label>
           <input type="email" value={rpEmail} onChange={function(e){ setRpEmail(e.target.value); }} onKeyDown={function(e){ if(e.key==="Enter") rpLookup(); }} placeholder="email@exemple.com" style={Object.assign({}, INP, {marginBottom:"14px"})}></input>
