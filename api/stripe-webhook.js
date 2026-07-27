@@ -125,6 +125,7 @@ export default async function handler(req, res) {
           refCode: refCode,
           ticketsBought: FieldValue.increment(orderData.tickets || 0),
           ordersCount: FieldValue.increment(1),
+          freeRedeemed: FieldValue.increment(Number(orderData.freeTickets || 0)),
           updatedAt: FieldValue.serverTimestamp(),
         }, { merge: true });
       }
