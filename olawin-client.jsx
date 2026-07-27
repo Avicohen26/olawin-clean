@@ -146,6 +146,67 @@ function genOrderNumber() {
   return out;
 }
 
+function ReferralPage(props) {
+  const t = props.t; const lang = props.lang; const isMobile = props.isMobile; const goTo = props.goTo;
+  const [rpEmail, setRpEmail] = useState("");
+  const [rpLoading, setRpLoading] = useState(false);
+  const [rpData, setRpData] = useState(null);
+  const [rpErr, setRpErr] = useState("");
+  const [rpCopied, setRpCopied] = useState(false);
+  const L = function(fr, en, es){ return lang==="en" ? en : lang==="es" ? es : fr; };
+  const rpLookup = async function() {
+    if (!rpEmail || rpEmail.indexOf("@") < 0) { setRpErr(L("Email invalide","Invalid email","Email invalido")); return; }
+    setRpErr(""); setRpLoading(true); setRpData(null);
+    try {
+      const r = await fetch("/api/my-referral", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email: rpEmail }) });
+      const d = await r.json();
+      if (!r.ok) { throw new Error(d.error || "Erreur"); }
+      setRpData(d);
+    } catch (e) { setRpErr(e.message || "Erreur"); }
+    setRpLoading(false);
+  };
+  const rpCopy = function() { try { navigator.clipboard.writeText(rpData.link); setRpCopied(true); setTimeout(function(){ setRpCopied(false); }, 2000); } catch(e){} };
+  return (
+    <div style={{maxWidth:"560px",margin:"0 auto",padding:isMobile?"40px 20px":"60px 32px"}}>
+      <button onClick={function(){ goTo("home"); }} style={{background:"none",border:"none",color:"rgba(0,0,0,0.38)",cursor:"pointer",fontSize:"11px",letterSpacing:"2px",marginBottom:"32px"}}>{L("< ACCUEIL","< HOME","< INICIO")}</button>
+      <h2 style={{fontSize:isMobile?"32px":"40px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"8px"}}>{L("MON PARRAINAGE","MY REFERRALS","MI PADRINAZGO")}</h2>
+      <p style={{fontSize:"14px",color:"rgba(0,0,0,0.55)",marginBottom:"28px",lineHeight:"1.6"}}>{L("Invite tes amis avec ton lien perso. 4 amis qui achetent = 1 ticket gratuit. Et tous les 10 tickets achetes, 1 ticket offert !","Invite your friends with your personal link. 4 friends who buy = 1 free ticket. And every 10 tickets bought, 1 free ticket!","Invita a tus amigos con tu enlace. 4 amigos que compren = 1 boleto gratis. Y por cada 10 boletos, 1 boleto gratis!")}</p>
+      {!rpData ? (
+        <div>
+          <label style={LBL}>{L("TON EMAIL","YOUR EMAIL","TU EMAIL")}</label>
+          <input type="email" value={rpEmail} onChange={function(e){ setRpEmail(e.target.value); }} onKeyDown={function(e){ if(e.key==="Enter") rpLookup(); }} placeholder="email@exemple.com" style={Object.assign({}, INP, {marginBottom:"14px"})}></input>
+          {rpErr ? <div style={{fontSize:"13px",color:"#B00020",marginBottom:"14px"}}>{rpErr}</div> : null}
+          <button onClick={rpLookup} disabled={rpLoading} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{rpLoading ? L("CHARGEMENT...","LOADING...","CARGANDO...") : L("VOIR MON LIEN","GET MY LINK","VER MI ENLACE")}</button>
+        </div>
+      ) : (
+        <div>
+          <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"16px",padding:"24px",background:"rgba(0,0,0,0.02)",marginBottom:"20px"}}>
+            <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",marginBottom:"10px"}}>{L("TON LIEN DE PARRAINAGE","YOUR REFERRAL LINK","TU ENLACE")}</div>
+            <div style={{fontSize:"14px",fontWeight:"700",wordBreak:"break-all",marginBottom:"14px",color:"#1A1A1A"}}>{rpData.link}</div>
+            <button onClick={rpCopy} className="cta-dark" style={{width:"100%",padding:"14px",fontSize:"12px"}}>{rpCopied ? L("LIEN COPIE !","LINK COPIED!","ENLACE COPIADO!") : L("COPIER LE LIEN","COPY LINK","COPIAR ENLACE")}</button>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"18px"}}>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}>
+              <div style={{fontSize:"32px",fontFamily:"Bebas Neue, sans-serif"}}>{rpData.friends}</div>
+              <div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("AMIS QUI ONT ACHETE","FRIENDS WHO BOUGHT","AMIGOS QUE COMPRARON")}</div>
+              <div style={{fontSize:"11px",color:"rgba(0,0,0,0.5)",marginTop:"6px"}}>{L("Encore ","","")}{rpData.friendsToNext}{L(" avant 1 ticket"," until 1 free"," para 1 boleto")}</div>
+            </div>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}>
+              <div style={{fontSize:"32px",fontFamily:"Bebas Neue, sans-serif"}}>{rpData.tickets}</div>
+              <div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("TICKETS ACHETES","TICKETS BOUGHT","BOLETOS COMPRADOS")}</div>
+              <div style={{fontSize:"11px",color:"rgba(0,0,0,0.5)",marginTop:"6px"}}>{L("Encore ","","")}{rpData.ticketsToNext}{L(" avant 1 gratuit"," until 1 free"," para 1 gratis")}</div>
+            </div>
+          </div>
+          <div style={{textAlign:"center",padding:"16px",background:"#1A1A1A",borderRadius:"12px",marginBottom:"18px"}}>
+            <span style={{fontSize:"13px",color:"rgba(255,255,255,0.7)"}}>{L("Tickets gratuits gagnes : ","Free tickets earned: ","Boletos gratis: ")}</span>
+            <span style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",color:"#fff"}}>{(rpData.freeFromFriends||0)+(rpData.freeFromTickets||0)}</span>
+          </div>
+          <button onClick={function(){ setRpData(null); setRpEmail(""); }} style={{background:"none",border:"none",color:"rgba(0,0,0,0.4)",cursor:"pointer",fontSize:"12px",letterSpacing:"1px",width:"100%"}}>{L("Nouvelle recherche","New search","Nueva busqueda")}</button>
+        </div>
+      )}
+    </div>
+  );
+}
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
   useEffect(function() {
