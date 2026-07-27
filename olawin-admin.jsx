@@ -1328,8 +1328,7 @@ return (
 <div key={aff.id} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"18px 20px",marginBottom:"12px"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"12px"}}>
 <div>
-<div style={{fontSize:"17px",fontWeight:"700",marginBottom:"3px"}}>{aff.name} <span style={{fontSize:"12px",color:C.textLt}}>· {aff.commissionPct}%</span></div>
-<div style={{fontSize:"12px",color:C.textMd,fontFamily:"monospace"}}>olawin.org/?ref={aff.code}</div>
+<div style={{fontSize:"17px",fontWeight:"700",marginBottom:"3px"}}>{aff.name} <span style={{fontSize:"12px",color:C.textLt}}>· {aff.commissionType==="perticket" ? (cval+"£/ticket") : (cval+"% du CA")}</span></div><div style={{fontSize:"12px",color:C.textMd,fontFamily:"monospace"}}>olawin.org/?ref={aff.code}</div>
 </div>
 <button onClick={function(){ deleteAffiliate(aff.id); }} style={{...btn,padding:"6px 12px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"11px"}}>Supprimer</button>
 </div>
