@@ -969,7 +969,7 @@ const [unsubList, setUnsubList] = useState([]);
 const [campaignKey, setCampaignKey] = useState("");
 const [contacts, setContacts] = useState([]);
 const [affiliates, setAffiliates] = useState([]);
-const [affName, setAffName] = useState("");
+const [customers, setCustomers] = useState([]);const [affName, setAffName] = useState("");
 const [affCode, setAffCode] = useState("");
 const [affPct, setAffPct] = useState("");const [showSocial, setShowSocial] = useState(false);
 const [showContent, setShowContent] = useState(false);
