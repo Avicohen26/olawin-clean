@@ -983,10 +983,13 @@ const notify = (msg, type="ok") => { setNotif({msg,type}); setTimeout(()=>setNot
 useEffect(() => {
 if (!authed) return;
 const qDraws = query(collection(db,"draws"), orderBy("createdAt","desc"));
-const unsubD = onSnapshot(qDraws, (snap) => {
-setDraws(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-setLoading(false);
-}, (err) => { console.error("Firebase draws:", err); setLoading(false); notify("Erreur Firebase","err"); });
+const qOrders = query(collection(db,"orders"), orderBy("createdAt","desc"));
+const unsubO = onSnapshot(qOrders, (snap) => {
+setOrders(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+});
+const unsubA = onSnapshot(collection(db,"affiliates"), (snap) => {
+setAffiliates(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+}, ()=>{});
 const qOrders = query(collection(db,"orders"), orderBy("createdAt","desc"));
 const unsubO = onSnapshot(qOrders, (snap) => {
 setOrders(snap.docs.map(d => ({ id: d.id, ...d.data() })));
