@@ -1109,8 +1109,45 @@ const markAffiliatePaid = async (aff, totalCommission) => {
   await updateDoc(doc(db,"affiliates",aff.id), { paidCommission: totalCommission });
   notify("Marque paye ✓");
 };
-const deleteAffiliate = async (id) => {
-  if(!window.confirm("Supprimer cet influenceur ?")) return;
+const generateContract = (aff) => {
+  var d = new Date();
+  var today = ("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)+"/"+d.getFullYear();
+  var rem = aff.commissionType==="perticket" ? (aff.commissionValue+" £ par ticket vendu via son lien") : (aff.commissionValue+" % du chiffre d'affaires généré via son lien");
+  var html = `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Contrat - ${aff.name||""}</title>
+<style>body{font-family:Georgia,serif;max-width:720px;margin:0 auto;padding:40px;color:#1a1a1a;line-height:1.6;font-size:14px;}h1{font-size:22px;text-align:center;letter-spacing:1px;}h2{font-size:15px;margin-top:22px;border-bottom:1px solid #ccc;padding-bottom:4px;}.muted{color:#666;font-size:12px;}.sign{display:flex;justify-content:space-between;margin-top:56px;gap:30px;}.sign>div{width:45%;}.line{border-top:1px solid #333;margin-top:50px;padding-top:6px;font-size:12px;}.note{background:#fff8e1;border:1px solid #f0e0a0;padding:10px 14px;font-size:12px;margin-top:24px;}@media print{.noprint{display:none;}}</style></head><body>
+<button class="noprint" onclick="window.print()" style="padding:10px 18px;margin-bottom:16px;cursor:pointer;">Imprimer / Enregistrer en PDF</button>
+<h1>CONTRAT DE PARTENARIAT D'AFFILIATION</h1>
+<p class="muted" style="text-align:center;">Fait le ${today}</p>
+<h2>Entre les soussignés</h2>
+<p><strong>Olawin Ltd</strong>, société immatriculée sous le numéro 17289302, dont le siège est situé 20 Wenlock Road, Londres, N1 7GU, Angleterre, représentée par sa direction, ci-après dénommée « la Société » ou « Olawin »,</p>
+<p>ET</p>
+<p><strong>${aff.name||"[Nom de l'influenceur]"}</strong>, ci-après dénommé « le Partenaire »,</p>
+<h2>Article 1 — Objet</h2>
+<p>Le présent contrat a pour objet de définir les conditions dans lesquelles le Partenaire assure la promotion des jeux-concours organisés par Olawin, en contrepartie d'une rémunération, au moyen d'un lien d'affiliation personnel.</p>
+<h2>Article 2 — Lien d'affiliation</h2>
+<p>Olawin attribue au Partenaire un code unique : <strong>${aff.code||""}</strong>, correspondant au lien : <strong>https://www.olawin.org/?ref=${aff.code||""}</strong>. Toute vente réalisée via ce lien est automatiquement attribuée au Partenaire.</p>
+<h2>Article 3 — Rémunération</h2>
+<p>Le Partenaire perçoit une commission de <strong>${rem}</strong>. La commission est calculée sur les commandes effectivement payées. Les commandes annulées, remboursées ou faisant l'objet d'une rétrofacturation ne donnent lieu à aucune commission.</p>
+<h2>Article 4 — Paiement</h2>
+<p>Les commissions dues sont réglées par virement, sur présentation d'une facture par le Partenaire lorsqu'il y est assujetti. Le Partenaire demeure seul responsable de ses obligations fiscales et sociales.</p>
+<h2>Article 5 — Obligations du Partenaire</h2>
+<p>Le Partenaire s'engage à promouvoir Olawin de manière loyale et honnête, à respecter l'ensemble des lois et réglementations applicables (notamment celles relatives à la publicité des jeux d'argent et à l'influence commerciale), à indiquer clairement le caractère payant des tickets, à ne s'adresser qu'à un public majeur (18 ans et plus), à ne pas recourir au spam, et à ne formuler aucune promesse trompeuse quant aux chances de gain.</p>
+<h2>Article 6 — Durée et résiliation</h2>
+<p>Le présent contrat prend effet à sa signature, pour une durée indéterminée. Chaque partie peut y mettre fin à tout moment, par écrit. Les commissions acquises avant la résiliation restent dues.</p>
+<h2>Article 7 — Indépendance des parties</h2>
+<p>Le Partenaire agit en qualité de prestataire indépendant. Le présent contrat ne crée aucun lien de subordination, de société ou de mandat entre les parties.</p>
+<h2>Article 8 — Confidentialité</h2>
+<p>Chaque partie s'engage à conserver confidentielles les informations non publiques échangées dans le cadre du présent contrat.</p>
+<h2>Article 9 — Droit applicable</h2>
+<p>Le présent contrat est régi par le droit anglais. Tout litige relève de la compétence des tribunaux du Royaume-Uni.</p>
+<div class="sign"><div><div class="line">Pour Olawin</div><p style="font-family:'Brush Script MT',cursive;font-size:24px;margin-top:8px;">Olawin</p></div><div><div class="line">Le Partenaire — ${aff.name||""}</div><p class="muted">Signature précédée de la mention « Lu et approuvé »</p></div></div>
+<div class="note"><strong>Note :</strong> modèle de contrat fourni à titre indicatif, à faire relire et valider par un professionnel du droit avant signature.</div>
+</body></html>`;
+  var w = window.open("", "_blank");
+  if(!w){ notify("Autorise les pop-ups pour generer le contrat","err"); return; }
+  w.document.write(html); w.document.close();
+};
+const deleteAffiliate = async (id) => {  if(!window.confirm("Supprimer cet influenceur ?")) return;
   await deleteDoc(doc(db,"affiliates",id));
   notify("Supprime","err");
 };
