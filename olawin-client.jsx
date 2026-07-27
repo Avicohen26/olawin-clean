@@ -890,8 +890,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                       <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(0,0,0,0.38)",marginBottom:"5px"}}>{t.shop.reserve}</div>
                       <div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"24px",color:"#1A1A1A",fontWeight:"900"}}>{activeDraw.ticketPrice}£ {t.shop.perTicket}</div>
                       <div style={{marginBottom:"20px"}}>
-<div style={{fontSize:"13px",color:"rgba(0,0,0,0.55)",fontWeight:"600",marginBottom:"18px"}}>{Math.max(0,(activeDraw.totalTickets||0)-(activeDraw.soldTickets||0))} {t.hero.remaining} {activeDraw.totalTickets}</div>
-<div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>                        <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
+<div style={{fontSize:"13px",color:"rgba(0,0,0,0.55)",fontWeight:"600",marginBottom:"18px"}}>{activeDraw.totalTickets} {t.shop.tickets}</div><div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.38)",marginBottom:"10px"}}>{t.shop.individual}</div>                        <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"6px"}}>
                           {TICKET_OPTS.map(function(n) {
                             const cls = "qty-btn" + (qty===n && !selectedPack && customQty==="" ? " active" : "");
                             return <button key={n} onClick={function(){ setQty(n); setCustomQty(""); setSelectedPack(null); }} className={cls} style={{padding:isMobile?"14px 0":"11px 0",fontSize:isMobile?"18px":"16px",minHeight:"44px"}}>{n}</button>;
