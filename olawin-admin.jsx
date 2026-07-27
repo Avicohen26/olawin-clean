@@ -1257,6 +1257,47 @@ return (
 <p style={{fontSize:"12px",letterSpacing:"3px",color:C.textLt}}>CHARGEMENT FIREBASE...</p>
 </div>
 )}
+{tab==="affiliates" && !loading && (
+<div style={{animation:"fadeUp 0.4s ease",maxWidth:"860px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>AFFILIATION</div>
+<h1 style={{fontSize:"34px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"8px"}}>INFLUENCEURS</h1>
+<p style={{fontSize:"13px",color:C.textMd,marginBottom:"24px"}}>Cree un lien par influenceur et suis ses ventes + sa commission (% du CA genere).</p>
+<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"20px",marginBottom:"24px"}}>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"12px"}}>NOUVEL INFLUENCEUR</div>
+<div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr 120px auto",gap:"10px",alignItems:"end"}}>
+<div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>NOM</div><input value={affName} onChange={e=>setAffName(e.target.value)} placeholder="Marie Dupont" style={{...inp}}/></div>
+<div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>CODE (lien)</div><input value={affCode} onChange={e=>setAffCode(e.target.value)} placeholder="MARIE" style={{...inp}}/></div>
+<div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>COMMISSION %</div><input value={affPct} onChange={e=>setAffPct(e.target.value)} placeholder="10" style={{...inp}}/></div>
+<button onClick={createAffiliate} style={{...btn,padding:"13px 20px",background:C.btnBg,color:C.btnText,fontSize:"12px"}}>Creer</button>
+</div>
+</div>
+{affiliates.length===0 ? <div style={{fontSize:"13px",color:C.textLt,textAlign:"center",padding:"30px"}}>Aucun influenceur pour le moment.</div> : affiliates.map(function(aff){
+const paidO = orders.filter(function(o){ return o.status==="paid" && (o.referredBy||"").toString().toLowerCase()===(aff.code||"").toLowerCase(); });
+const sales = paidO.length;
+const ca = paidO.reduce(function(s,o){ return s + Number(o.amount||0); }, 0);
+const commission = Math.round(ca * Number(aff.commissionPct||0) / 100 * 100)/100;
+const due = Math.round((commission - Number(aff.paidCommission||0))*100)/100;
+return (
+<div key={aff.id} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"18px 20px",marginBottom:"12px"}}>
+<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"12px"}}>
+<div>
+<div style={{fontSize:"17px",fontWeight:"700",marginBottom:"3px"}}>{aff.name} <span style={{fontSize:"12px",color:C.textLt}}>· {aff.commissionPct}%</span></div>
+<div style={{fontSize:"12px",color:C.textMd,fontFamily:"monospace"}}>olawin.org/?ref={aff.code}</div>
+</div>
+<button onClick={function(){ deleteAffiliate(aff.id); }} style={{...btn,padding:"6px 12px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"11px"}}>Supprimer</button>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"10px",marginTop:"14px",textAlign:"center"}}>
+<div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{sales}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>VENTES</div></div>
+<div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{Math.round(ca)}£</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>CA GENERE</div></div>
+<div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{commission}£</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>COMMISSION</div></div>
+<div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",color:due>0?"#8B0000":C.text}}>{due}£</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>A PAYER</div></div>
+</div>
+{due>0 ? <button onClick={function(){ markAffiliatePaid(aff, commission); }} style={{...btn,width:"100%",marginTop:"14px",padding:"12px",background:C.btnBg,color:C.btnText,fontSize:"12px"}}>Marquer paye ({due}£)</button> : <div style={{textAlign:"center",marginTop:"12px",fontSize:"12px",color:C.textLt}}>A jour</div>}
+</div>
+);
+})}
+</div>
+)}
 {tab==="campaigns" && !loading && (
 <div style={{animation:"fadeUp 0.4s ease",maxWidth:"680px"}}>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>MARKETING</div>
