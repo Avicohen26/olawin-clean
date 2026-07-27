@@ -32,7 +32,11 @@ export default async function handler(req, res) {
       await ref.set({ email: email, refCode: refCode, createdVia: "lookup", updatedAt: FieldValue.serverTimestamp() }, { merge: true });
     }
     const friends = Number(data.referredPaidCount || 0);
-    const tickets = Number(data.ticketsBought || 0);
+    let tickets = 0;
+    try {
+      const ordSnap = await db.collection("orders").where("email", "==", email).get();
+      ordSnap.forEach(function(doc){ const o = doc.data(); if (o.status === "paid") tickets += Number(o.tickets || 0); });
+    } catch (e) { tickets = Number(data.ticketsBought || 0); }
     return res.status(200).json({
       refCode: refCode,
       link: "https://www.olawin.org/?ref=" + refCode,
