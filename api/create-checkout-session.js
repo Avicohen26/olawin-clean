@@ -118,6 +118,7 @@ export default async function handler(req, res) {
       amount: discountedAmount,
       discount: serverDiscount,
       pack: pack || null,
+      referredBy: (ref || "").trim() || null,
       status: "pending",
       createdAt: FieldValue.serverTimestamp(),
     });
