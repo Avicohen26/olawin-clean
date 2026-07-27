@@ -1369,8 +1369,10 @@ return (
 <div>
 <div style={{fontSize:"17px",fontWeight:"700",marginBottom:"3px"}}>{aff.name} <span style={{fontSize:"12px",color:C.textLt}}>· {aff.commissionType==="perticket" ? (cval+"£/ticket") : (cval+"% du CA")}</span></div><div style={{fontSize:"12px",color:C.textMd,fontFamily:"monospace"}}>olawin.org/?ref={aff.code}</div>
 </div>
+<div style={{display:"flex",gap:"8px"}}>
+<button onClick={function(){ generateContract(aff); }} style={{...btn,padding:"6px 12px",background:C.btnBg,color:C.btnText,fontSize:"11px"}}>📄 Contrat</button>
 <button onClick={function(){ deleteAffiliate(aff.id); }} style={{...btn,padding:"6px 12px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"11px"}}>Supprimer</button>
-</div>
+</div></div>
 <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"10px",marginTop:"14px",textAlign:"center"}}>
 <div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{sales}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>VENTES</div></div>
 <div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{Math.round(ca)}£</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>CA GENERE</div></div>
