@@ -1216,7 +1216,8 @@ return (
 {id:"dashboard",icon:"◈",label:"Dashboard"},
 {id:"draws",icon:"▣",label:"Tirages"},
 {id:"orders",icon:"≡",label:"Commandes"},
-{id:"campaigns",icon:"✉",label:"Campagnes"},{id:"guide",icon:"◎",label:"Guide Tirage"},
+{id:"campaigns",icon:"✉",label:"Campagnes"},
+{id:"affiliates",icon:"📣",label:"Influenceurs"},{id:"guide",icon:"◎",label:"Guide Tirage"},
 {id:"settings",icon:"⚙",label:"Reglages"},
 ].map(item=>(
 <button key={item.id} onClick={()=>setTab(item.id)} style={{width:"100%",display:"flex",alignItems:"center",gap:"10px",padding:"10px 12px",borderRadius:"8px",border:"none",background:tab===item.id?"rgba(0,0,0,0.08)":"transparent",color:tab===item.id?C.text:C.textLt,fontSize:"13px",cursor:"pointer",marginBottom:"3px",borderLeft:`2px solid ${tab===item.id?C.text:"transparent"}`,textAlign:"left",fontFamily:"'DM Sans',sans-serif"}}>
