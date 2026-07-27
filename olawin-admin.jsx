@@ -990,10 +990,6 @@ setOrders(snap.docs.map(d => ({ id: d.id, ...d.data() })));
 const unsubA = onSnapshot(collection(db,"affiliates"), (snap) => {
 setAffiliates(snap.docs.map(d => ({ id: d.id, ...d.data() })));
 }, ()=>{});
-const qOrders = query(collection(db,"orders"), orderBy("createdAt","desc"));
-const unsubO = onSnapshot(qOrders, (snap) => {
-setOrders(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-});
 getDoc(doc(db,"settings","social")).then(snap => { if (snap.exists()) setSocialData(snap.data()); }).catch(()=>{});
 getDoc(doc(db,"settings","content")).then(snap => { if (snap.exists()) setContentData(snap.data()); }).catch(()=>{});
 getDoc(doc(db,"settings","legal")).then(snap => { if (snap.exists()) setLegalData(snap.data()); }).catch(()=>{});
