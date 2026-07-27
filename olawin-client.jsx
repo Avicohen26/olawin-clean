@@ -989,8 +989,9 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
         </div>
       );
     }
-  } else if (page === "confirm") {
-    pageContent = (
+} else if (page === "parrainage") {
+    pageContent = <ReferralPage t={t} lang={lang} isMobile={isMobile} goTo={goTo}></ReferralPage>;
+  } else if (page === "confirm") {    pageContent = (
       <div style={{maxWidth:"580px",margin:"0 auto",padding:isMobile?"40px 20px":"60px 32px"}}>
         <button onClick={function(){ goTo("shop"); }} style={{background:"none",border:"none",color:"rgba(0,0,0,0.38)",cursor:"pointer",fontSize:"11px",letterSpacing:"2px",marginBottom:"32px"}}>{t.confirm.back}</button>
         <h2 style={{fontSize:isMobile?"32px":"40px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"28px"}}>{t.confirm.title}</h2>
