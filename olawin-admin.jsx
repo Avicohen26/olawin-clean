@@ -1097,9 +1097,11 @@ const createAffiliate = async () => {
   const c = (affCode||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");
   if(!c){ notify("Code invalide (lettres/chiffres)","err"); return; }
   if(!affName.trim()){ notify("Nom requis","err"); return; }
-  const p = Number(affPct); if(!p || p<=0 || p>100){ notify("Commission invalide (1-100)","err"); return; }
-  await setDoc(doc(db,"affiliates",c), { code:c, name:affName.trim(), commissionPct:p, paidCommission:0, active:true, createdAt: serverTimestamp() }, { merge:true });
-  setAffName(""); setAffCode(""); setAffPct("");
+  const p = Number(affPct);
+  if(!p || p<=0){ notify("Valeur invalide","err"); return; }
+  if(affType==="percent" && p>100){ notify("Le % ne peut pas depasser 100","err"); return; }
+  await setDoc(doc(db,"affiliates",c), { code:c, name:affName.trim(), commissionType:affType, commissionValue:p, paidCommission:0, active:true, createdAt: serverTimestamp() }, { merge:true });
+  setAffName(""); setAffCode(""); setAffPct(""); setAffType("percent");
   notify("Influenceur cree ✓");
 };
 const markAffiliatePaid = async (aff, totalCommission) => {
