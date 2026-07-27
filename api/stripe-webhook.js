@@ -112,6 +112,35 @@ export default async function handler(req, res) {
       soldTickets: FieldValue.increment(orderData.tickets),
     });
 
+    // === Parrainage & fidelite : comptage (Phase 1, sans recompense) ===
+    try {
+      const emailKey = (orderData.email || "").toLowerCase().trim();
+      if (emailKey) {
+        const custRef = db.collection("customers").doc(emailKey);
+        const custSnap = await custRef.get();
+        const refCode = (custSnap.exists && custSnap.data().refCode) ? custSnap.data().refCode : (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 6).toUpperCase();
+        await custRef.set({
+          email: emailKey,
+          refCode: refCode,
+          ticketsBought: FieldValue.increment(orderData.tickets || 0),
+          ordersCount: FieldValue.increment(1),
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true });
+      }
+      const referredBy = (orderData.referredBy || "").trim();
+      if (referredBy) {
+        const rq = await db.collection("customers").where("refCode", "==", referredBy).limit(1).get();
+        if (!rq.empty) {
+          await rq.docs[0].ref.update({
+            referredPaidCount: FieldValue.increment(1),
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        }
+      }
+    } catch (refErr) {
+      console.error("Referral counting error (non-blocking):", refErr);
+    }
+
     // Envoyer les emails (via l'endpoint Resend existant)
     try {
       const baseUrl = "https://" + (req.headers.host || "olawin.org");
