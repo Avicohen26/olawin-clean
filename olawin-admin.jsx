@@ -1001,6 +1001,7 @@ getDoc(doc(db,"settings","unsubscribed")).then(snap => { if (snap.exists()) setU
 try{ const _ck=localStorage.getItem("olawin_campaign_key"); if(_ck) setCampaignKey(_ck); }catch(_e){}
 getDoc(doc(db,"settings","contacts")).then(snap => { if (snap.exists()) setContacts(snap.data().emails||[]); }).catch(()=>{});return () => { unsubD(); unsubO(); unsubA(); };
 }, [authed]);
+useEffect(function(){ if(!authed) return; const unsubC = onSnapshot(collection(db,"customers"), function(s){ setCustomers(s.docs.map(function(d){ return { id:d.id, ...d.data() }; })); }, function(){}); return function(){ unsubC(); }; }, [authed]);
 
 const saveDraw = async (d) => {
 const { id, ...payload } = d;
