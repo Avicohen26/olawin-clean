@@ -65,6 +65,7 @@ export default async function handler(req, res) {
       country,
       discount,
       pack,
+      ref,
     } = req.body;
 
     // Validation basique
