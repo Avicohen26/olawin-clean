@@ -1311,7 +1311,7 @@ return (
 <p style={{fontSize:"13px",color:C.textMd,marginBottom:"24px"}}>Cree un lien par influenceur et suis ses ventes + sa commission (% du CA genere).</p>
 <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"20px",marginBottom:"24px"}}>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"12px"}}>NOUVEL INFLUENCEUR</div>
-<div style={{display:"grid",gridTemplateColumns:"1fr 1fr 120px auto",gap:"10px",alignItems:"end"}}><div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>NOM</div><input value={affName} onChange={e=>setAffName(e.target.value)} placeholder="Marie Dupont" style={{...inp}}/></div>
+<div style={{display:"grid",gridTemplateColumns:"1.3fr 1fr 80px 140px auto",gap:"10px",alignItems:"end"}}><div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>NOM</div><input value={affName} onChange={e=>setAffName(e.target.value)} placeholder="Marie Dupont" style={{...inp}}/></div>
 <div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>CODE (lien)</div><input value={affCode} onChange={e=>setAffCode(e.target.value)} placeholder="MARIE" style={{...inp}}/></div>
 <div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt,marginBottom:"5px"}}>COMMISSION %</div><input value={affPct} onChange={e=>setAffPct(e.target.value)} placeholder="10" style={{...inp}}/></div>
 <button onClick={createAffiliate} style={{...btn,padding:"13px 20px",background:C.btnBg,color:C.btnText,fontSize:"12px"}}>Creer</button>
