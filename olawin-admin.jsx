@@ -1263,6 +1263,44 @@ return (
 <p style={{fontSize:"12px",letterSpacing:"3px",color:C.textLt}}>CHARGEMENT FIREBASE...</p>
 </div>
 )}
+{tab==="referrals" && !loading && (
+<div style={{animation:"fadeUp 0.4s ease",maxWidth:"900px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>PROGRAMME</div>
+<h1 style={{fontSize:"34px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"8px"}}>PARRAINAGE</h1>
+<p style={{fontSize:"13px",color:C.textMd,marginBottom:"24px"}}>Tes clients qui ont amene des amis ou cumule des tickets. 1 ticket gratuit tous les 4 amis, et tous les 10 tickets achetes.</p>
+{(function(){
+const rows = customers.map(function(cust){
+const code = (cust.refCode||"").toString();
+const referred = code ? orders.filter(function(o){ return o.status==="paid" && (o.referredBy||"").toString().toLowerCase()===code.toLowerCase(); }) : [];
+const fem = new Set(); referred.forEach(function(o){ if(o.email) fem.add((o.email||"").toLowerCase()); });
+const friends = fem.size;
+const em = (cust.email||cust.id||"").toLowerCase();
+const myPaid = orders.filter(function(o){ return o.status==="paid" && (o.email||"").toLowerCase()===em; });
+const tickets = myPaid.reduce(function(s,o){ return s + Number(o.tickets||0); }, 0);
+const earned = Math.min(20, Math.floor(tickets/10) + Math.floor(friends/4));
+const available = Math.max(0, earned - Number(cust.freeRedeemed||0));
+return { email: cust.email||cust.id, code:code, friends:friends, tickets:tickets, available:available };
+}).filter(function(r){ return r.friends>0 || r.tickets>=10; }).sort(function(a,b){ return (b.friends-a.friends) || (b.tickets-a.tickets); });
+if(rows.length===0) return <div style={{fontSize:"13px",color:C.textLt,textAlign:"center",padding:"30px"}}>Aucun parrainage pour le moment. Des qu'un client amene un ami (ou cumule 10 tickets), il apparait ici.</div>;
+return (
+<div style={{border:`1px solid ${C.border}`,borderRadius:"12px",overflow:"hidden"}}>
+<div style={{display:"grid",gridTemplateColumns:"1fr 90px 80px 90px 110px",gap:"8px",padding:"12px 16px",background:"rgba(0,0,0,0.04)",fontSize:"9px",letterSpacing:"1px",color:C.textLt,fontWeight:"700"}}>
+<div>CLIENT</div><div style={{textAlign:"center"}}>CODE</div><div style={{textAlign:"center"}}>AMIS</div><div style={{textAlign:"center"}}>TICKETS</div><div style={{textAlign:"center"}}>GRATUITS DUS</div>
+</div>
+{rows.map(function(r,i){ return (
+<div key={i} style={{display:"grid",gridTemplateColumns:"1fr 90px 80px 90px 110px",gap:"8px",padding:"13px 16px",borderTop:`1px solid ${C.border}`,alignItems:"center",fontSize:"13px"}}>
+<div style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.email}</div>
+<div style={{textAlign:"center",fontFamily:"monospace",fontSize:"11px",color:C.textMd}}>{r.code}</div>
+<div style={{textAlign:"center",fontFamily:"Bebas Neue, sans-serif",fontSize:"18px"}}>{r.friends}</div>
+<div style={{textAlign:"center",fontFamily:"Bebas Neue, sans-serif",fontSize:"18px"}}>{r.tickets}</div>
+<div style={{textAlign:"center",fontFamily:"Bebas Neue, sans-serif",fontSize:"18px",color:r.available>0?"#2e7d32":C.text}}>{r.available}</div>
+</div>
+); })}
+</div>
+);
+})()}
+</div>
+)}
 {tab==="affiliates" && !loading && (
 <div style={{animation:"fadeUp 0.4s ease",maxWidth:"860px"}}>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>AFFILIATION</div>
