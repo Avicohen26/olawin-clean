@@ -737,22 +737,14 @@ const [page, setPage] = useState(function(){ try { var _sp = new URLSearchParams
   };
 
   const handleSearch = async function() {
-  if (!searchEmail) return;
+    if (!searchEmail || !searchOrder) return;
     setSearching(true);
     setSearchError(false);
     setFoundOrders(null);
-    const emailNorm = searchEmail.toLowerCase().trim();
     try {
-      const snap = await getDocs(collection(db,"orders"));
-      const matches = [];
-      snap.forEach(function(docSnap) {
-        const data = docSnap.data();
-        const docId = docSnap.id;
-        const orderEmail = (data.email || "").toLowerCase().trim();
-        if (orderEmail === emailNorm) {
-          matches.push(Object.assign({ id: docId }, data));
-        }
-      });
+      const r = await fetch("/api/search-orders", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email: searchEmail, order: searchOrder }) });
+      const d = await r.json();
+      const matches = (d && d.orders) ? d.orders : [];
       if (matches.length === 0) {
         setSearchError(true);
         setFoundOrders(null);
@@ -1250,7 +1242,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
             </div>
             {foundOrders.map(function(order, i) {
               const displayOrderNum = order.orderNumber || order.id.slice(-6).toUpperCase();
-              const orderDate = order.createdAt && order.createdAt.toDate ? fmtDateLong(order.createdAt.toDate()) : "";
+              const orderDate = order.createdAt ? (order.createdAt.toDate ? fmtDateLong(order.createdAt.toDate()) : fmtDateLong(new Date(order.createdAt))) : "";
               return (
                 <div key={order.id} style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"16px",padding:isMobile?"20px":"28px",marginBottom:"16px",background:"rgba(0,0,0,0.02)"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"10px",marginBottom:"16px",paddingBottom:"16px",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
