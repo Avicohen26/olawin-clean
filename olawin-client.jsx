@@ -832,8 +832,8 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
         <div style={{display:"flex",alignItems:"center",gap:"20px"}}>
           <button className="nav-link" onClick={function(){ scrollToDraws(); }}>{t.nav.draws}</button>
           <button className="nav-link" onClick={function(){ goTo("mytickets"); }}>{t.nav.myTickets}</button>
-          <button className="nav-link" onClick={function(){ goTo("parrainage"); }}>{lang==="en"?"REFERRAL":lang==="es"?"PADRINAZGO":"PARRAINAGE"}</button>
-          <button className="nav-link" onClick={function(){ goTo("faq"); }}>{t.nav.faq}</button>
+<button className="nav-link" onClick={function(){ goTo("parrainage"); }}>{lang==="en"?"REFERRAL":lang==="es"?"PADRINAZGO":"PARRAINAGE"}</button>
+          <button className="nav-link" onClick={function(){ goTo("influenceur"); }}>{lang==="en"?"INFLUENCER":lang==="es"?"INFLUENCER":"INFLUENCEUR"}</button>          <button className="nav-link" onClick={function(){ goTo("faq"); }}>{t.nav.faq}</button>
           <button className="nav-link" onClick={function(){ goTo("legal"); }}>{t.nav.legal}</button>
 <LangSwitcher lang={lang} setLang={setLang} isMobile={false}></LangSwitcher>
           {navShowIG ? <a href={navIgUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{display:"inline-flex",alignItems:"center",padding:"4px",borderRadius:"50%",transition:"opacity 0.2s"}} onMouseEnter={function(e){e.currentTarget.style.opacity="0.6";}} onMouseLeave={function(e){e.currentTarget.style.opacity="1";}}><InstagramIcon size={20}></InstagramIcon></a> : null}
