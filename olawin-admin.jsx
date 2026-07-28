@@ -1174,8 +1174,9 @@ const importContacts = async (file) => {
   const a = document.createElement("a"); a.href=url; a.download="clients-olawin.csv"; a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 };const buildEmailHtml = (bodyText, toEmail) => {
-  const safe = (bodyText||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
   const unsub = "mailto:contact@olawin.org?subject="+encodeURIComponent("Se desinscrire")+"&body="+encodeURIComponent("Merci de me desinscrire : "+toEmail);
+  if((bodyText||"").indexOf("<!--OLAWINHTML-->") > -1){ return (bodyText||"").split("{{UNSUB}}").join(unsub); }
+  const safe = (bodyText||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
   return '<div style="max-width:560px;margin:0 auto;font-family:Arial,sans-serif;color:#1a1a1a;padding:24px;"><div style="font-size:26px;font-weight:800;margin-bottom:20px;">Olawin</div><div style="font-size:15px;line-height:1.6;">'+safe+'</div><div style="margin-top:32px;padding-top:16px;border-top:1px solid #e5e2dc;font-size:11px;color:#999999;">Tu recois cet email car tu es client Olawin. <a href="'+unsub+'" style="color:#999999;">Se desinscrire</a>.</div></div>';
 };
 const _sleep = (ms)=>new Promise(res=>setTimeout(res,ms));
