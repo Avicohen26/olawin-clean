@@ -1095,7 +1095,9 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
         </div>
       );
     }
-} else if (page === "parrainage") {
+} else if (page === "influenceur") {
+    pageContent = <InfluencerPage lang={lang} isMobile={isMobile} goTo={goTo}></InfluencerPage>;
+  } else if (page === "parrainage") {
     pageContent = <ReferralPage t={t} lang={lang} isMobile={isMobile} goTo={goTo}></ReferralPage>;
   } else if (page === "confirm") {    pageContent = (
       <div style={{maxWidth:"580px",margin:"0 auto",padding:isMobile?"40px 20px":"60px 32px"}}>
