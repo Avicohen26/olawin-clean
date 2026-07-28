@@ -851,7 +851,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
 <button className="nav-link" onClick={function(){ goTo("mytickets"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.myTickets}</button>
 <button className="nav-link" onClick={function(){ goTo("parrainage"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{lang==="en"?"REFERRAL":lang==="es"?"PADRINAZGO":"PARRAINAGE"}</button>
           <button className="nav-link" onClick={function(){ goTo("faq"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.faq}</button>
-<button className="nav-link" onClick={function(){ goTo("faq"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.faq}</button>          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
+<button className="nav-link" onClick={function(){ goTo("legal"); }} style={{textAlign:"left",fontSize:"14px",padding:"8px 0"}}>{t.nav.legal}</button>          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"10px",padding:"12px 0",borderTop:"1px solid rgba(0,0,0,0.08)",borderBottom:"1px solid rgba(0,0,0,0.08)"}}>
             <span style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)"}}>{t.partnerMobile}</span>
             <img src={PARTNER_LOGO} alt="Private Honors" style={{height:"18px",width:"auto",objectFit:"contain"}}></img>
           </div>
