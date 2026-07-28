@@ -1127,8 +1127,7 @@ const generateContract = (aff) => {
 <h2>Article 1 — Objet</h2>
 <p>Le présent contrat a pour objet de définir les conditions dans lesquelles le Partenaire assure la promotion des jeux-concours organisés par Olawin, en contrepartie d'une rémunération, au moyen d'un lien d'affiliation personnel.</p>
 <h2>Article 2 — Lien d'affiliation</h2>
-<p>Olawin attribue au Partenaire un code unique : <strong>${aff.code||""}</strong>, correspondant au lien : <strong>https://www.olawin.org/?ref=${aff.code||""}</strong>. Toute vente réalisée via ce lien est automatiquement attribuée au Partenaire.</p>
-<h2>Article 3 — Rémunération</h2>
+<p>Olawin attribue au Partenaire un code unique : <strong>${aff.code||""}</strong>, correspondant au lien : <strong>https://www.olawin.org/?ref=${aff.code||""}</strong>. Toute vente réalisée via ce lien est automatiquement attribuée au Partenaire. Pour suivre ses performances, le Partenaire dispose d'un espace personnel accessible avec son code et sa clé d'accès : <strong>${aff.accessKey||""}</strong>.</p><h2>Article 3 — Rémunération</h2>
 <p>Le Partenaire perçoit une commission de <strong>${rem}</strong>. La commission est calculée sur les commandes effectivement payées. Les commandes annulées, remboursées ou faisant l'objet d'une rétrofacturation ne donnent lieu à aucune commission.</p>
 <h2>Article 4 — Paiement</h2>
 <p>Les commissions dues sont réglées par virement, sur présentation d'une facture par le Partenaire lorsqu'il y est assujetti. Le Partenaire demeure seul responsable de ses obligations fiscales et sociales.</p>
