@@ -967,6 +967,20 @@ const [campaignSending, setCampaignSending] = useState(false);
 const [campaignProgress, setCampaignProgress] = useState("");
 const [unsubList, setUnsubList] = useState([]);
 const [campaignKey, setCampaignKey] = useState("");
+const [resyncing, setResyncing] = useState(false);
+const resyncStripe = async () => {
+  const key = campaignKey || (function(){ try { return localStorage.getItem("olawin_campaign_key")||""; } catch(_e){ return ""; } })();
+  if(!key){ notify("Entre d'abord ta cle d'envoi dans l'onglet Campagnes","err"); return; }
+  if(!window.confirm("Rechercher dans Stripe le vrai montant paye + le code promo des commandes deja payees ?")) return;
+  setResyncing(true);
+  try {
+    const r = await fetch("/api/resync-orders",{method:"POST",headers:{"Content-Type":"application/json","x-olawin-token":key},body:JSON.stringify({})});
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error||("HTTP "+r.status));
+    notify((d.updated||0)+" commande(s) mise(s) a jour ✓" + ((d.skipped)? " · "+d.skipped+" ignoree(s)":""));
+  } catch(e){ notify("Erreur resync: "+e.message,"err"); }
+  setResyncing(false);
+};
 const [contacts, setContacts] = useState([]);
 const [affiliates, setAffiliates] = useState([]);
 const [customers, setCustomers] = useState([]);const [affName, setAffName] = useState("");
@@ -1572,7 +1586,10 @@ return (
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt}}>GESTION</div>
 <h1 style={{fontSize:"32px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginTop:"4px"}}>Commandes</h1>
 </div>
+<div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+<button onClick={resyncStripe} disabled={resyncing} style={{...btn,background:"rgba(0,0,0,0.06)",color:C.textMd,border:`1px solid ${C.border}`,padding:"9px 16px",fontSize:"12px",cursor:resyncing?"wait":"pointer",whiteSpace:"nowrap"}}>{resyncing?"SYNC...":"↻ Resync Stripe"}</button>
 <input placeholder="Rechercher..." value={orderSearch} onChange={e=>setOrderSearch(e.target.value)} style={{...inp,width:"220px",padding:"9px 14px"}}/>
+</div>
 </div>
 {orders.length === 0 ? (
 <div style={{background:C.card,border:`1px dashed ${C.border}`,borderRadius:"14px",padding:"60px",textAlign:"center"}}>
