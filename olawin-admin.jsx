@@ -1104,6 +1104,43 @@ const paidOrders = orders.filter(o=>o.status==="paid");
 const totalRevenue = paidOrders.reduce((s,o)=>s+(o.amountPaid!=null?o.amountPaid:(o.amount||0)),0);
 const totalTickets = paidOrders.reduce((s,o)=>s+(o.tickets||0),0);
 const activeDraws = draws.filter(d=>d.status==="active").length;
+// ===== KPIs enrichis + donnees pour Dashboard / Clients / Statistiques / Gagnants =====
+const _oms = (o)=>{ try{ return (o.paidAt&&o.paidAt.toMillis)?o.paidAt.toMillis():((o.createdAt&&o.createdAt.toMillis)?o.createdAt.toMillis():0); }catch(e){ return 0; } };
+const _amt = (o)=> Number(o.amountPaid!=null?o.amountPaid:(o.amount||0));
+const avgBasket = paidOrders.length ? totalRevenue/paidOrders.length : 0;
+const uniqueClients = new Set(paidOrders.map(o=>(o.email||"").toLowerCase().trim()).filter(Boolean)).size;
+const _now = Date.now();
+const _dayMs = 86400000;
+const sales7d = paidOrders.filter(o=>_oms(o) && (_now-_oms(o))<7*_dayMs).reduce((s,o)=>s+_amt(o),0);
+const _todayStart = new Date(); _todayStart.setHours(0,0,0,0);
+const salesToday = paidOrders.filter(o=>_oms(o)>=_todayStart.getTime()).reduce((s,o)=>s+_amt(o),0);
+const pendingCount = orders.filter(o=>o.status!=="paid").length;
+const _drawEndMs = (d)=>{ try{ return d.endDate? new Date(d.endDate).getTime():0; }catch(e){ return 0; } };
+const closingSoon = draws.filter(d=>d.status==="active" && _drawEndMs(d) && (_drawEndMs(d)-_now)>0 && (_drawEndMs(d)-_now)<3*_dayMs);
+const almostFull = draws.filter(d=>d.status==="active" && d.totalTickets && (d.soldTickets/d.totalTickets)>=0.9 && d.soldTickets<d.totalTickets);
+const clientRows = (function(){
+  const m={};
+  paidOrders.forEach(function(o){
+    const e=(o.email||"").toLowerCase().trim(); if(!e) return;
+    if(!m[e]) m[e]={email:e, name:((o.firstName||"")+" "+(o.lastName||"")).trim(), tickets:0, spent:0, count:0, lastMs:0};
+    m[e].tickets+=Number(o.tickets||0); m[e].spent+=_amt(o); m[e].count+=1;
+    var t=_oms(o); if(t>m[e].lastMs){ m[e].lastMs=t; }
+  });
+  return Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return b.spent-a.spent;});
+})();
+const drawStats = draws.map(function(d){
+  const po=paidOrders.filter(function(o){return o.drawId===d.id;});
+  return { id:d.id, title:d.title||"—", rev:po.reduce(function(s,o){return s+_amt(o);},0), tickets:po.reduce(function(s,o){return s+Number(o.tickets||0);},0), sold:d.soldTickets||0, total:d.totalTickets||0 };
+}).sort(function(a,b){return b.rev-a.rev;});
+const daily30 = (function(){
+  const arr=[]; const base=new Date(); base.setHours(0,0,0,0);
+  for(var i=29;i>=0;i--){ var d=new Date(base.getTime()-i*_dayMs); arr.push({ ms:d.getTime(), total:0 }); }
+  paidOrders.forEach(function(o){ var t=_oms(o); if(!t) return; var dd=new Date(t); dd.setHours(0,0,0,0); var key=dd.getTime(); var slot=arr.find(function(a){return a.ms===key;}); if(slot) slot.total+=_amt(o); });
+  return arr;
+})();
+const daily30Max = Math.max(1, ...daily30.map(function(a){return a.total;}));
+const conversionRate = (paidOrders.length+pendingCount)>0 ? Math.round(paidOrders.length/(paidOrders.length+pendingCount)*100) : 0;
+const winnersList = draws.filter(function(d){return d.winner && d.winner.name;});
 const norm = (v)=>(v||"").toString().toLowerCase().replace(/\s/g,"");
 const paidEmails = new Set(paidOrders.map(o=>norm(o.email)).filter(Boolean));
 const paidPhones = new Set(paidOrders.map(o=>norm(o.phone)).filter(Boolean));
@@ -1305,8 +1342,11 @@ return (
 <nav style={{padding:"20px 14px",flex:1}}>
 {[
 {id:"dashboard",icon:"◈",label:"Dashboard"},
+{id:"stats",icon:"📈",label:"Statistiques"},
 {id:"draws",icon:"▣",label:"Tirages"},
 {id:"orders",icon:"≡",label:"Commandes"},
+{id:"customers",icon:"👤",label:"Clients"},
+{id:"winners",icon:"🏆",label:"Gagnants"},
 {id:"campaigns",icon:"✉",label:"Campagnes"},
 {id:"affiliates",icon:"📣",label:"Influenceurs"},
 {id:"referrals",icon:"🤝",label:"Parrainage"},{id:"guide",icon:"◎",label:"Guide Tirage"},
@@ -1447,12 +1487,23 @@ return (
 <h1 style={{fontSize:"32px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginBottom:"4px"}}>Bonjour 👋</h1>
 <p style={{color:C.textMd,fontSize:"13px"}}>{new Date().toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</p>
 </div>
-<div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:"14px",marginBottom:"36px"}}>
-<StatCard icon="💰" label="REVENUS" value={fmt(totalRevenue)} sub={`${paidOrders.length} commandes`}/>
+<div style={{display:"grid",gridTemplateColumns:"repeat(6,1fr)",gap:"14px",marginBottom:"18px"}}>
+<StatCard icon="💰" label="REVENUS" value={fmt(totalRevenue)} sub={`7j : ${fmt(sales7d)}`}/>
+<StatCard icon="🧾" label="PANIER MOYEN" value={fmt(avgBasket)} sub="par commande"/>
 <StatCard icon="🎟️" label="TICKETS" value={totalTickets} sub="tous tirages"/>
-  <StatCard icon="▣" label="TIRAGES ACTIFS" value={activeDraws} sub={`${draws.length} au total`}/>
-<StatCard icon="👥" label="PARTICIPANTS" value={paidOrders.length} sub="acheteurs"/>
-<StatCard icon="⏳" label="EN ATTENTE" value={visibleOrders.filter(o=>o.status!=="paid").length} sub="a relancer"/></div>
+<StatCard icon="▣" label="TIRAGES ACTIFS" value={activeDraws} sub={`${draws.length} au total`}/>
+<StatCard icon="👥" label="CLIENTS" value={uniqueClients} sub="uniques"/>
+<StatCard icon="⏳" label="EN ATTENTE" value={pendingCount} sub="a relancer"/></div>
+{(closingSoon.length>0 || almostFull.length>0 || pendingCount>0) ? (
+<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"14px",padding:"16px 20px",marginBottom:"36px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"12px"}}>À FAIRE</div>
+<div style={{display:"flex",flexDirection:"column",gap:"9px"}}>
+{closingSoon.map(d=>(<div key={"cs"+d.id} onClick={()=>setTab("draws")} style={{fontSize:"13px",color:C.text,cursor:"pointer",display:"flex",gap:"8px",alignItems:"center"}}>⏰ <span><strong>{d.title}</strong> ferme bientôt — {fmtD(d.endDate)}</span></div>))}
+{almostFull.map(d=>(<div key={"af"+d.id} onClick={()=>setTab("draws")} style={{fontSize:"13px",color:C.text,cursor:"pointer",display:"flex",gap:"8px",alignItems:"center"}}>🔥 <span><strong>{d.title}</strong> presque complet — {d.soldTickets}/{d.totalTickets} tickets</span></div>))}
+{pendingCount>0 ? (<div onClick={()=>setTab("orders")} style={{fontSize:"13px",color:C.text,cursor:"pointer",display:"flex",gap:"8px",alignItems:"center"}}>🛒 <span>{pendingCount} panier(s) en attente — relance automatique activée</span></div>) : null}
+</div>
+</div>
+) : null}
 <div style={{marginBottom:"36px"}}>
 <a href="https://vercel.com/avianglais-7761s-projects/olawin-clean/analytics?environment=all" target="_blank" rel="noopener noreferrer" style={{...btn,display:"inline-block",background:C.card,color:C.text,border:`1px solid ${C.border}`,padding:"12px 20px",fontSize:"12px",textDecoration:"none"}}>📊 VOIR LES STATISTIQUES DU SITE</a>
 </div>
@@ -1521,6 +1572,116 @@ return (
 ))}
 </tbody>
 </table>
+</div>
+)}
+</div>
+)}
+
+{!loading && tab==="stats" && (
+<div style={{animation:"fadeUp 0.4s ease"}}>
+<div style={{marginBottom:"28px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt}}>ANALYSE</div>
+<h1 style={{fontSize:"32px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginTop:"4px"}}>Statistiques</h1>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"14px",marginBottom:"28px"}}>
+<StatCard icon="💷" label="CA 30 JOURS" value={fmt(daily30.reduce((s,a)=>s+a.total,0))} sub="ventes"/>
+<StatCard icon="🧾" label="PANIER MOYEN" value={fmt(avgBasket)} sub="par commande"/>
+<StatCard icon="✅" label="CONVERSION" value={conversionRate+"%"} sub="payées / totales"/>
+<StatCard icon="👥" label="CLIENTS" value={uniqueClients} sub="uniques"/>
+</div>
+<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"14px",padding:"22px 24px",marginBottom:"24px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"16px"}}>VENTES · 30 DERNIERS JOURS</div>
+<div style={{display:"flex",alignItems:"flex-end",gap:"3px",height:"150px"}}>
+{daily30.map((a,i)=>{ var h=Math.round((a.total/daily30Max)*140); return (
+<div key={i} title={fmt(a.total)} style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+<div style={{height:(a.total>0?Math.max(h,3):2)+"px",background:a.total>0?C.btnBg:"rgba(0,0,0,0.07)",borderRadius:"3px 3px 0 0"}}></div>
+</div>
+); })}
+</div>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"18px"}}>
+<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"14px",padding:"22px 24px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"16px"}}>REVENU PAR TIRAGE</div>
+{drawStats.filter(d=>d.rev>0||d.total>0).slice(0,6).map(d=>{ var p=d.total?Math.round(d.sold/d.total*100):0; return (
+<div key={d.id} style={{marginBottom:"14px"}}>
+<div style={{display:"flex",justifyContent:"space-between",fontSize:"13px",marginBottom:"5px"}}><span>{d.title}</span><span style={{fontWeight:"700"}}>{fmt(d.rev)}</span></div>
+<div style={{background:"rgba(0,0,0,0.08)",borderRadius:"2px",height:"4px"}}><div style={{width:p+"%",height:"100%",background:C.btnBg,borderRadius:"2px"}}></div></div>
+<div style={{fontSize:"11px",color:C.textLt,marginTop:"3px"}}>{d.tickets} tickets · {p}% rempli</div>
+</div>
+); })}
+{drawStats.filter(d=>d.rev>0||d.total>0).length===0?<div style={{fontSize:"13px",color:C.textMd}}>Pas encore de données.</div>:null}
+</div>
+<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"14px",padding:"22px 24px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"16px"}}>MEILLEURS CLIENTS</div>
+{clientRows.slice(0,6).map((c,i)=>(
+<div key={c.email} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"9px 0",borderTop:i>0?"1px solid rgba(0,0,0,0.05)":"none"}}>
+<div style={{fontSize:"13px"}}>{i<3?["🥇","🥈","🥉"][i]+" ":""}{c.name||c.email}</div>
+<div style={{fontSize:"13px",fontWeight:"700"}}>{fmt(c.spent)}</div>
+</div>
+))}
+{clientRows.length===0?<div style={{fontSize:"13px",color:C.textMd}}>Aucune vente.</div>:null}
+</div>
+</div>
+</div>
+)}
+
+{!loading && tab==="customers" && (
+<div style={{animation:"fadeUp 0.4s ease"}}>
+<div style={{marginBottom:"28px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt}}>FIDÉLISATION</div>
+<h1 style={{fontSize:"32px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginTop:"4px"}}>Clients</h1>
+<p style={{color:C.textMd,fontSize:"13px",marginTop:"4px"}}>{clientRows.length} client(s) · classés par total dépensé</p>
+</div>
+{clientRows.length===0 ? (
+<div style={{background:C.card,border:`1px dashed ${C.border}`,borderRadius:"14px",padding:"50px",textAlign:"center",color:C.textMd}}>Aucun client payant pour le moment.</div>
+) : (
+<div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"14px",overflow:"hidden"}}>
+<table style={{width:"100%",borderCollapse:"collapse"}}>
+<thead><tr style={{borderBottom:`1px solid ${C.border}`}}>
+{["Client","Email","Tickets","Total dépensé","Commandes","Dernière"].map(h=>(<th key={h} style={{padding:"13px 18px",textAlign:"left",fontSize:"9px",letterSpacing:"2px",color:C.textLt,fontWeight:"400"}}>{h}</th>))}
+</tr></thead>
+<tbody>
+{clientRows.map((c,i)=>(
+<tr key={c.email} className="row" style={{borderBottom:"1px solid rgba(0,0,0,0.05)"}}>
+<td style={{padding:"12px 18px",fontSize:"13px",fontWeight:"500"}}>{i<3?["🥇","🥈","🥉"][i]+" ":""}{c.name||"—"}</td>
+<td style={{padding:"12px 18px",fontSize:"12px",color:C.textMd}}>{c.email}</td>
+<td style={{padding:"12px 18px",fontSize:"13px"}}>{c.tickets}</td>
+<td style={{padding:"12px 18px",fontSize:"13px",fontWeight:"700"}}>{fmt(c.spent)}</td>
+<td style={{padding:"12px 18px",fontSize:"13px",color:C.textMd}}>{c.count}</td>
+<td style={{padding:"12px 18px",fontSize:"12px",color:C.textLt}}>{c.lastMs?fmtD(c.lastMs):"—"}</td>
+</tr>
+))}
+</tbody>
+</table>
+</div>
+)}
+</div>
+)}
+
+{!loading && tab==="winners" && (
+<div style={{animation:"fadeUp 0.4s ease"}}>
+<div style={{marginBottom:"28px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt}}>PREUVE SOCIALE</div>
+<h1 style={{fontSize:"32px",fontFamily:"'Bebas Neue',sans-serif",letterSpacing:"3px",marginTop:"4px"}}>Gagnants</h1>
+<p style={{color:C.textMd,fontSize:"13px",marginTop:"4px"}}>{winnersList.length} gagnant(s) · s'affichent aussi sur le site public</p>
+</div>
+{winnersList.length===0 ? (
+<div style={{background:C.card,border:`1px dashed ${C.border}`,borderRadius:"14px",padding:"50px",textAlign:"center"}}>
+<div style={{fontSize:"40px",marginBottom:"12px"}}>🏆</div>
+<div style={{fontSize:"15px",color:C.textMd,marginBottom:"4px"}}>Aucun gagnant enregistré</div>
+<div style={{fontSize:"12px",color:C.textLt}}>Enregistre un gagnant depuis l'onglet Tirages (bouton 🏆 sur un tirage).</div>
+</div>
+) : (
+<div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))",gap:"14px"}}>
+{winnersList.map(d=>(
+<div key={d.id} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"14px",padding:"22px"}}>
+<div style={{fontSize:"28px",marginBottom:"10px"}}>🏆</div>
+<div style={{fontSize:"17px",fontWeight:"700",marginBottom:"4px"}}>{d.winner.name}</div>
+<div style={{fontSize:"13px",color:C.textMd,marginBottom:"10px"}}>{d.title}{d.prize?" · "+d.prize:""}</div>
+<div style={{fontSize:"11px",color:C.textLt}}>{d.winner.date?fmtD(d.winner.date):(d.drawnAt?fmtD(d.drawnAt):"")}{d.winner.num?" · Ticket #"+d.winner.num:""}</div>
+{d.winner.certificateUrl?<a href={d.winner.certificateUrl} target="_blank" rel="noopener noreferrer" style={{display:"inline-block",marginTop:"10px",fontSize:"11px",color:C.text,textDecoration:"underline"}}>Voir le certificat</a>:null}
+</div>
+))}
 </div>
 )}
 </div>
