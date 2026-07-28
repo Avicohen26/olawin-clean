@@ -1368,6 +1368,7 @@ return (
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"12px"}}>
 <div>
 <div style={{fontSize:"17px",fontWeight:"700",marginBottom:"3px"}}>{aff.name} <span style={{fontSize:"12px",color:C.textLt}}>· {aff.commissionType==="perticket" ? (cval+"£/ticket") : (cval+"% du CA")}</span></div><div style={{fontSize:"12px",color:C.textMd,fontFamily:"monospace"}}>olawin.org/?ref={aff.code}</div>
+<div style={{fontSize:"11px",color:C.textLt,marginTop:"3px"}}>Clé d'acces : <span style={{fontFamily:"monospace",color:C.textMd}}>{aff.accessKey||"—"}</span></div>
 </div>
 <div style={{display:"flex",gap:"8px"}}>
 <button onClick={function(){ generateContract(aff); }} style={{...btn,padding:"6px 12px",background:C.btnBg,color:C.btnText,fontSize:"11px"}}>📄 Contrat</button>
