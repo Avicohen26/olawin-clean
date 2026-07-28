@@ -44,9 +44,9 @@ const T = {
   },
   fr: {
     nav: { draws:"Tirages", faq:"FAQ", legal:"Legal", buy:"ACHETER", myTickets:"MES TICKETS" },
-hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets restants sur", ticketsWord:"tickets" },    section: { thisWeek:"CETTE SEMAINE", allDraws:"TOUS LES TIRAGES", activeDraws:"tirage(s) actif(s)", howItWorks:"COMMENT CA MARCHE", process:"PROCESSUS", upcoming:"A VENIR", past:"TIRAGES PASSES" },
+hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets restants sur", ticketsWord:"tickets" },    section: { thisWeek:"CETTE SEMAINE", allDraws:"TOUS LES TIRAGES", activeDraws:"tirage(s) actif(s)", howItWorks:"COMMENT ÇA MARCHE", process:"PROCESSUS", upcoming:"À VENIR", past:"TIRAGES PASSÉS" },
     countdown: { d:"j", h:"h", m:"m", s:"s", closed:"VENTES FERMEES", drawing:"TIRAGE IMMINENT" },
-    stats: { active:"TIRAGES ACTIFS", value:"VALEUR TOTALE", remaining:"TICKETS RESTANTS", countries:"PAYS ELIGIBLES" },
+    stats: { active:"TIRAGES ACTIFS", value:"VALEUR TOTALE", remaining:"TICKETS RESTANTS", countries:"PAYS ÉLIGIBLES" },
     cta: { tryLuck:"TENTEZ VOTRE CHANCE", viewDraws:"VOIR LES TIRAGES", active:"tirage(s) actif(s)", buyHint:"Clique pour acheter tes tickets" },
     empty: { title:"AUCUN TIRAGE EN COURS", sub:"Revenez bientot, de nouveaux tirages chaque semaine!" },
     loading: "CHARGEMENT...",
@@ -56,10 +56,10 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
     winnerLabel: "GAGNANT",
     verifyCert: "Verifier le certificat",
     steps: [
-      { title:"Choisissez", desc:"Selectionnez le tirage et vos tickets." },
-      { title:"Payez", desc:"Paiement 100% securise via Stripe." },
-      { title:"Suivez", desc:"Recevez votre numero de ticket par email." },
-      { title:"Gagnez", desc:"Le tirage en direct est diffuse sur nos reseaux." }
+      { title:"Choisissez", desc:"Sélectionnez le tirage et vos tickets." },
+      { title:"Payez", desc:"Paiement 100% sécurisé via Stripe." },
+      { title:"Suivez", desc:"Recevez votre numéro de ticket par email." },
+      { title:"Gagnez", desc:"Le tirage en direct est diffusé sur nos réseaux." }
     ],
     shop: { back:"Retour", notFound:"Tirage introuvable.", returnHome:"Retour", reserve:"RESERVER VOS TICKETS", perTicket:"/ TICKET", individual:"TICKETS INDIVIDUELS", total:"TOTAL", continueBtn:"CONTINUER", tickets:"tickets", drawDate:"Date du tirage", salesClose:"Cloture des ventes" },
     confirm: { back:"RETOUR", title:"VOS INFORMATIONS", firstName:"PRENOM *", lastName:"NOM *", email:"EMAIL *", phone:"TELEPHONE *", street:"RUE *", zip:"CP *", city:"VILLE *", country:"PAYS *", countryPlaceholder:"Selectionner...", pay:"PAYER", payVia:"VIA STRIPE", processing:"EN COURS...", bookingError:"Erreur lors de la reservation." },
@@ -81,9 +81,9 @@ hero: { live:"TIRAGE LE", buyTicket:"ACHETER UN TICKET", remaining:"tickets rest
   es: {
     nav: { draws:"Sorteos", faq:"FAQ", legal:"Legal", buy:"COMPRAR", myTickets:"MIS BOLETOS" },
     hero: { live:"SORTEO EL", buyTicket:"COMPRAR UN BOLETO", remaining:"boletos restantes de", ticketsWord:"boletos" },
-    section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"COMO FUNCIONA", process:"PROCESO", upcoming:"PROXIMOS", past:"SORTEOS PASADOS" },
+    section: { thisWeek:"ESTA SEMANA", allDraws:"TODOS LOS SORTEOS", activeDraws:"sorteo(s) activo(s)", howItWorks:"CÓMO FUNCIONA", process:"PROCESO", upcoming:"PRÓXIMOS", past:"SORTEOS PASADOS" },
     countdown: { d:"d", h:"h", m:"m", s:"s", closed:"VENTAS CERRADAS", drawing:"SORTEO INMINENTE" },
-    stats: { active:"SORTEOS ACTIVOS", value:"VALOR TOTAL", remaining:"BOLETOS DISPONIBLES", countries:"PAISES ELEGIBLES" },
+    stats: { active:"SORTEOS ACTIVOS", value:"VALOR TOTAL", remaining:"BOLETOS DISPONIBLES", countries:"PAÍSES ELEGIBLES" },
 cta: { tryLuck:"PRUEBA TU SUERTE", viewDraws:"VER SORTEOS", active:"sorteo(s) activo(s)", buyHint:"Haz clic para comprar tus boletos" },
     empty: { title:"NINGUN SORTEO EN CURSO", sub:"Vuelve pronto, nuevos sorteos cada semana!" },
     loading: "CARGANDO...",
@@ -607,6 +607,7 @@ const [page, setPage] = useState(function(){ try { var _sp = new URLSearchParams
   };
   const activeDraws = draws.filter(function(d) { return d.status === "active" && !isDrawnOrPast(d); });
   const pastDraws = draws.filter(function(d) { return isDrawnOrPast(d); });
+  const winners = draws.filter(function(d) { return d.winner && d.winner.name; });
   activeDraws.sort(function(a, b) {
     const ta = a.drawDate ? new Date(a.drawDate).getTime() : 0;
     const tb = b.drawDate ? new Date(b.drawDate).getTime() : 0;
@@ -897,7 +898,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                   <span style={{fontSize:"11px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{t.hero.live} {fmtDate(heroEndDate)}</span>
                 </div>
               ) : null}
-              <div style={{fontSize:"14px",letterSpacing:"3px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{heroData && heroData.country} {trd(heroData,"location") ? trd(heroData,"location").toUpperCase() : ""}</div>
+              <div style={{fontSize:"12px",letterSpacing:"4px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{lang==="en"?"FEATURED DRAW":lang==="es"?"SORTEO DESTACADO":"TIRAGE VEDETTE"}</div>
               <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
                 {trd(heroData,"title") ? trd(heroData,"title").toUpperCase() : ""}
                 <br></br>
@@ -913,6 +914,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                 {featured ? <button onClick={function(){ setSelectedDraw(featured); goTo("shop"); }} className="cta-dark" style={{background:"#FFFFFF",color:"#1A1A1A",padding:"16px 32px",fontSize:"14px",width:isMobile?"100%":"auto",fontWeight:"800"}}>{t.hero.buyTicket} {featured.ticketPrice}£</button> : null}
 {featured ? <div style={{color:"#ffffff",fontSize:"13px",textAlign:isMobile?"center":"left",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{featured.totalTickets} {t.hero.ticketsWord}</div> : null}
 </div>
+<div style={{marginTop:"16px",fontSize:"12px",color:"rgba(255,255,255,0.85)",fontWeight:"600",textShadow:TEXT_SHADOW_STRONG,display:"flex",alignItems:"center",gap:"8px",flexWrap:"wrap",justifyContent:isMobile?"center":"flex-start"}}><span>🔒 {lang==="en"?"Secure payment":lang==="es"?"Pago seguro":"Paiement sécurisé"}</span><span style={{opacity:0.6}}>·</span><span>Visa · Mastercard · Stripe</span></div>
 </div>
 {activeDraws.length > 1 && !isMobile ? <div onClick={scrollToDraws} style={{position:"absolute",bottom:"28px",left:"50%",transform:"translateX(-50%)",cursor:"pointer",fontSize:"12px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG,zIndex:5,textAlign:"center"}}>↓ {t.section.allDraws}<span style={{display:"block",marginTop:"4px",fontSize:"20px",animation:"bounceDown 1.6s ease-in-out infinite"}}>⌄</span></div> : null}
           </section>
@@ -945,6 +947,31 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                 <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
                   {pastDraws.map(function(draw) {
                     return <DrawCard key={draw.id} draw={draw} t={t} finished={true} onClick={function(){}}></DrawCard>;
+                  })}
+                </div>
+              </div>
+            </section>
+          ) : null}
+
+          {winners.length > 0 ? (
+            <section style={{background:C_BG,padding:isMobile?"48px 20px":"72px 48px",borderTop:"1px solid rgba(0,0,0,0.06)"}}>
+              <div style={{maxWidth:"1100px",margin:"0 auto"}}>
+                <div style={{textAlign:"center",marginBottom:isMobile?"28px":"40px"}}>
+                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"10px"}}>{lang==="en"?"THEY WON":lang==="es"?"GANARON":"ILS ONT GAGNÉ"}</div>
+                  <h2 style={{fontSize:isMobile?"clamp(30px,7vw,40px)":"clamp(36px,5vw,56px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px"}}>{lang==="en"?"OUR WINNERS":lang==="es"?"NUESTROS GANADORES":"NOS GAGNANTS"}</h2>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(280px,1fr))",gap:"16px"}}>
+                  {winners.map(function(d, i) {
+                    var nm = (d.winner.name || "").trim().split(" ").filter(Boolean);
+                    var disp = nm.length > 1 ? (nm[0] + " " + nm[nm.length-1].charAt(0) + ".") : (nm[0] || "—");
+                    return (
+                      <div key={i} style={{background:"#ffffff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:"16px",padding:"24px",boxShadow:"0 8px 24px rgba(0,0,0,0.04)"}}>
+                        <div style={{fontSize:"28px",marginBottom:"10px"}}>🏆</div>
+                        <div style={{fontSize:"16px",fontWeight:"700",color:"#1A1A1A",marginBottom:"4px"}}>{disp}</div>
+                        <div style={{fontSize:"13px",color:"rgba(0,0,0,0.55)",lineHeight:"1.5"}}>{(trd(d,"title") || d.title || "")}{trd(d,"prize") ? " — " + trd(d,"prize") : ""}</div>
+                        {d.winner.num ? <div style={{fontSize:"11px",letterSpacing:"1px",color:"rgba(0,0,0,0.4)",marginTop:"8px"}}>{(lang==="en"?"Ticket #":lang==="es"?"Boleto #":"Ticket n°") + d.winner.num}</div> : null}
+                      </div>
+                    );
                   })}
                 </div>
               </div>
@@ -986,13 +1013,17 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                 <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"12px"}}>{t.section.process}</div>
                 <h2 style={{fontSize:isMobile?"clamp(28px,7vw,38px)":"clamp(36px,5vw,60px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.section.howItWorks}</h2>
               </div>
-              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(4,1fr)",gap:"2px"}}>
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(4,1fr)",gap:"16px"}}>
                 {steps.map(function(s, i) {
+                  var stepIcons = ["🎯","💳","📩","🏆"];
                   return (
-                    <div key={i} style={{padding:isMobile?"24px 0":"40px 32px"}}>
-                      <div style={{fontSize:isMobile?"56px":"80px",fontFamily:"Bebas Neue, sans-serif",color:"rgba(0,0,0,0.05)",lineHeight:1,marginBottom:"16px"}}>0{i+1}</div>
-                      <div style={{fontSize:"18px",fontFamily:"Playfair Display, serif",marginBottom:"10px"}}>{s.title}</div>
-                      <div style={{fontSize:"13px",color:"rgba(0,0,0,0.48)",lineHeight:"1.7"}}>{s.desc}</div>
+                    <div key={i} style={{padding:isMobile?"26px 22px":"32px 26px",background:"#ffffff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:"16px",boxShadow:"0 8px 24px rgba(0,0,0,0.04)"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:"12px",marginBottom:"16px"}}>
+                        <div style={{width:"46px",height:"46px",borderRadius:"13px",background:"#1A1A1A",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"22px",flexShrink:0}}>{stepIcons[i]||"•"}</div>
+                        <div style={{fontSize:"44px",fontFamily:"Bebas Neue, sans-serif",color:"rgba(0,0,0,0.13)",lineHeight:1}}>0{i+1}</div>
+                      </div>
+                      <div style={{fontSize:"19px",fontFamily:"Playfair Display, serif",marginBottom:"8px",color:"#1A1A1A"}}>{s.title}</div>
+                      <div style={{fontSize:"13px",color:"rgba(0,0,0,0.55)",lineHeight:"1.65"}}>{s.desc}</div>
                     </div>
                   );
                 })}
@@ -1084,6 +1115,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                         </div>
                       </div>
                       <button onClick={function(){ goTo("confirm"); }} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{t.shop.continueBtn} {total}£</button>
+                      <div style={{marginTop:"14px",textAlign:"center",fontSize:"11px",color:"rgba(0,0,0,0.5)",fontWeight:"500",lineHeight:"1.6"}}>🔒 {lang==="en"?"Secure payment":lang==="es"?"Pago seguro":"Paiement sécurisé"} · Visa · Mastercard · Stripe</div>
                     </div>
                   )}
                 </div>
