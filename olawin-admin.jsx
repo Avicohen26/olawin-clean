@@ -1114,7 +1114,16 @@ const _dayMs = 86400000;
 const sales7d = paidOrders.filter(o=>_oms(o) && (_now-_oms(o))<7*_dayMs).reduce((s,o)=>s+_amt(o),0);
 const _todayStart = new Date(); _todayStart.setHours(0,0,0,0);
 const salesToday = paidOrders.filter(o=>_oms(o)>=_todayStart.getTime()).reduce((s,o)=>s+_amt(o),0);
-const pendingCount = orders.filter(o=>o.status!=="paid").length;
+const _paidIds = new Set(); paidOrders.forEach(function(o){ var e=(o.email||"").toLowerCase().trim(); if(e) _paidIds.add("e:"+e); var p=(o.phone||"").replace(/\s/g,""); if(p) _paidIds.add("p:"+p); });
+const pendingOrders = orders.filter(function(o){
+  if(o.status==="paid") return false;
+  var e=(o.email||"").toLowerCase().trim(); var p=(o.phone||"").replace(/\s/g,"");
+  if(e && _paidIds.has("e:"+e)) return false;      // l'email a deja paye -> converti
+  if(p && _paidIds.has("p:"+p)) return false;      // le tel a deja paye -> converti
+  var t=_oms(o); if(t && (_now-t)>7*_dayMs) return false;   // trop vieux, non relance
+  return true;
+});
+const pendingCount = pendingOrders.length;
 const _drawEndMs = (d)=>{ try{ return d.endDate? new Date(d.endDate).getTime():0; }catch(e){ return 0; } };
 const closingSoon = draws.filter(d=>d.status==="active" && _drawEndMs(d) && (_drawEndMs(d)-_now)>0 && (_drawEndMs(d)-_now)<3*_dayMs);
 const almostFull = draws.filter(d=>d.status==="active" && d.totalTickets && (d.soldTickets/d.totalTickets)>=0.9 && d.soldTickets<d.totalTickets);
