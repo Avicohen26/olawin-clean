@@ -172,6 +172,71 @@ function CheckoutBonus(props) {
     </div>
   );
 }
+function InfluencerPage(props) {
+  const lang = props.lang; const isMobile = props.isMobile; const goTo = props.goTo;
+  const [ipCode, setIpCode] = useState("");
+  const [ipKey, setIpKey] = useState("");
+  const [ipData, setIpData] = useState(null);
+  const [ipLoading, setIpLoading] = useState(false);
+  const [ipErr, setIpErr] = useState("");
+  const L = function(fr,en,es){ return lang==="en"?en:lang==="es"?es:fr; };
+  const ipLookup = async function() {
+    if(!ipCode.trim() || !ipKey.trim()){ setIpErr(L("Code et cle requis","Code and key required","Codigo y clave requeridos")); return; }
+    setIpErr(""); setIpLoading(true); setIpData(null);
+    try {
+      const r = await fetch("/api/influencer-stats",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code:ipCode.trim(),key:ipKey.trim()})});
+      const d = await r.json();
+      if(!r.ok){ throw new Error(d.error||"Erreur"); }
+      setIpData(d);
+    } catch(e){ setIpErr(e.message||"Erreur"); }
+    setIpLoading(false);
+  };
+  return (
+    <div style={{maxWidth:"640px",margin:"0 auto",padding:isMobile?"40px 20px":"60px 32px"}}>
+      <button onClick={function(){ goTo("home"); }} style={{background:"none",border:"none",color:"rgba(0,0,0,0.38)",cursor:"pointer",fontSize:"11px",letterSpacing:"2px",marginBottom:"32px"}}>{L("< ACCUEIL","< HOME","< INICIO")}</button>
+      <h2 style={{fontSize:isMobile?"32px":"40px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",marginBottom:"8px"}}>{L("ESPACE INFLUENCEUR","INFLUENCER AREA","ESPACIO INFLUENCER")}</h2>
+      <p style={{fontSize:"14px",color:"rgba(0,0,0,0.55)",marginBottom:"28px",lineHeight:"1.6"}}>{L("Connecte-toi avec ton code et ta cle d'acces pour suivre tes ventes et ta commission.","Log in with your code and access key to track your sales and commission.","Accede con tu codigo y tu clave para seguir tus ventas y comision.")}</p>
+      {!ipData ? (
+        <div>
+          <label style={LBL}>{L("TON CODE","YOUR CODE","TU CODIGO")}</label>
+          <input value={ipCode} onChange={function(e){ setIpCode(e.target.value); }} placeholder="MARIE" style={Object.assign({}, INP, {marginBottom:"14px"})}></input>
+          <label style={LBL}>{L("TA CLE D'ACCES","YOUR ACCESS KEY","TU CLAVE")}</label>
+          <input value={ipKey} onChange={function(e){ setIpKey(e.target.value); }} onKeyDown={function(e){ if(e.key==="Enter") ipLookup(); }} placeholder="XXXXXXXXXX" style={Object.assign({}, INP, {marginBottom:"14px"})}></input>
+          {ipErr ? <div style={{fontSize:"13px",color:"#B00020",marginBottom:"14px"}}>{ipErr}</div> : null}
+          <button onClick={ipLookup} disabled={ipLoading} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"12px"}}>{ipLoading?L("CHARGEMENT...","LOADING...","CARGANDO..."):L("VOIR MES STATS","VIEW MY STATS","VER MIS STATS")}</button>
+        </div>
+      ) : (
+        <div>
+          <div style={{fontSize:"15px",fontWeight:"700",marginBottom:"4px"}}>{ipData.name}</div>
+          <div style={{fontSize:"12px",color:"rgba(0,0,0,0.5)",marginBottom:"20px"}}>{L("Commission","Commission","Comision")} : {ipData.commissionLabel}</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"12px"}}>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}><div style={{fontSize:"30px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.sales}</div><div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("VENTES","SALES","VENTAS")}</div></div>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}><div style={{fontSize:"30px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.tickets}</div><div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("TICKETS VENDUS","TICKETS SOLD","BOLETOS")}</div></div>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}><div style={{fontSize:"30px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.revenue}£</div><div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("CA GENERE","REVENUE","VOLUMEN")}</div></div>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}><div style={{fontSize:"30px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.commission}£</div><div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("COMMISSION","COMMISSION","COMISION")}</div></div>
+          </div>
+          <div style={{textAlign:"center",padding:"16px",background:"#1A1A1A",borderRadius:"12px",marginBottom:"22px",color:"#fff"}}>
+            <span style={{fontSize:"13px",color:"rgba(255,255,255,0.7)"}}>{L("Commission a te verser : ","Commission owed to you: ","Comision a pagarte: ")}</span>
+            <span style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.due}£</span>
+          </div>
+          <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",marginBottom:"10px"}}>{L("VENTES RECENTES","RECENT SALES","VENTAS RECIENTES")}</div>
+          {(!ipData.list || ipData.list.length===0) ? <div style={{fontSize:"13px",color:"rgba(0,0,0,0.4)"}}>{L("Aucune vente pour le moment.","No sales yet.","Sin ventas por ahora.")}</div> : (
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"12px",overflow:"hidden"}}>
+              {ipData.list.map(function(row,i){ return (
+                <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"11px 16px",borderTop:i>0?"1px solid rgba(0,0,0,0.07)":"none",fontSize:"13px"}}>
+                  <span style={{color:"rgba(0,0,0,0.6)"}}>{row.date||"—"}</span>
+                  <span>{row.tickets} {L("tickets","tickets","boletos")}</span>
+                  <span style={{fontWeight:"700"}}>{row.amount}£</span>
+                </div>
+              ); })}
+            </div>
+          )}
+          <button onClick={function(){ setIpData(null); }} style={{background:"none",border:"none",color:"rgba(0,0,0,0.4)",cursor:"pointer",fontSize:"12px",letterSpacing:"1px",width:"100%",marginTop:"18px"}}>{L("Deconnexion","Log out","Salir")}</button>
+        </div>
+      )}
+    </div>
+  );
+}
 function ReferralPage(props) {  const t = props.t; const lang = props.lang; const isMobile = props.isMobile; const goTo = props.goTo;
   const [rpEmail, setRpEmail] = useState("");
   const [rpLoading, setRpLoading] = useState(false);
