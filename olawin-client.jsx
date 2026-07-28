@@ -529,8 +529,7 @@ export default function Olawin() {
     if (typeof document !== "undefined") document.documentElement.lang = lang;
   }, [lang]);
 
-  const [page, setPage] = useState("home");
-  const [draws, setDraws] = useState([]);
+const [page, setPage] = useState(function(){ try { if (new URLSearchParams(window.location.search).get("pro") !== null) return "influenceur"; } catch(e){} return "home"; });  const [draws, setDraws] = useState([]);
   const [loading, setLoading] = useState(true);
   const [heroConfig, setHeroConfig] = useState(null);
   const [socialConfig, setSocialConfig] = useState(null);
