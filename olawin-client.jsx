@@ -117,6 +117,10 @@ cta: { tryLuck:"PRUEBA TU SUERTE", viewDraws:"VER SORTEOS", active:"sorteo(s) ac
   }
 };
 function trd(draw, key){ if(!draw) return ""; var L=""; try{ L=localStorage.getItem("olawin_lang")||""; }catch(e){} var sfx = L==="en" ? "En" : L==="es" ? "Es" : ""; return draw[key+sfx] || draw[key] || ""; }
+// Optimisation image : redimensionne + convertit en WebP a la volee (allege le chargement, surtout mobile)
+function optimg(url, w){ if(!url) return url; try{ if(url.indexOf("data:")===0) return url; return "https://images.weserv.nl/?url=" + encodeURIComponent(url) + "&w=" + (w||800) + "&q=74&output=webp&we&il"; }catch(e){ return url; } }
+// En cas d'echec du service d'optimisation : on retombe sur l'image d'origine, puis on masque si vraiment indisponible
+function imgFallback(e, original){ try{ if(!e.target.dataset.fb){ e.target.dataset.fb="1"; e.target.src=original; } else { e.target.style.display="none"; } }catch(_e){ e.target.style.display="none"; } }
 const QUIZ = [{q:{fr:"Dans quel pays se trouve Marrakech ?",en:"In which country is Marrakech located?",es:"En que pais se encuentra Marrakech?"},opts:["Maroc","Tunisie","Egypte","Algerie"],a:0},{q:{fr:"Dans quel pays se trouve Dubai ?",en:"In which country is Dubai located?",es:"En que pais se encuentra Dubai?"},opts:["Emirats Arabes Unis","Qatar","Oman","Koweit"],a:0},{q:{fr:"Dans quel pays se trouve Bali ?",en:"In which country is Bali located?",es:"En que pais se encuentra Bali?"},opts:["Indonesie","Thailande","Malaisie","Philippines"],a:0},{q:{fr:"Dans quel pays se trouve Santorin ?",en:"In which country is Santorini located?",es:"En que pais se encuentra Santorini?"},opts:["Grece","Italie","Espagne","Turquie"],a:0},{q:{fr:"Dans quel pays se trouve Cancun ?",en:"In which country is Cancun located?",es:"En que pais se encuentra Cancun?"},opts:["Mexique","Bresil","Cuba","Perou"],a:0},{q:{fr:"Dans quel pays se trouve Venise ?",en:"In which country is Venice located?",es:"En que pais se encuentra Venecia?"},opts:["Italie","France","Croatie","Grece"],a:0},{q:{fr:"Dans quel pays se trouve Le Cap ?",en:"In which country is Cape Town located?",es:"En que pais se encuentra Ciudad del Cabo?"},opts:["Afrique du Sud","Kenya","Namibie","Maroc"],a:0},{q:{fr:"Dans quel pays se trouve Bangkok ?",en:"In which country is Bangkok located?",es:"En que pais se encuentra Bangkok?"},opts:["Thailande","Vietnam","Cambodge","Laos"],a:0}];
 const PACKS = [
 { qty: 15, discount: 10 },
@@ -414,7 +418,7 @@ function DrawCard(props) {
     <div onMouseEnter={function(){setHovered(true);}} onMouseLeave={function(){setHovered(false);}} onClick={onClick} style={{position:"relative",borderRadius:"18px",overflow:"hidden",cursor:isFinished?"default":"pointer",height:"360px",border:"1px solid "+(hovered&&!isFinished?"rgba(0,0,0,0.2)":"rgba(0,0,0,0.08)"),transition:"all 0.3s",boxShadow:hovered&&!isFinished?"0 20px 48px rgba(0,0,0,0.18)":"0 4px 16px rgba(0,0,0,0.06)",transform:hovered&&!isFinished?"translateY(-4px)":"none",opacity:isFinished?0.65:1,filter:isFinished?"grayscale(0.4)":"none"}}>
       <div style={{position:"absolute",inset:0,background:draw.gradient||"#333"}}></div>
       <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:"80px",opacity:0.12,zIndex:1}}>{draw.emoji}</div>
-      {draw.image ? <img src={draw.image} alt={draw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:draw.heroPosition||"center"}}></img> : null}
+      {draw.image ? <img src={optimg(draw.image,800)} alt={draw.location} loading="lazy" decoding="async" onError={function(e){ imgFallback(e, draw.image); }} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:draw.heroPosition||"center"}}></img> : null}
 <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)",zIndex:2}}></div>
       {!isFinished ? (
         <div style={{position:"absolute",top:"42%",left:"50%",transform:"translate(-50%,-50%)",zIndex:5,display:"flex",alignItems:"center",gap:"7px",background:"rgba(255,255,255,0.97)",borderRadius:"24px",padding:"10px 18px",fontSize:"13px",fontWeight:"800",color:"#1A1A1A",letterSpacing:"0.2px",whiteSpace:"nowrap",boxShadow:"0 8px 22px rgba(0,0,0,0.35)",opacity:hovered?1:0.95,transition:"all 0.3s"}}>{t.cta.buyHint}<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></div>
@@ -889,7 +893,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
         <div>
           <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
             <div style={{position:"absolute",inset:0,background:(heroData && heroData.gradient) || "#1A1A1A"}}></div>
-            {heroData && heroData.image ? <img src={heroData.image} alt={heroData.location||"Olawin"} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}></img> : null}
+            {heroData && heroData.image ? <img src={optimg(heroData.image, isMobile?900:1600)} alt={heroData.location||"Olawin"} decoding="async" onError={function(e){ imgFallback(e, heroData.image); }} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}></img> : null}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
             <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
               {heroEndDate ? (
@@ -1052,7 +1056,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
       pageContent = (
         <div>
           <div style={{position:"relative",height:isMobile?"200px":"300px",overflow:"hidden",background:activeDraw.gradient||"#1A1A1A"}}>
-            {activeDraw.image ? <img src={activeDraw.image} alt={activeDraw.location} onError={function(e){e.target.style.display="none";}} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}></img> : null}
+            {activeDraw.image ? <img src={optimg(activeDraw.image, isMobile?900:1200)} alt={activeDraw.location} decoding="async" onError={function(e){ imgFallback(e, activeDraw.image); }} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}></img> : null}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,rgba(232,228,220,1) 100%)"}}></div>
             <div style={{position:"absolute",bottom:"20px",left:isMobile?"20px":"48px",right:"20px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap"}}>
               <div style={{background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:"20px",padding:"6px 14px",fontSize:"13px",letterSpacing:"2px",color:"#ffffff",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{activeDraw.country} {trd(activeDraw,"location") ? trd(activeDraw,"location").toUpperCase() : ""}</div>
