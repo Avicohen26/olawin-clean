@@ -99,6 +99,24 @@ export default async function handler(req, res) {
       ticketNums.push(startNum + i);
     }
 
+    // === Montant reellement paye + code promo Stripe ===
+    let amountPaid = (session.amount_total != null) ? session.amount_total / 100 : null;
+    let promoCode = "";
+    let promoDiscount = (session.total_details && session.total_details.amount_discount != null) ? session.total_details.amount_discount / 100 : 0;
+    try {
+      const fullSession = await stripe.checkout.sessions.retrieve(session.id, { expand: ["discounts.promotion_code", "total_details.breakdown"] });
+      if (fullSession.amount_total != null) amountPaid = fullSession.amount_total / 100;
+      if (fullSession.total_details && fullSession.total_details.amount_discount != null) promoDiscount = fullSession.total_details.amount_discount / 100;
+      let pc = (fullSession.discounts && fullSession.discounts.length) ? fullSession.discounts[0].promotion_code : null;
+      if (pc && typeof pc === "object" && pc.code) {
+        promoCode = pc.code;
+      } else if (pc && typeof pc === "string") {
+        try { const pcObj = await stripe.promotionCodes.retrieve(pc); promoCode = pcObj.code || ""; } catch (e) {}
+      }
+    } catch (e) {
+      console.error("Promo/amount capture error (non-blocking):", e);
+    }
+
     // Passer la commande en "paid" + ajouter les numéros de tickets
     await orderDoc.ref.update({
       status: "paid",
@@ -106,6 +124,9 @@ export default async function handler(req, res) {
       paidAt: FieldValue.serverTimestamp(),
       stripeSessionId: session.id || null,
       stripePaymentIntent: session.payment_intent || null,
+      amountPaid: amountPaid,
+      promoCode: promoCode || null,
+      promoDiscount: promoDiscount || 0,
     });
 
     // Incrémenter le compteur de tickets vendus du tirage
@@ -175,7 +196,7 @@ export default async function handler(req, res) {
           '<p><strong>Téléphone :</strong> ' + (orderData.phone || "—") + '</p>' +
           '<p><strong>Tirage :</strong> ' + (orderData.drawTitle || "") + '</p>' +
           '<p><strong>Tickets :</strong> ' + orderData.tickets + ' — Numéros : ' + ticketNums.join(", ") + '</p>' +
-          '<p><strong>Montant :</strong> ' + orderData.amount + '£</p>' +
+          '<p><strong>Montant payé :</strong> ' + (amountPaid != null ? amountPaid : orderData.amount) + '£' + (promoCode ? ' — code promo : ' + promoCode : '') + '</p>' +
         '</div>';
       await Promise.allSettled([
         fetch(baseUrl + "/api/send-email", {

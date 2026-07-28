@@ -1490,7 +1490,7 @@ return (
 <tr key={o.id} className="row" style={{borderBottom:`1px solid rgba(0,0,0,0.05)`}}>
 <td style={{padding:"12px 20px",fontSize:"13px",fontWeight:"500"}}>{o.firstName} {o.lastName}</td>
 <td style={{padding:"12px 20px",fontSize:"13px",color:C.textMd}}>{o.tickets||0}x</td>
-<td style={{padding:"12px 20px",fontSize:"13px",fontWeight:"600"}}>{fmt(o.amount)}</td>
+<td style={{padding:"12px 20px",fontSize:"13px",fontWeight:"600"}}>{fmt(o.amountPaid!=null?o.amountPaid:o.amount)}{o.promoCode?<div style={{fontSize:"10px",fontWeight:"500",color:"#B08D57",marginTop:"2px"}}>🏷️ {o.promoCode}</div>:null}</td>
 <td style={{padding:"12px 20px",fontSize:"12px",color:C.textLt}}>{fmtD(o.createdAt)}</td>
 </tr>
 ))}
@@ -1608,7 +1608,7 @@ return (
 {(o.ticketNums||[]).length>5 && <span style={{fontSize:"11px",color:C.textLt}}>+{(o.ticketNums||[]).length-5}</span>}
 </div>
 </td>
-<td style={{padding:"13px 18px",fontSize:"14px",fontWeight:"600"}}>{fmt(o.amount)}</td>
+<td style={{padding:"13px 18px",fontSize:"14px",fontWeight:"600"}}>{fmt(o.amountPaid!=null?o.amountPaid:o.amount)}{o.promoCode?<div style={{fontSize:"10px",fontWeight:"500",color:"#B08D57",marginTop:"3px",letterSpacing:"0.5px"}}>🏷️ {o.promoCode}</div>:null}</td>
 <td style={{padding:"13px 18px",fontSize:"12px",color:C.textLt}}>{fmtD(o.createdAt)}</td>
 <td style={{padding:"13px 18px",whiteSpace:"nowrap"}}>
 {o.status!=="paid" ? (
