@@ -1318,6 +1318,11 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
           ) : null}
         </div>
       </footer>
+      {isMobile && page === "home" && ageVerified ? (
+        <div style={{position:"fixed",left:"14px",right:showWA?"84px":"14px",bottom:"14px",zIndex:9500}}>
+          <button onClick={scrollToDraws} className="cta-dark" style={{width:"100%",padding:"16px",fontSize:"13px",borderRadius:"12px",boxShadow:"0 10px 28px rgba(0,0,0,0.30)"}}>{t.nav.buy}</button>
+        </div>
+      ) : null}
       {showWA ? <WhatsAppButton phone={socialConfig.whatsapp.phone} message={socialConfig.whatsapp.message}></WhatsAppButton> : null}
     </div>
   );
