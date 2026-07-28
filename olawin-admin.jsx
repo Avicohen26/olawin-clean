@@ -4,14 +4,13 @@
 // Avec : Random.org integration + CGV trilingue + Social + Content
 // ════════════════════════════════════════════════════════════
 import { useState, useEffect, useRef } from "react";
-import { db } from "./firebase";
+import { db, auth } from "./firebase";
 import {
 collection, onSnapshot, query, orderBy,
 addDoc, updateDoc, deleteDoc, doc, serverTimestamp,
 getDoc, setDoc,
 } from "firebase/firestore";
-
-const ADMIN_PASSWORD = "olawin2026";
+import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
 const C = {
 bg: "#E8E4DC",
@@ -950,7 +949,15 @@ Pas besoin de configurer quoi que ce soit ! Dans l'onglet "Tirages", chaque tira
 export default function OlawinAdmin() {
 const [authed, setAuthed] = useState(false);
 const [pw, setPw] = useState("");
+const [email, setEmail] = useState("");
 const [pwErr, setPwErr] = useState(false);
+const doLogin = async function(){
+  setPwErr(false);
+  if(!email.trim() || !pw){ setPwErr(true); return; }
+  try { await signInWithEmailAndPassword(auth, email.trim(), pw); }
+  catch(e){ setPwErr(true); }
+};
+useEffect(function(){ const unsub = onAuthStateChanged(auth, function(u){ setAuthed(!!u); }); return function(){ unsub(); }; }, []);
 const [tab, setTab] = useState("dashboard");
 const [draws, setDraws] = useState([]);
 const [orders, setOrders] = useState([]);
@@ -1259,14 +1266,18 @@ if (!authed) return (
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginTop:"8px"}}>ESPACE ADMINISTRATEUR</div>
 </div>
 <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"16px",padding:"32px"}}>
+<div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>EMAIL</div>
+<input type="email" placeholder="admin@olawin.org" value={email}
+onChange={e=>{setEmail(e.target.value);setPwErr(false);}}
+style={{...inp,marginBottom:"12px",borderColor:pwErr?"rgba(180,0,0,0.3)":"rgba(0,0,0,0.12)"}}
+autoFocus/>
 <div style={{fontSize:"9px",letterSpacing:"2px",color:C.textLt,marginBottom:"7px"}}>MOT DE PASSE</div>
 <input type="password" placeholder="••••••••••" value={pw}
 onChange={e=>{setPw(e.target.value);setPwErr(false);}}
-onKeyDown={e=>e.key==="Enter"&&(pw===ADMIN_PASSWORD?setAuthed(true):setPwErr(true))}
-style={{...inp,marginBottom:"12px",borderColor:pwErr?"rgba(180,0,0,0.3)":"rgba(0,0,0,0.12)"}}
-autoFocus/>
-{pwErr && <div style={{fontSize:"12px",color:"rgba(160,0,0,0.7)",marginBottom:"12px"}}>Mot de passe incorrect</div>}
-<button onClick={()=>pw===ADMIN_PASSWORD?setAuthed(true):setPwErr(true)} style={{...btn,width:"100%",padding:"14px",background:C.btnBg,color:C.btnText}}>SE CONNECTER →</button>
+onKeyDown={e=>e.key==="Enter"&&doLogin()}
+style={{...inp,marginBottom:"12px",borderColor:pwErr?"rgba(180,0,0,0.3)":"rgba(0,0,0,0.12)"}}/>
+{pwErr && <div style={{fontSize:"12px",color:"rgba(160,0,0,0.7)",marginBottom:"12px"}}>Identifiants incorrects</div>}
+<button onClick={doLogin} style={{...btn,width:"100%",padding:"14px",background:C.btnBg,color:C.btnText}}>SE CONNECTER →</button>
 </div>
 <div style={{textAlign:"center",marginTop:"16px",fontSize:"11px",color:C.textLt}}>Connecte a Firebase · olawin-99639</div>
 </div>
@@ -1308,7 +1319,7 @@ return (
 </nav>
 <div style={{padding:"16px",borderTop:`1px solid ${C.border}`}}>
 <div style={{fontSize:"9px",letterSpacing:"1.5px",color:C.textLt,marginBottom:"8px",textAlign:"center"}}>🟢 SYNCHRO FIREBASE</div>
-<button onClick={()=>setAuthed(false)} style={{...btn,width:"100%",padding:"10px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"11px"}}>DECONNEXION</button>
+<button onClick={()=>signOut(auth)} style={{...btn,width:"100%",padding:"10px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"11px"}}>DECONNEXION</button>
 </div>
 </aside>
 
