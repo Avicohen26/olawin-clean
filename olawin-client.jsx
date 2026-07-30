@@ -895,7 +895,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                 </div>
               ) : null}
               <div style={{fontSize:"12px",letterSpacing:"4px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{lang==="en"?"FEATURED DRAW":lang==="es"?"SORTEO DESTACADO":"TIRAGE VEDETTE"}</div>
-              <h1 style={{fontSize:isMobile?"clamp(38px,9vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.92,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG}}>
+              <h1 style={{fontSize:isMobile?"clamp(28px,7.5vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:isMobile?"1px":"3px",lineHeight:0.95,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG,overflowWrap:"break-word",wordBreak:"break-word",maxWidth:"100%"}}>
                 {trd(heroData,"title") ? trd(heroData,"title").toUpperCase() : ""}
                 <br></br>
                 <span style={{color:"#ffffff",opacity:0.85}}>{trd(heroData,"location") ? trd(heroData,"location").toUpperCase() : ""}</span>
