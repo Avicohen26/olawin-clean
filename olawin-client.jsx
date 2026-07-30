@@ -318,7 +318,7 @@ function ReferralPage(props) {  const t = props.t; const lang = props.lang; cons
   );
 }
 function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(function(){ try { return window.innerWidth < 768; } catch(e){ return false; } });
   useEffect(function() {
     const check = function() { setIsMobile(window.innerWidth < 768); };
     check();
@@ -1056,7 +1056,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
             </div>
           </div>
           <div style={{maxWidth:"1100px",margin:"0 auto",padding:isMobile?"32px 20px 60px":"40px 32px 60px"}}>
-            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 420px",gap:isMobile?"32px":"64px"}}>
+            <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"minmax(0,1fr) minmax(0,420px)",gap:isMobile?"32px":"64px",maxWidth:"100%"}}>
               <div>
                 <h1 style={{fontSize:isMobile?"clamp(36px,9vw,48px)":"clamp(42px,5.5vw,72px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",lineHeight:0.95,marginBottom:"16px",color:"#1A1A1A",fontWeight:"900"}}>{trd(activeDraw,"title") ? trd(activeDraw,"title").toUpperCase() : ""}</h1>
                 <div style={{fontSize:isMobile?"clamp(24px,6vw,32px)":"clamp(28px,3vw,40px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#1A1A1A",marginBottom:"24px",fontWeight:"800"}}>{trd(activeDraw,"prize") ? trd(activeDraw,"prize").toUpperCase() : ""}</div>
