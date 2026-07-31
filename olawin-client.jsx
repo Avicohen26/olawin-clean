@@ -883,7 +883,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
       const heroEndDate = heroData && heroData.drawDate ? heroData.drawDate : (heroData && heroData.endDate ? heroData.endDate : null);
       pageContent = (
         <div>
-          <section style={{position:"relative",height:isMobile?"75vh":"92vh",minHeight:"500px",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end"}}>
+          <section style={{position:"relative",minHeight:isMobile?"75vh":"92vh",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",paddingTop:isMobile?"16px":"28px"}}>
             <div style={{position:"absolute",inset:0,background:(heroData && heroData.gradient) || "#1A1A1A"}}></div>
             {heroData && heroData.image ? <img src={optimg(heroData.image, isMobile?900:1600)} alt={heroData.location||"Olawin"} decoding="async" onError={function(e){ imgFallback(e, heroData.image); }} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}></img> : null}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
