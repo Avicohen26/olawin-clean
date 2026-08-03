@@ -12,6 +12,10 @@ getDoc, setDoc,
 } from "firebase/firestore";
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
+// Liens courts "réseaux" : drawId -> slug (olawin.org/<slug>).
+// Le comptage des clics est stocké dans draws/<id>.linkClicks (voir api/go.js).
+const SHARE_LINKS = { "WsZXNAC9aJw6tSKUqsLa": "disneyland" };
+
 const C = {
 bg: "#E8E4DC",
 sidebar: "#DDD9D0",
@@ -1737,6 +1741,8 @@ return (
 {draws.map(d=>{
 const pct = d.totalTickets ? Math.round((d.soldTickets/d.totalTickets)*100) : 0;
 const canDraw = (d.status==="active" || d.status==="closed") && (d.soldTickets||0) > 0 && isClosedByDate(d) && !d.winner;
+const shareSlug = SHARE_LINKS[d.id];
+const shareClicks = Number(d.linkClicks||0);
 return (
 <div key={d.id} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"16px",overflow:"hidden"}}>
 {d.image && (
@@ -1753,6 +1759,14 @@ return (
 <div>
 <h3 style={{fontSize:"18px",fontWeight:"600",marginBottom:"4px"}}>{d.title}</h3>
 <div style={{fontSize:"13px",color:C.textMd}}>{d.prize} {d.partner && `· ${d.partner}`}</div>
+{shareSlug && (
+<div style={{marginTop:"10px",display:"flex",alignItems:"center",gap:"10px",flexWrap:"wrap",background:"rgba(0,0,0,0.03)",borderRadius:"10px",padding:"8px 12px"}}>
+<span style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>LIEN RÉSEAUX</span>
+<span style={{fontFamily:"monospace",fontSize:"13px",color:C.text}}>olawin.org/{shareSlug}</span>
+<button onClick={()=>{navigator.clipboard.writeText("https://www.olawin.org/"+shareSlug).then(()=>notify("Lien copié ✓"));}} style={{...btn,padding:"4px 10px",fontSize:"10px",background:C.btnBg,color:C.btnText,border:"none"}}>📋 Copier</button>
+<span style={{fontSize:"13px",color:C.text,fontWeight:"700"}}>👆 {shareClicks} clic{shareClicks>1?"s":""}</span>
+</div>
+)}
 </div>
 <div style={{display:"flex",gap:"8px"}}>
 <button onClick={()=>setEditDraw(d)} style={{...btn,background:"rgba(0,0,0,0.06)",color:C.textMd,border:`1px solid ${C.border}`,padding:"9px 16px",fontSize:"11px"}}>✏️ EDITER</button>

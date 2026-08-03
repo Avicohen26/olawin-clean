@@ -1,5 +1,9 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "rewrites": [
+    { "source": "/disneyland", "destination": "/api/go?c=disneyland" },
+    { "source": "/go/:slug", "destination": "/api/go?c=:slug" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "crons": [{ "path": "/api/cron-abandoned-carts", "schedule": "0 9 * * *" }],
   "headers": [
     {
