@@ -1437,6 +1437,10 @@ const ca = paidO.reduce(function(s,o){ return s + Number(o.amount||0); }, 0);
 const tks = paidO.reduce(function(s,o){ return s + Number(o.tickets||0); }, 0);
 const cval = Number(aff.commissionValue!=null?aff.commissionValue:(aff.commissionPct||0));
 const commission = aff.commissionType==="perticket" ? Math.round(tks*cval*100)/100 : Math.round(ca*cval/100*100)/100;const due = Math.round((commission - Number(aff.paidCommission||0))*100)/100;
+const clicks = Number(aff.clicks||0);
+const visitors = Number(aff.visitors||0);
+const convBase = visitors>0 ? visitors : clicks;
+const convRate = convBase>0 ? Math.round(sales/convBase*100) : 0;
 return (
 <div key={aff.id} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:"12px",padding:"18px 20px",marginBottom:"12px"}}>
 <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",flexWrap:"wrap",gap:"12px"}}>
@@ -1459,7 +1463,12 @@ return (
 <button onClick={function(){ generateContract(aff); }} style={{...btn,padding:"6px 12px",background:C.btnBg,color:C.btnText,fontSize:"11px"}}>📄 Contrat</button>
 <button onClick={function(){ deleteAffiliate(aff.id); }} style={{...btn,padding:"6px 12px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"11px"}}>Supprimer</button>
 </div></div>
-<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"10px",marginTop:"14px",textAlign:"center"}}>
+<div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"10px",marginTop:"14px",textAlign:"center",background:"rgba(0,0,0,0.02)",borderRadius:"10px",padding:"12px 0"}}>
+<div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{visitors}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>👆 VISITEURS</div></div>
+<div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{clicks}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>CLICS TOTAL</div></div>
+<div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif",color:convBase>0&&convRate>0?"#2e7d32":C.text}}>{convBase>0?convRate+"%":"—"}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>CONVERSION</div></div>
+</div>
+<div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:"10px",marginTop:"10px",textAlign:"center"}}>
 <div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{sales}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>VENTES</div></div>
 <div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{Math.round(ca)}£</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>CA GENERE</div></div>
 <div><div style={{fontSize:"22px",fontFamily:"Bebas Neue, sans-serif"}}>{commission}£</div><div style={{fontSize:"9px",letterSpacing:"1px",color:C.textLt}}>COMMISSION</div></div>

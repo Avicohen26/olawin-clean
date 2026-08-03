@@ -586,6 +586,24 @@ const [page, setPage] = useState(function(){ try { var _sp = new URLSearchParams
   }, [draws]);
 
   useEffect(function() {
+    // Comptage des clics sur les liens influenceurs (?ref=CODE).
+    try {
+      var _p = new URLSearchParams(window.location.search);
+      var _ref = (_p.get("ref") || "").trim();
+      if (!_ref) return;
+      var _key = "olawin_click_" + _ref.toUpperCase();
+      var _unique = false;
+      try { if (!localStorage.getItem(_key)) { _unique = true; localStorage.setItem(_key, "1"); } } catch (e) { _unique = true; }
+      fetch("/api/track-click", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        keepalive: true,
+        body: JSON.stringify({ ref: _ref, unique: _unique })
+      }).catch(function(){});
+    } catch (e) {}
+  }, []);
+
+  useEffect(function() {
     getDoc(doc(db,"settings","hero")).then(function(snap) {
       if (snap.exists()) setHeroConfig(snap.data());
     }).catch(function(err) { console.error("Hero load error:", err); });
