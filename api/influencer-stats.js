@@ -51,11 +51,17 @@ export default async function handler(req, res) {
     const paid = Number(aff.paidCommission || 0);
     const due = Math.round((commission - paid) * 100) / 100;
 
+    const clicks = Number(aff.clicks || 0);
+    const visitors = Number(aff.visitors || 0);
+    const convBase = visitors > 0 ? visitors : clicks;
+    const conversion = convBase > 0 ? Math.round(sales / convBase * 100) : null;
+
     return res.status(200).json({
       name: aff.name || "",
       commissionLabel: aff.commissionType === "perticket" ? (cval + " £/ticket") : (cval + " % du CA"),
       sales: sales, revenue: Math.round(revenue), tickets: tickets,
       commission: commission, paid: paid, due: due,
+      clicks: clicks, visitors: visitors, conversion: conversion,
       list: list.slice(0, 100),
     });
   } catch (err) {

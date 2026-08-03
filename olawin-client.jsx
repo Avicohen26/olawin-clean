@@ -213,6 +213,11 @@ function InfluencerPage(props) {
         <div>
           <div style={{fontSize:"15px",fontWeight:"700",marginBottom:"4px"}}>{ipData.name}</div>
           <div style={{fontSize:"12px",color:"rgba(0,0,0,0.5)",marginBottom:"20px"}}>{L("Commission","Commission","Comision")} : {ipData.commissionLabel}</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"12px",marginBottom:"12px"}}>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"16px",textAlign:"center"}}><div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.visitors!=null?ipData.visitors:0}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>👆 {L("VISITEURS","VISITORS","VISITAS")}</div></div>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"16px",textAlign:"center"}}><div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.clicks!=null?ipData.clicks:0}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("CLICS","CLICKS","CLICS")}</div></div>
+            <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"16px",textAlign:"center"}}><div style={{fontSize:"28px",fontFamily:"Bebas Neue, sans-serif",color:(ipData.conversion!=null&&ipData.conversion>0)?"#2e7d32":"inherit"}}>{ipData.conversion!=null?ipData.conversion+"%":"—"}</div><div style={{fontSize:"9px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("CONVERSION","CONVERSION","CONVERSION")}</div></div>
+          </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"12px"}}>
             <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}><div style={{fontSize:"30px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.sales}</div><div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("VENTES","SALES","VENTAS")}</div></div>
             <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}><div style={{fontSize:"30px",fontFamily:"Bebas Neue, sans-serif"}}>{ipData.tickets}</div><div style={{fontSize:"10px",letterSpacing:"1px",color:"rgba(0,0,0,0.45)"}}>{L("TICKETS VENDUS","TICKETS SOLD","BOLETOS")}</div></div>
