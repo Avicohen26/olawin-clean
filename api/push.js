@@ -110,6 +110,21 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, sent: sent, removed: removed, failed: failed, total: snap.size });
     }
 
+    // ---- STATS : compteurs pour l'admin (installations / ouvertures / abonnes) ----
+    if (action === "stats") {
+      const snap = await db.collection("settings").doc("appstats").get();
+      const d = snap.exists ? snap.data() : {};
+      let subscribers = 0;
+      try {
+        const cnt = await db.collection("pushSubs").count().get();
+        subscribers = cnt.data().count;
+      } catch (e) {
+        const all = await db.collection("pushSubs").get();
+        subscribers = all.size;
+      }
+      return res.status(200).json({ ok: true, installs: d.installs || 0, opens: d.opens || 0, subscribers: subscribers });
+    }
+
     return res.status(400).json({ ok: false, error: "unknown action" });
   } catch (err) {
     console.error("push error (" + action + "):", err);
