@@ -10,6 +10,45 @@ self.addEventListener("install", function (e) {
   self.skipWaiting();
 });
 
+// ==============================================================
+// NOTIFICATIONS PUSH
+// ============================================================
+
+// Reception d'une notification : on l'affiche.
+self.addEventListener("push", function (e) {
+  let data = {};
+  try { data = e.data ? e.data.json() : {}; } catch (err) {
+    try { data = { title: "Olawin", body: e.data ? e.data.text() : "" }; } catch (e2) { data = {}; }
+  }
+  const title = data.title || "Olawin";
+  const options = {
+    body: data.body || "",
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    vibrate: [80, 40, 80],
+    data: { url: data.url || "/" },
+  };
+  e.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Clic sur la notification : on ouvre le site (ou l'onglet deja ouvert).
+self.addEventListener("notificationclick", function (e) {
+  e.notification.close();
+  const target = (e.notification.data && e.notification.data.url) || "/";
+  e.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (list) {
+      for (let i = 0; i < list.length; i++) {
+        if (list[i].url.indexOf(self.location.origin) === 0 && "focus" in list[i]) {
+          list[i].navigate(target);
+          return list[i].focus();
+        }
+      }
+      if (self.clients.openWindow) return self.clients.openWindow(target);
+    })
+  );
+});
+
+
 // Activation : on nettoie les anciens caches et on prend le controle des pages.
 self.addEventListener("activate", function (e) {
   e.waitUntil(
