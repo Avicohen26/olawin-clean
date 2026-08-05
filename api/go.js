@@ -22,6 +22,8 @@ const SITE = "https://www.olawin.org";
 // slug (dans l'URL) -> ID du tirage
 const LINKS = {
   "disneyland": "WsZXNAC9aJw6tSKUqsLa",
+  "prestige": "jhzOWz6P9kKtD5MH95JV",
+  "ile-maurice": "4EOkMMU00Xrus1qzLhaQ",
 };
 
 export default async function handler(req, res) {
