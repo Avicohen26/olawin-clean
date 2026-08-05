@@ -38,6 +38,10 @@
   .result.ok{background:#e7f4e8;color:#256b2b;display:block;}
   .result.err{background:#fbe9e9;color:#8b1a1a;display:block;}
   .keyrow{background:#faf8f4;border:1px dashed #e0dace;border-radius:10px;padding:12px;margin-bottom:8px;}
+  .stats{display:flex;gap:10px;margin:4px 0 18px;}
+  .stat{flex:1;background:#faf8f4;border:1px solid #eee4d3;border-radius:12px;padding:12px 10px;text-align:center;}
+  .stat .n{font-size:22px;font-weight:800;color:#1A1A1A;line-height:1;}
+  .stat .l{font-size:9.5px;letter-spacing:.5px;color:#999;text-transform:uppercase;margin-top:6px;}
 </style>
 </head>
 <body>
@@ -46,6 +50,12 @@
   <div class="card">
     <h1>🔔 Envoyer une notification</h1>
     <div class="hint">Ce message arrivera sur le téléphone de tous les abonnés (ceux qui ont installé l'app et accepté les notifications).</div>
+
+    <div class="stats">
+      <div class="stat"><div class="n" id="sInstalls">—</div><div class="l">Installations</div></div>
+      <div class="stat"><div class="n" id="sSubs">—</div><div class="l">Abonnés notifs</div></div>
+      <div class="stat"><div class="n" id="sOpens">—</div><div class="l">Ouvertures</div></div>
+    </div>
 
     <div class="keyrow">
       <label>Clé admin (une seule fois, elle sera retenue)</label>
@@ -78,6 +88,15 @@
 <script>
   var $ = function (id) { return document.getElementById(id); };
   try { $("key").value = localStorage.getItem("ola_send_key") || ""; } catch (e) {}
+
+  // Charge les compteurs (installations, abonnes, ouvertures) — public, pas besoin de cle.
+  fetch("/api/push?action=stats").then(function (r) { return r.json(); }).then(function (j) {
+    if (j && j.ok) {
+      $("sInstalls").textContent = j.installs != null ? j.installs : 0;
+      $("sSubs").textContent = j.subscribers != null ? j.subscribers : 0;
+      $("sOpens").textContent = j.opens != null ? j.opens : 0;
+    }
+  }).catch(function () {});
   function pv() {
     $("pvT").textContent = $("title").value || "Titre de la notification";
     $("pvB").textContent = $("body").value || "Le message apparaîtra ici.";
