@@ -1361,6 +1361,7 @@ return (
 {id:"customers",icon:"👤",label:"Clients"},
 {id:"winners",icon:"🏆",label:"Gagnants"},
 {id:"campaigns",icon:"✉",label:"Campagnes"},
+{id:"notifications",icon:"🔔",label:"Notifications"},
 {id:"affiliates",icon:"📣",label:"Influenceurs"},
 {id:"referrals",icon:"🤝",label:"Parrainage"},{id:"guide",icon:"◎",label:"Guide Tirage"},
 {id:"settings",icon:"⚙",label:"Reglages"},
@@ -1484,6 +1485,15 @@ return (
 })}
 </div>
 )}
+{tab==="notifications" && !loading && (
+<div style={{animation:"fadeUp 0.4s ease"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>MARKETING</div>
+<h1 style={{fontSize:"34px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"8px"}}>NOTIFICATIONS PUSH</h1>
+<p style={{fontSize:"13px",color:C.textMd,marginBottom:"20px",maxWidth:"620px"}}>Envoie une notification a tous les abonnes (ceux qui ont installe l'app et accepte les notifications). Meme cle secrete que les campagnes email. Les compteurs d'installations et d'abonnes s'affichent en haut du panneau.</p>
+<iframe src="/notify.html" title="Notifications" style={{width:"100%",maxWidth:"560px",height:"1350px",border:`1px solid ${C.border}`,borderRadius:"16px",background:"#E8E4DC"}}/>
+</div>
+)}
+
 {tab==="campaigns" && !loading && (
 <div style={{animation:"fadeUp 0.4s ease",maxWidth:"680px"}}>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>MARKETING</div>
