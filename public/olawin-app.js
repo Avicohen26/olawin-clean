@@ -18,9 +18,12 @@
   }
   // Ouverture de l'app installee (1 fois par session)
   if (isStandalone) {
+    // Premiere ouverture depuis l'ecran d'accueil = installation (fiable aussi sur iPhone,
+    // ou l'evenement "appinstalled" n'existe pas). Compte une seule fois par appareil.
+    try { if (!localStorage.getItem("ola_installed")) { localStorage.setItem("ola_installed", "1"); track("install"); } } catch (e) {}
     try { if (!sessionStorage.getItem("ola_open")) { sessionStorage.setItem("ola_open", "1"); track("open"); } } catch (e) { track("open"); }
   }
-  window.addEventListener("appinstalled", function () { track("install"); hideBar(); });
+window.addEventListener("appinstalled", function () { try { if (!localStorage.getItem("ola_installed")) { localStorage.setItem("ola_installed", "1"); track("install"); } } catch (e) { track("install"); } hideBar(); });
 
   // ---------- Push ----------
   function urlB64ToUint8Array(b) {
