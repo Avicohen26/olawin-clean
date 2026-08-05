@@ -1,6 +1,8 @@
 {
   "rewrites": [
     { "source": "/disneyland", "destination": "/api/go?c=disneyland" },
+    { "source": "/prestige", "destination": "/api/go?c=prestige" },
+    { "source": "/ile-maurice", "destination": "/api/go?c=ile-maurice" },
     { "source": "/go/:slug", "destination": "/api/go?c=:slug" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
