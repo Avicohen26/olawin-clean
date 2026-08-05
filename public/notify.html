@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Olawin — Envoyer une notification</title>
+<style>
+  :root{--dark:#1A1A1A;--gold:#B08D57;--gold2:#c9a875;--cream:#F5F1EA;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#E8E4DC;color:#1A1A1A;padding:24px 16px 60px;}
+  .wrap{max-width:460px;margin:0 auto;}
+  .brand{text-align:center;margin-bottom:22px;}
+  .brand .lg{font-weight:800;letter-spacing:5px;font-size:22px;color:#1A1A1A;}
+  .brand .lg b{color:var(--gold);}
+  .brand .sub{font-size:10px;letter-spacing:2px;color:#999;text-transform:uppercase;margin-top:4px;}
+  .card{background:#fff;border:1px solid #e3ded5;border-radius:16px;padding:22px;box-shadow:0 6px 22px rgba(0,0,0,.06);}
+  h1{font-size:19px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+  .hint{font-size:12.5px;color:#888;margin-bottom:18px;line-height:1.5;}
+  label{display:block;font-size:9px;letter-spacing:1px;color:#999;text-transform:uppercase;margin:14px 0 5px;}
+  input,textarea{width:100%;border:1px solid #e0dace;border-radius:9px;padding:11px 12px;font-size:14px;background:#faf8f4;color:#222;font-family:inherit;}
+  input:focus,textarea:focus{outline:none;border-color:var(--gold);}
+  textarea{resize:vertical;min-height:70px;}
+  .row{display:flex;gap:10px;align-items:flex-end;}
+  .send{margin-top:20px;width:100%;background:var(--gold);color:#1A1A1A;font-weight:800;font-size:15px;letter-spacing:.5px;border:none;padding:15px;border-radius:26px;cursor:pointer;}
+  .send:disabled{opacity:.6;cursor:default;}
+  .preview{margin-top:20px;background:linear-gradient(160deg,#3a4653,#222c36);border-radius:14px;padding:14px;}
+  .preview .lab{font-size:9px;letter-spacing:1px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:8px;}
+  .notif{background:rgba(245,245,247,.95);border-radius:12px;padding:10px 12px;}
+  .notif .hd{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+  .notif .ic{width:20px;height:20px;border-radius:6px;background:var(--dark);display:flex;align-items:center;justify-content:center;}
+  .diamond{width:11px;height:11px;position:relative;}
+  .diamond:before{content:"";position:absolute;inset:0;border:1.4px solid var(--gold);transform:rotate(45deg);}
+  .notif .app{font-size:10.5px;font-weight:700;color:#333;letter-spacing:.5px;}
+  .notif .nt{font-size:13px;font-weight:700;color:#111;}
+  .notif .nb{font-size:12.5px;color:#333;margin-top:1px;}
+  .result{margin-top:16px;font-size:13px;padding:12px;border-radius:10px;display:none;}
+  .result.ok{background:#e7f4e8;color:#256b2b;display:block;}
+  .result.err{background:#fbe9e9;color:#8b1a1a;display:block;}
+  .keyrow{background:#faf8f4;border:1px dashed #e0dace;border-radius:10px;padding:12px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><div class="lg">OLA<b>W</b>IN</div><div class="sub">Console notifications</div></div>
+  <div class="card">
+    <h1>🔔 Envoyer une notification</h1>
+    <div class="hint">Ce message arrivera sur le téléphone de tous les abonnés (ceux qui ont installé l'app et accepté les notifications).</div>
+
+    <div class="keyrow">
+      <label>Clé admin (une seule fois, elle sera retenue)</label>
+      <input id="key" type="password" placeholder="Ta clé d'envoi" autocomplete="off" />
+    </div>
+
+    <label>Titre</label>
+    <input id="title" type="text" placeholder="🎢 Nouveau tirage Disneyland Paris !" maxlength="80" />
+
+    <label>Message</label>
+    <textarea id="body" placeholder="Tickets dès 49£ — tente ta chance avant le 7 septembre. 🏰" maxlength="180"></textarea>
+
+    <label>Lien à ouvrir (optionnel)</label>
+    <input id="url" type="text" placeholder="/disneyland" />
+
+    <div class="preview">
+      <div class="lab">Aperçu</div>
+      <div class="notif">
+        <div class="hd"><div class="ic"><div class="diamond"></div></div><div class="app">OLAWIN · maintenant</div></div>
+        <div class="nt" id="pvT">Titre de la notification</div>
+        <div class="nb" id="pvB">Le message apparaîtra ici.</div>
+      </div>
+    </div>
+
+    <button class="send" id="send">🚀 Envoyer maintenant</button>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+
+<script>
+  var $ = function (id) { return document.getElementById(id); };
+  try { $("key").value = localStorage.getItem("ola_send_key") || ""; } catch (e) {}
+  function pv() {
+    $("pvT").textContent = $("title").value || "Titre de la notification";
+    $("pvB").textContent = $("body").value || "Le message apparaîtra ici.";
+  }
+  $("title").addEventListener("input", pv);
+  $("body").addEventListener("input", pv);
+
+  $("send").addEventListener("click", function () {
+    var key = $("key").value.trim();
+    var title = $("title").value.trim();
+    var body = $("body").value.trim();
+    var url = $("url").value.trim() || "/";
+    var res = $("result");
+    res.className = "result";
+    if (!key) { res.className = "result err"; res.textContent = "Entre ta clé admin."; return; }
+    if (!title) { res.className = "result err"; res.textContent = "Le titre est obligatoire."; return; }
+    try { localStorage.setItem("ola_send_key", key); } catch (e) {}
+
+    $("send").disabled = true; $("send").textContent = "Envoi…";
+    fetch("/api/push?action=send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-olawin-token": key },
+      body: JSON.stringify({ title: title, body: body, url: url })
+    }).then(function (r) { return r.json().then(function (j) { return { s: r.status, j: j }; }); })
+      .then(function (o) {
+        $("send").disabled = false; $("send").textContent = "🚀 Envoyer maintenant";
+        if (o.s === 200 && o.j.ok) {
+          res.className = "result ok";
+          res.textContent = "✅ Envoyé à " + o.j.sent + " personne(s)." + (o.j.removed ? (" (" + o.j.removed + " abonnement(s) expiré(s) nettoyé(s))") : "");
+        } else if (o.s === 401) {
+          res.className = "result err"; res.textContent = "Clé admin incorrecte.";
+        } else {
+          res.className = "result err"; res.textContent = "Erreur : " + (o.j.error || o.s);
+        }
+      }).catch(function (e) {
+        $("send").disabled = false; $("send").textContent = "🚀 Envoyer maintenant";
+        res.className = "result err"; res.textContent = "Erreur réseau : " + e.message;
+      });
+  });
+</script>
+</body>
+</html>
