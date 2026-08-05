@@ -42,6 +42,8 @@
     </script>
     <!-- Admin lisible sur mobile : menu en barre horizontale, contenu pleine largeur -->
     <style>
+      /* Couleur de fond definie des le depart : evite le flash blanc avant l'affichage du site. */
+      html, body { background-color: #D8D4CE; }
       @media (max-width: 820px){
         #root > div{ grid-template-columns: 1fr !important; }
         #root > div > aside{ position: static !important; height: auto !important; min-width: 0 !important; border-right: none !important; border-bottom: 1px solid rgba(0,0,0,0.12) !important; }
