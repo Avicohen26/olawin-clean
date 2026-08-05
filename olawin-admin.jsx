@@ -14,7 +14,7 @@ import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebas
 
 // Liens courts "réseaux" : drawId -> slug (olawin.org/<slug>).
 // Le comptage des clics est stocké dans draws/<id>.linkClicks (voir api/go.js).
-const SHARE_LINKS = { "WsZXNAC9aJw6tSKUqsLa": "disneyland" };
+const SHARE_LINKS = { "WsZXNAC9aJw6tSKUqsLa": "disneyland", "jhzOWz6P9kKtD5MH95JV": "prestige", "4EOkMMU00Xrus1qzLhaQ": "ile-maurice" };
 
 const C = {
 bg: "#E8E4DC",
