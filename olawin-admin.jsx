@@ -1219,6 +1219,43 @@ const generateContract = (aff) => {
   if(!w){ notify("Autorise les pop-ups pour generer le contrat","err"); return; }
   w.document.write(html); w.document.close();
 };
+const generateContractEN = (aff) => {
+  var d = new Date();
+  var today = ("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)+"/"+d.getFullYear();
+  var rem = aff.commissionType==="perticket" ? (aff.commissionValue+" GBP per ticket sold via their link") : (aff.commissionValue+" % of the revenue generated via their link");
+  var html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>Agreement - ${aff.name||""}</title>
+<style>body{font-family:Georgia,serif;max-width:720px;margin:0 auto;padding:40px;color:#1a1a1a;line-height:1.6;font-size:14px;}h1{font-size:22px;text-align:center;letter-spacing:1px;}h2{font-size:15px;margin-top:22px;border-bottom:1px solid #ccc;padding-bottom:4px;}.muted{color:#666;font-size:12px;}.sign{display:flex;justify-content:space-between;margin-top:56px;gap:30px;}.sign>div{width:45%;}.line{border-top:1px solid #333;margin-top:50px;padding-top:6px;font-size:12px;}.note{background:#fff8e1;border:1px solid #f0e0a0;padding:10px 14px;font-size:12px;margin-top:24px;}@media print{.noprint{display:none;}}</style></head><body>
+<button class="noprint" onclick="window.print()" style="padding:10px 18px;margin-bottom:16px;cursor:pointer;">Print / Save as PDF</button>
+<h1>AFFILIATE PARTNERSHIP AGREEMENT</h1>
+<p class="muted" style="text-align:center;">Dated ${today}</p>
+<h2>Between the undersigned</h2>
+<p><strong>Olawin Ltd</strong>, a company registered under number 17289302, with its registered office at 20 Wenlock Road, London, N1 7GU, England, represented by its management, hereinafter referred to as "the Company" or "Olawin",</p>
+<p>AND</p>
+<p><strong>${aff.name||"[Influencer name]"}</strong>, hereinafter referred to as "the Partner",</p>
+<h2>Article 1 - Purpose</h2>
+<p>The purpose of this agreement is to define the terms under which the Partner promotes the prize competitions organised by Olawin, in exchange for remuneration, by means of a personal affiliate link.</p>
+<h2>Article 2 - Affiliate link</h2>
+<p>Olawin assigns the Partner a unique code: <strong>${aff.code||""}</strong>, corresponding to the link: <strong>https://www.olawin.org/?ref=${aff.code||""}</strong>. Any sale made via this link is automatically attributed to the Partner. To track their performance, the Partner has access to a personal dashboard using their code and access key: <strong>${aff.accessKey||""}</strong>.</p><h2>Article 3 - Remuneration</h2>
+<p>The Partner receives a commission of <strong>${rem}</strong>. The commission is calculated on orders actually paid. Cancelled, refunded or charged-back orders give rise to no commission.</p>
+<h2>Article 4 - Payment</h2>
+<p>Commissions due are paid by bank transfer, upon presentation of an invoice by the Partner where applicable. The Partner remains solely responsible for their own tax and social security obligations.</p>
+<h2>Article 5 - Partner's obligations</h2>
+<p>The Partner undertakes to promote Olawin fairly and honestly, to comply with all applicable laws and regulations (in particular those relating to gambling advertising and commercial influencing), to clearly state that tickets are paid, to address only an adult audience (18 years and over), not to use spam, and to make no misleading promises regarding the chances of winning.</p>
+<h2>Article 6 - Term and termination</h2>
+<p>This agreement takes effect upon signature, for an indefinite term. Either party may terminate it at any time, in writing. Commissions earned before termination remain payable.</p>
+<h2>Article 7 - Independence of the parties</h2>
+<p>The Partner acts as an independent contractor. This agreement creates no relationship of subordination, partnership or agency between the parties.</p>
+<h2>Article 8 - Confidentiality</h2>
+<p>Each party undertakes to keep confidential the non-public information exchanged under this agreement.</p>
+<h2>Article 9 - Governing law</h2>
+<p>This agreement is governed by English law. Any dispute falls under the jurisdiction of the courts of the United Kingdom.</p>
+<div class="sign"><div><div class="line">For Olawin</div><p style="font-family:'Brush Script MT',cursive;font-size:24px;margin-top:8px;">Olawin</p></div><div><div class="line">The Partner - ${aff.name||""}</div><p class="muted">Signature preceded by the words "Read and approved"</p></div></div>
+<div class="note"><strong>Note:</strong> template agreement provided for guidance only, to be reviewed and validated by a legal professional before signing.</div>
+</body></html>`;
+  var w = window.open("", "_blank");
+  if(!w){ notify("Allow pop-ups to generate the contract","err"); return; }
+  w.document.write(html); w.document.close();
+};
 const deleteAffiliate = async (id) => {  if(!window.confirm("Supprimer cet influenceur ?")) return;
   await deleteDoc(doc(db,"affiliates",id));
   notify("Supprime","err");
@@ -1465,7 +1502,8 @@ return (
 )}
 </div></div>
 <div style={{display:"flex",gap:"8px"}}>
-<button onClick={function(){ generateContract(aff); }} style={{...btn,padding:"6px 12px",background:C.btnBg,color:C.btnText,fontSize:"11px"}}>📄 Contrat</button>
+<button onClick={function(){ generateContract(aff); }} style={{...btn,padding:"6px 12px",background:C.btnBg,color:C.btnText,fontSize:"11px"}}>📄 Contrat FR</button>
+<button onClick={function(){ generateContractEN(aff); }} style={{...btn,padding:"6px 12px",background:C.btnBg,color:C.btnText,fontSize:"11px"}}>📄 Contract EN</button>
 <button onClick={function(){ deleteAffiliate(aff.id); }} style={{...btn,padding:"6px 12px",background:"rgba(0,0,0,0.05)",color:C.textMd,border:`1px solid ${C.border}`,fontSize:"11px"}}>Supprimer</button>
 </div></div>
 <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"10px",marginTop:"14px",textAlign:"center",background:"rgba(0,0,0,0.02)",borderRadius:"10px",padding:"12px 0"}}>
