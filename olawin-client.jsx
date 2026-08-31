@@ -1027,6 +1027,30 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
             })}
           </section>
 
+          <section style={{background:"rgba(0,0,0,0.02)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"40px 20px 52px":"48px 24px 64px"}}>
+            <div style={{maxWidth:"760px",margin:"0 auto",background:"#ffffff",border:"1px solid rgba(176,141,87,0.35)",borderRadius:"20px",boxShadow:"0 14px 40px rgba(0,0,0,0.06)",overflow:"hidden"}}>
+              <div style={{display:"flex",alignItems:"center",gap:"14px",padding:isMobile?"20px 22px":"22px 30px",borderBottom:"1px solid rgba(0,0,0,0.07)",background:"linear-gradient(180deg,#FBF9F5,#ffffff)"}}>
+                <div style={{width:"52px",height:"52px",borderRadius:"50%",border:"2px solid #B08D57",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#B08D57" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg>
+                </div>
+                <div>
+                  <div style={{fontSize:"11px",letterSpacing:"3px",color:"#B08D57",fontWeight:"700",textTransform:"uppercase"}}>{lang==="en"?"Proof of transparency":lang==="es"?"Prueba de transparencia":"Preuve de transparence"}</div>
+                  <div style={{fontFamily:"Bebas Neue, sans-serif",fontSize:isMobile?"23px":"27px",letterSpacing:"1px",lineHeight:1,marginTop:"3px"}}>{lang==="en"?"Our draws are certified & verifiable":lang==="es"?"Nuestros sorteos son certificados y verificables":"Nos tirages sont certifiés & vérifiables"}</div>
+                </div>
+              </div>
+              <div style={{padding:isMobile?"24px 22px 28px":"26px 30px 30px"}}>
+                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:"16px 30px",marginBottom:"26px"}}>
+                  <div><div style={{fontFamily:"Playfair Display, serif",fontStyle:"italic",fontSize:"15px",color:"rgba(0,0,0,0.5)",marginBottom:"2px"}}>{lang==="en"?"Draw":lang==="es"?"Sorteo":"Tirage"}</div><div style={{fontSize:"16px",fontWeight:"600"}}>La destination de ton choix</div></div>
+                  <div><div style={{fontFamily:"Playfair Display, serif",fontStyle:"italic",fontSize:"15px",color:"rgba(0,0,0,0.5)",marginBottom:"2px"}}>{lang==="en"?"Certifying body":lang==="es"?"Organismo":"Organisme"}</div><div style={{fontSize:"16px",fontWeight:"600"}}>randomdraws.com&trade; &middot; TPAL</div></div>
+                  <div><div style={{fontFamily:"Playfair Display, serif",fontStyle:"italic",fontSize:"15px",color:"rgba(0,0,0,0.5)",marginBottom:"2px"}}>{lang==="en"?"Draw date":lang==="es"?"Fecha del sorteo":"Date du tirage"}</div><div style={{fontSize:"16px",fontWeight:"600"}}>31/08/2026 &mdash; 17:28 (Paris)</div></div>
+                  <div><div style={{fontFamily:"Playfair Display, serif",fontStyle:"italic",fontSize:"15px",color:"rgba(0,0,0,0.5)",marginBottom:"2px"}}>{lang==="en"?"Certificate no.":lang==="es"?"N.&ordm; de certificado":"N&deg; de certificat"}</div><div style={{fontSize:"16px",fontWeight:"600",letterSpacing:"1px"}}>C80BD1F5C393</div></div>
+                </div>
+                <a href="/randomdrawscertificateC80BD1F5C393_1.pdf" target="_blank" rel="noopener noreferrer" style={{display:"block",textAlign:"center",textDecoration:"none",padding:"15px 20px",borderRadius:"11px",fontSize:"12px",fontWeight:"700",letterSpacing:"1.5px",textTransform:"uppercase",background:"#1A1A1A",color:"#ffffff"}}>&#128196; {lang==="en"?"View the certificate":lang==="es"?"Ver el certificado":"Voir le certificat"}</a>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",marginTop:"18px",fontSize:"12px",color:"rgba(0,0,0,0.45)",textAlign:"center",lineHeight:"1.5"}}>{lang==="en"?"Every draw is performed by randomdraws.com, an independent body. 100% random, verifiable by anyone.":lang==="es"?"Cada sorteo se realiza con randomdraws.com, un organismo independiente. 100% aleatorio, verificable por todos.":"Chaque tirage est réalisé par randomdraws.com, un organisme indépendant. 100% aléatoire, vérifiable par tous."}</div>
+              </div>
+            </div>
+          </section>
+
           <section style={{padding:isMobile?"64px 20px":"100px 48px"}}>
             <div style={{maxWidth:"1100px",margin:"0 auto"}}>
               <div style={{textAlign:"center",marginBottom:isMobile?"40px":"64px"}}>
