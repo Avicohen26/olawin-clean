@@ -38,7 +38,13 @@
 
     <!-- Fiche d'identite pour les moteurs de recherche -->
     <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"Organization","name":"Olawin","url":"https://www.olawin.org/","logo":"https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/og-image.jpg","description":"Olawin organise des competitions pour tenter de gagner des voyages de luxe et des sejours d'exception. Tirages certifies, paiement securise."}
+    {"@context":"https://schema.org","@type":"Organization","name":"Olawin","url":"https://www.olawin.org/","logo":"https://raw.githubusercontent.com/Avicohen26/olawin-clean/main/og-image.jpg","description":"Olawin organise des competitions pour tenter de gagner des voyages de luxe et des sejours d'exception. Tirages certifies, paiement securise.","sameAs":["https://www.instagram.com/olawin.official/"]}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebSite","name":"Olawin","url":"https://www.olawin.org/","inLanguage":["fr","en","es"],"description":"Participez a nos competitions et tentez de gagner des voyages de luxe et des sejours d'exception. Tirages certifies, paiement 100% securise."}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Comment fonctionne le tirage ?","acceptedAnswer":{"@type":"Answer","text":"A la date de cloture, le tirage est effectue en direct sur nos reseaux avec randomdraws.com, un outil independant dedie aux tirages au sort aleatoires qui garantit un resultat impartial et transparent. Chaque tirage est ainsi 100% aleatoire et verifiable par tous."}},{"@type":"Question","name":"Quand je recois mon ticket ?","acceptedAnswer":{"@type":"Answer","text":"Immediatement apres le paiement Stripe, un email de confirmation vous est envoye automatiquement."}},{"@type":"Question","name":"Que se passe-t-il si les tickets ne sont pas tous vendus ?","acceptedAnswer":{"@type":"Answer","text":"La date du tirage peut etre repoussee : le tirage a lieu des que tous les tickets sont vendus. Si le nombre de tickets requis n'est pas atteint, vous etes automatiquement rembourse."}},{"@type":"Question","name":"Comment utiliser le bon Private Honors ?","acceptedAnswer":{"@type":"Answer","text":"Le jour du tirage, le gagnant recoit un message sur WhatsApp et notre equipe organise directement le voyage avec lui."}},{"@type":"Question","name":"Le paiement est-il securise ?","acceptedAnswer":{"@type":"Answer","text":"100% securise. Le paiement passe par Stripe, qui ne stocke aucune donnee bancaire."}}]}
     </script>
     <!-- Admin lisible sur mobile : menu en barre horizontale, contenu pleine largeur -->
     <style>
@@ -55,6 +61,17 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div style="max-width:820px;margin:0 auto;padding:40px 20px;font-family:system-ui,Arial,sans-serif;color:#1a1a1a;line-height:1.6">
+        <h1>Olawin — Gagnez des voyages de luxe</h1>
+        <p>Olawin est une plateforme de competitions qui vous permet de tenter de gagner des voyages de luxe et des sejours d'exception : vols en classe affaires, hotels 5 etoiles et destinations de reve comme l'ile Maurice, Disneyland Paris et bien d'autres.</p>
+        <h2>Comment ca marche</h2>
+        <p>Choisissez un tirage, prenez votre ticket, puis attendez le tirage au sort realise en direct. Chaque tirage est certifie via randomdraws.com, un organisme independant qui garantit un resultat 100% aleatoire et verifiable par tous. Le paiement est 100% securise via Stripe. Participation reservee aux personnes majeures (18 ans et plus).</p>
+        <h2>Des voyages realises avec Private Honors</h2>
+        <p>Nos sejours sont organises avec notre partenaire Private Honors, specialiste du voyage haut de gamme, pour offrir aux gagnants une experience d'exception.</p>
+        <p><a href="https://www.olawin.org/">Decouvrez les tirages en cours sur Olawin.org</a></p>
+      </div>
+    </noscript>
     <script type="module" src="/main.jsx"></script>
     <script src="/olawin-app.js" defer></script>
   </body>
