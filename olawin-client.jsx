@@ -840,6 +840,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
         <button onClick={function(){ goTo("home"); }} style={{background:"none",border:"none",cursor:"pointer"}}>
           <OlawinLogo size={isMobile?26:34}></OlawinLogo>
         </button>
+        <span style={{fontSize:isMobile?"7.5px":"9px",letterSpacing:"1.5px",color:"rgba(0,0,0,0.5)",fontFamily:"DM Sans, sans-serif",textTransform:"uppercase",whiteSpace:"nowrap"}}>{lang==="en"?"Lottery & prize draws":lang==="es"?"Lotería y sorteos":"Loterie & tirages"}</span>
         {!isMobile ? (
           <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
             <div style={{width:"1px",height:"28px",background:"rgba(0,0,0,0.15)"}}></div>
