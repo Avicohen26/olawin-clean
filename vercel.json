@@ -4,6 +4,8 @@
     { "source": "/prestige", "destination": "/api/go?c=prestige" },
     { "source": "/ile-maurice", "destination": "/api/go?c=ile-maurice" },
     { "source": "/go/:slug", "destination": "/api/go?c=:slug" },
+    { "source": "/gagner-voyage-ile-maurice", "destination": "/gagner-voyage-ile-maurice.html" },
+    { "source": "/gagner-sejour-disneyland-paris", "destination": "/gagner-sejour-disneyland-paris.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "crons": [{ "path": "/api/cron-abandoned-carts", "schedule": "0 9 * * *" }],
