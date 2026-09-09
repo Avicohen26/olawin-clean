@@ -908,7 +908,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
       const heroEndDate = heroData && heroData.drawDate ? heroData.drawDate : (heroData && heroData.endDate ? heroData.endDate : null);
       pageContent = (
         <div>
-          <section style={{position:"relative",minHeight:isMobile?"75vh":"92vh",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",paddingTop:isMobile?"16px":"28px"}}>
+          <section style={{position:"relative",minHeight:isMobile?"70vh":"76vh",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",paddingTop:isMobile?"16px":"28px"}}>
             <div style={{position:"absolute",inset:0,background:(heroData && heroData.gradient) || "#1A1A1A"}}></div>
             {heroData && heroData.image ? <img src={optimg(heroData.image, isMobile?900:1600)} alt={heroData.location||"Olawin"} decoding="async" onError={function(e){ imgFallback(e, heroData.image); }} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}></img> : null}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
@@ -920,14 +920,13 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
                 </div>
               ) : null}
               <div style={{fontSize:"12px",letterSpacing:"4px",color:"#ffffff",marginBottom:"10px",fontWeight:"700",textShadow:TEXT_SHADOW_STRONG}}>{lang==="en"?"FEATURED DRAW":lang==="es"?"SORTEO DESTACADO":"TIRAGE VEDETTE"}</div>
-              <h1 style={{fontSize:isMobile?"clamp(28px,7.5vw,56px)":"clamp(52px,7vw,100px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:isMobile?"1px":"3px",lineHeight:0.95,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG,overflowWrap:"break-word",wordBreak:"break-word",maxWidth:"100%"}}>
+              <h1 style={{fontSize:isMobile?"clamp(26px,6.5vw,44px)":"clamp(44px,5vw,78px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:isMobile?"1px":"3px",lineHeight:0.95,color:"#FFFFFF",marginBottom:"14px",textShadow:TEXT_SHADOW_STRONG,overflowWrap:"break-word",wordBreak:"break-word",maxWidth:"100%"}}>
                 {trd(heroData,"title") ? trd(heroData,"title").toUpperCase() : ""}
-                <br></br>
-                <span style={{color:"#ffffff",opacity:0.85}}>{trd(heroData,"location") ? trd(heroData,"location").toUpperCase() : ""}</span>
+                {(function(){ var _t=(trd(heroData,"title")||"").toLowerCase(); var _l=trd(heroData,"location")||""; return (_l && _t.indexOf(_l.toLowerCase())===-1) ? <span key="loc"><br></br><span style={{color:"#ffffff",opacity:0.85}}>{_l.toUpperCase()}</span></span> : null; })()}
               </h1>
-              <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.7",marginBottom:"24px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95}}>{trd(heroData,"description")}</p>
+              <p style={{fontSize:isMobile?"15px":"17px",fontFamily:"Playfair Display, serif",fontStyle:"italic",color:"#ffffff",maxWidth:"480px",lineHeight:"1.6",marginBottom:"16px",textShadow:TEXT_SHADOW_STRONG,opacity:0.95,display:"-webkit-box",WebkitLineClamp:isMobile?4:3,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{trd(heroData,"description")}</p>
               {heroEndDate ? (
-                <div style={{marginBottom:"20px",padding:"12px 16px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"12px",display:"inline-block"}}>
+                <div style={{marginBottom:"16px",padding:"10px 16px",background:"rgba(0,0,0,0.5)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"12px",display:"inline-block"}}>
                   <Countdown endDate={heroEndDate} t={t} compact={false}></Countdown>
                 </div>
               ) : null}
