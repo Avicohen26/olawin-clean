@@ -24,6 +24,13 @@ const LINKS = {
   "disneyland": "WsZXNAC9aJw6tSKUqsLa",
   "prestige": "jhzOWz6P9kKtD5MH95JV",
   "ile-maurice": "4EOkMMU00Xrus1qzLhaQ",
+  "dubai": "4gvW36Rs9nOGTRUrHR9A",
+  "mich": "4gvW36Rs9nOGTRUrHR9A",
+};
+
+// slug -> code influenceur (parrainage). Le clic est aussi attribue cote site via ?ref=.
+const REFS = {
+  "mich": "MICHEL",
 };
 
 export default async function handler(req, res) {
@@ -46,7 +53,10 @@ export default async function handler(req, res) {
       console.error("go count error:", e);
     }
 
-    res.writeHead(302, { Location: SITE + "/?draw=" + encodeURIComponent(drawId) });
+    const ref = REFS[slug];
+    let loc = SITE + "/?draw=" + encodeURIComponent(drawId);
+    if (ref) loc += "&ref=" + encodeURIComponent(ref);
+    res.writeHead(302, { Location: loc });
     return res.end();
   } catch (err) {
     console.error("go error:", err);
