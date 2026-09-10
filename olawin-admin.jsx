@@ -237,6 +237,17 @@ onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.file
 )}
 </div>
 <div style={{marginBottom:"20px"}}>
+<div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"10px"}}>VIDÉO DE FOND (optionnel)</div>
+{f.video ? (
+<div style={{position:"relative",marginBottom:"10px",borderRadius:"12px",overflow:"hidden",height:"150px",background:"#000"}}>
+<video src={f.video} autoPlay muted loop playsInline style={{width:"100%",height:"100%",objectFit:"cover"}}></video>
+<button onClick={()=>set("video","")} style={{position:"absolute",top:"10px",right:"10px",background:"rgba(0,0,0,0.55)",border:"none",borderRadius:"20px",padding:"4px 10px",color:"#fff",fontSize:"11px",cursor:"pointer"}}>Retirer</button>
+</div>
+) : null}
+<input type="text" placeholder="Lien .mp4 de la vidéo (laisser vide = image seule)" value={f.video||""} onChange={e=>set("video",e.target.value)} style={{...inp,width:"100%",fontSize:"13px"}}/>
+<div style={{fontSize:"11px",color:C.textLt,marginTop:"8px",lineHeight:"1.5"}}>🎬 La vidéo se lance en fond (sans son, en boucle) sur la page du tirage et la bannière d'accueil. L'image sert d'aperçu et de secours. Laissez vide pour garder seulement l'image.</div>
+</div>
+<div style={{marginBottom:"20px"}}>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"14px"}}>INFORMATIONS</div>
 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
 {[
