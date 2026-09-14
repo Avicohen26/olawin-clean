@@ -8,6 +8,10 @@
     { "source": "/gagner-sejour-disneyland-paris", "destination": "/gagner-sejour-disneyland-paris.html" },
     { "source": "/dubai", "destination": "/api/go?c=dubai" },
     { "source": "/mich", "destination": "/api/go?c=mich" },
+    { "source": "/gagner-voyage-dubai", "destination": "/gagner-voyage-dubai.html" },
+    { "source": "/win-a-trip-to-mauritius", "destination": "/win-a-trip-to-mauritius.html" },
+    { "source": "/win-a-disneyland-paris-stay", "destination": "/win-a-disneyland-paris-stay.html" },
+    { "source": "/alternative-omaze", "destination": "/alternative-omaze.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "crons": [{ "path": "/api/cron-abandoned-carts", "schedule": "0 9 * * *" }],
