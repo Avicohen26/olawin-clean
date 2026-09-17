@@ -135,12 +135,13 @@ export default async function handler(req, res) {
     });
 
     // === Parrainage & fidelite : comptage (Phase 1, sans recompense) ===
+    let refCode = "";
     try {
       const emailKey = (orderData.email || "").toLowerCase().trim();
       if (emailKey) {
         const custRef = db.collection("customers").doc(emailKey);
         const custSnap = await custRef.get();
-        const refCode = (custSnap.exists && custSnap.data().refCode) ? custSnap.data().refCode : (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 6).toUpperCase();
+        refCode = (custSnap.exists && custSnap.data().refCode) ? custSnap.data().refCode : (Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2)).slice(0, 6).toUpperCase();
         await custRef.set({
           email: emailKey,
           refCode: refCode,
@@ -183,6 +184,16 @@ export default async function handler(req, res) {
               ticketsHtml +
             '</div>' +
             '<div style="font-size:13px;color:#888;">Commande ' + orderNumber + ' · Conservez cet email, vos numéros sont votre preuve de participation.</div>' +
+            (refCode ? (
+              '<div style="background:#faf7f1;border:1px solid #e6d9c0;border-radius:12px;padding:24px;margin-top:28px;text-align:center;">' +
+                '<div style="font-size:26px;margin-bottom:6px;">🎁</div>' +
+                '<div style="font-size:17px;font-weight:bold;color:#111;margin-bottom:6px;">Gagnez des tickets gratuits</div>' +
+                '<div style="font-size:14px;color:#555;line-height:1.6;margin-bottom:18px;">Invitez vos amis : 2 amis qui achètent = 1 ticket offert. Et votre ami reçoit -10% sur son 1er ticket.</div>' +
+                '<a href="https://wa.me/?text=' + encodeURIComponent('🎁 Rejoins-moi sur Olawin et tente de gagner un voyage de luxe ! Avec mon lien tu as -10% sur ton 1er ticket : https://www.olawin.org/?ref=' + refCode) + '" style="display:inline-block;background:#25D366;color:#fff;text-decoration:none;padding:13px 28px;border-radius:10px;font-size:13px;font-weight:bold;letter-spacing:1px;margin-bottom:14px;">Partager sur WhatsApp</a>' +
+                '<div style="font-size:12px;color:#999;margin-bottom:4px;">Ou copiez votre lien de parrainage :</div>' +
+                '<div style="font-size:13px;color:#111;font-weight:bold;word-break:break-all;">https://www.olawin.org/?ref=' + refCode + '</div>' +
+              '</div>'
+            ) : '') +
           '</div>' +
           '<div style="background:#111;padding:20px;text-align:center;font-size:12px;color:#888;">L\'équipe Olawin</div>' +
         '</div>';
