@@ -42,8 +42,8 @@ export default async function handler(req, res) {
       link: "https://www.olawin.org/?ref=" + refCode,
       friends: friends,
       tickets: tickets,
-      freeFromFriends: Math.floor(friends / 4),
-      friendsToNext: 4 - (friends % 4),
+      freeFromFriends: Math.floor(friends / 2),
+      friendsToNext: 2 - (friends % 2),
       freeFromTickets: Math.floor(tickets / 10),
       ticketsToNext: 10 - (tickets % 10),
     });
