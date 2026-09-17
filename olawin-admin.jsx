@@ -1436,7 +1436,7 @@ return (
 <div style={{animation:"fadeUp 0.4s ease",maxWidth:"900px"}}>
 <div style={{fontSize:"9px",letterSpacing:"3px",color:C.textLt,marginBottom:"6px"}}>PROGRAMME</div>
 <h1 style={{fontSize:"34px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",marginBottom:"8px"}}>PARRAINAGE</h1>
-<p style={{fontSize:"13px",color:C.textMd,marginBottom:"24px"}}>Tes clients qui ont amene des amis ou cumule des tickets. 1 ticket gratuit tous les 4 amis, et tous les 10 tickets achetes.</p>
+<p style={{fontSize:"13px",color:C.textMd,marginBottom:"24px"}}>Tes clients qui ont amene des amis ou cumule des tickets. 1 ticket gratuit tous les 2 amis, et tous les 10 tickets achetes.</p>
 {(function(){
 const rows = customers.map(function(cust){
 const code = (cust.refCode||"").toString();
@@ -1446,7 +1446,7 @@ const friends = fem.size;
 const em = (cust.email||cust.id||"").toLowerCase();
 const myPaid = orders.filter(function(o){ return o.status==="paid" && (o.email||"").toLowerCase()===em; });
 const tickets = myPaid.reduce(function(s,o){ return s + Number(o.tickets||0); }, 0);
-const earned = Math.min(20, Math.floor(tickets/10) + Math.floor(friends/4));
+const earned = Math.min(20, Math.floor(tickets/10) + Math.floor(friends/2));
 const available = Math.max(0, earned - Number(cust.freeRedeemed||0));
 return { email: cust.email||cust.id, code:code, friends:friends, tickets:tickets, available:available };
 }).filter(function(r){ return r.friends>0 || r.tickets>=10; }).sort(function(a,b){ return (b.friends-a.friends) || (b.tickets-a.tickets); });
