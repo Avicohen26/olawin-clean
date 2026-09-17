@@ -246,6 +246,31 @@ function InfluencerPage(props) {
     </div>
   );
 }
+function SuccessReferral(props) {
+  const email = props.email; const lang = props.lang; const goTo = props.goTo;
+  const L = function(fr, en, es){ return lang==="en" ? en : lang==="es" ? es : fr; };
+  const [link, setLink] = useState("");
+  const [copied, setCopied] = useState(false);
+  useEffect(function(){
+    if (!email || email.indexOf("@") < 0) return;
+    fetch("/api/my-referral", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ email: email }) })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if (d && d.link) setLink(d.link); })
+      .catch(function(){});
+  }, [email]);
+  if (!link) return null;
+  const msg = L("🎁 Rejoins-moi sur Olawin et tente de gagner un voyage de luxe ! Avec mon lien tu as -10% sur ton 1er ticket : ","🎁 Join me on Olawin for a chance to win a luxury trip! With my link you get -10% on your 1st ticket: ","🎁 Unete a mi en Olawin y gana un viaje de lujo! Con mi enlace tienes -10% en tu 1er boleto: ") + link;
+  return (
+    <div style={{border:"1px solid rgba(176,141,87,0.4)",background:"rgba(176,141,87,0.06)",borderRadius:"16px",padding:"22px",marginBottom:"24px",textAlign:"center"}}>
+      <div style={{fontSize:"24px",marginBottom:"4px"}}>🎁</div>
+      <div style={{fontSize:"16px",fontWeight:"700",marginBottom:"6px",color:"#1A1A1A"}}>{L("Gagnez des tickets gratuits","Earn free tickets","Gana boletos gratis")}</div>
+      <p style={{fontSize:"13px",color:"rgba(0,0,0,0.6)",lineHeight:"1.6",marginBottom:"16px"}}>{L("Invitez vos amis : 2 amis qui achetent = 1 ticket offert. Et votre ami recoit -10% sur son 1er ticket.","Invite your friends: 2 friends who buy = 1 free ticket. And your friend gets -10% on their 1st ticket.","Invita a tus amigos: 2 amigos que compran = 1 boleto gratis. Y tu amigo obtiene -10% en su 1er boleto.")}</p>
+      <a href={"https://wa.me/?text="+encodeURIComponent(msg)} target="_blank" rel="noopener noreferrer" style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",padding:"15px",borderRadius:"11px",background:"#25D366",color:"#fff",textDecoration:"none",fontWeight:700,fontSize:"13px",letterSpacing:"1px",marginBottom:"10px"}}>{L("PARTAGER SUR WHATSAPP","SHARE ON WHATSAPP","COMPARTIR EN WHATSAPP")}</a>
+      <button onClick={function(){ try{ navigator.clipboard.writeText(link); setCopied(true); setTimeout(function(){ setCopied(false); }, 2000); }catch(e){} }} style={{width:"100%",padding:"13px",borderRadius:"11px",border:"1px solid rgba(0,0,0,0.15)",background:"#fff",cursor:"pointer",fontSize:"12px",fontWeight:700,letterSpacing:"1px",color:"#1A1A1A"}}>{copied ? L("LIEN COPIE !","LINK COPIED!","ENLACE COPIADO!") : L("COPIER MON LIEN","COPY MY LINK","COPIAR MI ENLACE")}</button>
+    </div>
+  );
+}
+
 function ReferralPage(props) {  const t = props.t; const lang = props.lang; const isMobile = props.isMobile; const goTo = props.goTo;
   const [rpEmail, setRpEmail] = useState("");
   const [rpLoading, setRpLoading] = useState(false);
@@ -275,7 +300,7 @@ function ReferralPage(props) {  const t = props.t; const lang = props.lang; cons
 {n:"1",t:L("Recupere ton lien","Get your link","Consigue tu enlace"),d:L("Entre ton email ci-dessous pour obtenir ton lien de parrainage personnel.","Enter your email below to get your personal referral link.","Ingresa tu email para obtener tu enlace personal.")},
 {n:"2",t:L("Partage-le","Share it","Compartelo"),d:L("Envoie ton lien a tes amis (WhatsApp, Instagram, SMS...).","Send your link to your friends (WhatsApp, Instagram, SMS...).","Envia tu enlace a tus amigos (WhatsApp, Instagram, SMS...).")},
 {n:"3",t:L("Ton ami gagne -10%","Your friend gets -10%","Tu amigo gana -10%"),d:L("Quand un ami passe par ton lien, il beneficie de -10% sur son 1er achat. Un bon argument pour le convaincre !","When a friend uses your link, they get -10% on their first purchase. A great reason to convince them!","Cuando un amigo usa tu enlace, obtiene -10% en su primera compra.")},
-{n:"4",t:L("Tu gagnes des tickets gratuits","You earn free tickets","Ganas boletos gratis"),d:L("4 amis qui achetent = 1 ticket gratuit. Et tous les 10 tickets que TU achetes = 1 ticket gratuit en plus !","4 friends who buy = 1 free ticket. And every 10 tickets YOU buy = 1 extra free ticket!","4 amigos que compran = 1 boleto gratis. Y cada 10 boletos que TU compras = 1 boleto gratis mas!")},
+{n:"4",t:L("Tu gagnes des tickets gratuits","You earn free tickets","Ganas boletos gratis"),d:L("2 amis qui achetent = 1 ticket gratuit. Et tous les 10 tickets que TU achetes = 1 ticket gratuit en plus !","2 friends who buy = 1 free ticket. And every 10 tickets YOU buy = 1 extra free ticket!","2 amigos que compran = 1 boleto gratis. Y cada 10 boletos que TU compras = 1 boleto gratis mas!")},
 {n:"5",t:L("Tout est automatique","Fully automatic","Todo automatico"),d:L("Tes tickets gratuits s'ajoutent tout seuls a ta prochaine commande. Rien a faire !","Your free tickets are automatically added to your next order. Nothing to do!","Tus boletos gratis se anaden automaticamente a tu proximo pedido.")}
 ].map(function(step,i){ return (
 <div key={i} style={{display:"flex",gap:"14px",alignItems:"flex-start"}}>
@@ -298,7 +323,10 @@ function ReferralPage(props) {  const t = props.t; const lang = props.lang; cons
           <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"16px",padding:"24px",background:"rgba(0,0,0,0.02)",marginBottom:"20px"}}>
             <div style={{fontSize:"9px",letterSpacing:"2px",color:"rgba(0,0,0,0.4)",marginBottom:"10px"}}>{L("TON LIEN DE PARRAINAGE","YOUR REFERRAL LINK","TU ENLACE")}</div>
             <div style={{fontSize:"14px",fontWeight:"700",wordBreak:"break-all",marginBottom:"14px",color:"#1A1A1A"}}>{rpData.link}</div>
-            <button onClick={rpCopy} className="cta-dark" style={{width:"100%",padding:"14px",fontSize:"12px"}}>{rpCopied ? L("LIEN COPIE !","LINK COPIED!","ENLACE COPIADO!") : L("COPIER LE LIEN","COPY LINK","COPIAR ENLACE")}</button>
+            <div style={{display:"flex",gap:"10px"}}>
+              <button onClick={rpCopy} style={{flex:1,padding:"14px",fontSize:"12px",fontFamily:"DM Sans, sans-serif",fontWeight:700,letterSpacing:"1px",border:"1px solid rgba(0,0,0,0.15)",borderRadius:"10px",background:"#fff",color:"#1A1A1A",cursor:"pointer"}}>{rpCopied ? L("LIEN COPIE !","LINK COPIED!","ENLACE COPIADO!") : L("COPIER","COPY","COPIAR")}</button>
+              <a href={"https://wa.me/?text="+encodeURIComponent(L("🎁 Rejoins-moi sur Olawin et tente de gagner un voyage de luxe ! Avec mon lien tu as -10% sur ton 1er ticket : ","🎁 Join me on Olawin for a chance to win a luxury trip! With my link you get -10% on your 1st ticket: ","🎁 Unete a mi en Olawin y gana un viaje de lujo! Con mi enlace tienes -10% en tu 1er boleto: ")+rpData.link)} target="_blank" rel="noopener noreferrer" style={{flex:1,padding:"14px",fontSize:"12px",fontFamily:"DM Sans, sans-serif",fontWeight:700,letterSpacing:"1px",borderRadius:"10px",background:"#25D366",color:"#fff",textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center"}}>WHATSAPP</a>
+            </div>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px",marginBottom:"18px"}}>
             <div style={{border:"1px solid rgba(0,0,0,0.1)",borderRadius:"14px",padding:"18px",textAlign:"center"}}>
@@ -609,6 +637,16 @@ const [page, setPage] = useState(function(){ try { var _sp = new URLSearchParams
     } catch (e) {}
   }, []);
 
+  useEffect(function() {
+    try {
+      var _pp = new URLSearchParams(window.location.search);
+      if (_pp.get("paid") === "success") {
+        var _po = _pp.get("order") || "";
+        if (_po) setLastOrderNumber(_po);
+        setPage("success");
+      }
+    } catch(e){}
+  }, []);
   useEffect(function() {
     getDoc(doc(db,"settings","hero")).then(function(snap) {
       if (snap.exists()) setHeroConfig(snap.data());
@@ -1253,6 +1291,7 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
               <div style={{fontSize:"11px",color:"rgba(0,0,0,0.5)",lineHeight:"1.5"}}>{t.success.saveIt}</div>
             </div>
           ) : null}
+          <SuccessReferral email={form.email} lang={lang} goTo={goTo}></SuccessReferral>
           <button onClick={function(){ goTo("home"); }} className="cta-dark" style={{padding:"13px 28px",fontSize:"11px"}}>{t.success.home}</button>
         </div>
       </div>
