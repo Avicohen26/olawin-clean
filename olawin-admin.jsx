@@ -982,6 +982,8 @@ const [showNew, setShowNew] = useState(false);
 const [randomDraw, setRandomDraw] = useState(null);
 const [notif, setNotif] = useState(null);
 const [orderSearch, setOrderSearch] = useState("");
+const [drawFilter, setDrawFilter] = useState("");
+const [refundingId, setRefundingId] = useState("");
 const [campaignSubject, setCampaignSubject] = useState("");
 const [campaignBody, setCampaignBody] = useState("");
 const [campaignTest, setCampaignTest] = useState("");
@@ -1001,7 +1003,19 @@ const resyncStripe = async () => {
     if(!r.ok) throw new Error(d.error||("HTTP "+r.status));
     notify((d.updated||0)+" commande(s) mise(s) a jour ✓" + ((d.skipped)? " · "+d.skipped+" ignoree(s)":""));
   } catch(e){ notify("Erreur resync: "+e.message,"err"); }
-  setResyncing(false);
+const refundOrder = async (o) => {
+  const key = campaignKey || (function(){ try { return localStorage.getItem("olawin_campaign_key")||""; } catch(_e){ return ""; } })();
+  if(!key){ notify("Entre d'abord ta cle (onglet Campagnes)","err"); return; }
+  const amt = (o.amountPaid!=null?o.amountPaid:(o.amount||0));
+  if(!window.confirm("Rembourser "+(o.firstName||"")+" "+(o.lastName||"")+" : "+fmt(amt)+" ?\n\nLe client est rembourse via Stripe et recoit un email automatique.\nAction irreversible.")) return;
+  setRefundingId(o.id);
+  try {
+    const r = await fetch("/api/refund",{method:"POST",headers:{"Content-Type":"application/json","x-olawin-token":key},body:JSON.stringify({orderId:o.id})});
+    const d = await r.json();
+    if(!r.ok) throw new Error(d.error||("HTTP "+r.status));
+    notify("Rembourse "+fmt(d.amount)+" - email envoye au client");
+  } catch(e){ notify("Erreur remboursement: "+e.message,"err"); }
+  setRefundingId("");
 };
 const [contacts, setContacts] = useState([]);
 const [affiliates, setAffiliates] = useState([]);
@@ -1330,7 +1344,7 @@ const sendCampaign = async () => {
   setCampaignSending(false);
   notify("Campagne terminee : "+ok+" envoyes"+(fail?(", "+fail+" echecs"):""));
 };const visibleOrders = orders.filter(o=>{
-  if (o.status==="paid") return true;
+  if (o.status==="paid" || o.status==="refunded") return true;
   const e = norm(o.email);
   const p = norm(o.phone);
   if (e && paidEmails.has(e)) return false;
@@ -1338,6 +1352,7 @@ const sendCampaign = async () => {
   return true;
 });
 const filtered = visibleOrders.filter(o=>{
+if (drawFilter && o.drawId !== drawFilter) return false;
 const s = orderSearch.toLowerCase();
 return (o.firstName||"").toLowerCase().includes(s) ||
 (o.lastName||"").toLowerCase().includes(s) ||
@@ -1862,6 +1877,7 @@ return (
 </div>
 <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
 <button onClick={resyncStripe} disabled={resyncing} style={{...btn,background:"rgba(0,0,0,0.06)",color:C.textMd,border:`1px solid ${C.border}`,padding:"9px 16px",fontSize:"12px",cursor:resyncing?"wait":"pointer",whiteSpace:"nowrap"}}>{resyncing?"SYNC...":"↻ Resync Stripe"}</button>
+<select value={drawFilter} onChange={e=>setDrawFilter(e.target.value)} style={{...inp,width:"210px",padding:"9px 14px"}}><option value="">Tous les tirages</option>{draws.map(d=>(<option key={d.id} value={d.id}>{d.title||d.id}</option>))}</select>
 <input placeholder="Rechercher..." value={orderSearch} onChange={e=>setOrderSearch(e.target.value)} style={{...inp,width:"220px",padding:"9px 14px"}}/>
 </div>
 </div>
@@ -1886,6 +1902,8 @@ return (
 <td style={{padding:"13px 18px",fontSize:"12px",color:C.textMd,whiteSpace:"nowrap"}}>{o.phone||"—"}</td><td style={{padding:"13px 18px"}}>
 {o.status==="paid" ? (
 <span style={{background:"rgba(34,170,90,0.12)",color:"#1a8a4a",border:"1px solid rgba(34,170,90,0.3)",borderRadius:"20px",padding:"3px 10px",fontSize:"11px",fontWeight:"600",whiteSpace:"nowrap"}}>✓ Payé</span>
+) : o.status==="refunded" ? (
+<span style={{background:"rgba(120,120,120,0.12)",color:"#666",border:"1px solid rgba(120,120,120,0.3)",borderRadius:"20px",padding:"3px 10px",fontSize:"11px",fontWeight:"600",whiteSpace:"nowrap"}}>Rembourse</span>
 ) : (
 <span style={{background:"rgba(230,150,20,0.12)",color:"#b8780f",border:"1px solid rgba(230,150,20,0.3)",borderRadius:"20px",padding:"3px 10px",fontSize:"11px",fontWeight:"600",whiteSpace:"nowrap"}}>⏳ En attente</span>
 )}
@@ -1908,6 +1926,7 @@ return (
 <a href={"mailto:"+(o.email||"")+"?subject=Votre commande Olawin&body="+encodeURIComponent("Bonjour "+(o.firstName||"")+", votre commande Olawin n'a pas ete finalisee. Completez-la sur https://www.olawin.org")} style={{textDecoration:"none",marginRight:"6px",background:"rgba(0,90,180,0.08)",color:"rgba(0,70,150,0.9)",border:"1px solid rgba(0,90,180,0.2)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px"}}>✉️ Mail</a>
 </span>
 ) : null}
+{o.status==="paid" ? (<button onClick={()=>refundOrder(o)} disabled={refundingId===o.id} style={{marginRight:"6px",background:"rgba(176,141,87,0.1)",color:"#8a6d3b",border:"1px solid rgba(176,141,87,0.3)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px",cursor:refundingId===o.id?"wait":"pointer",whiteSpace:"nowrap"}}>{refundingId===o.id?"...":"Rembourser"}</button>) : null}
 <button onClick={()=>deleteOrder(o.id, o.drawId, o.tickets||0)} style={{background:"rgba(160,0,0,0.06)",color:"rgba(140,0,0,0.7)",border:"1px solid rgba(160,0,0,0.12)",borderRadius:"7px",padding:"6px 10px",fontSize:"11px",cursor:"pointer"}}>🗑</button>
 </td></tr>
 ))}
