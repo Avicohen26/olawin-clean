@@ -1003,6 +1003,8 @@ const resyncStripe = async () => {
     if(!r.ok) throw new Error(d.error||("HTTP "+r.status));
     notify((d.updated||0)+" commande(s) mise(s) a jour ✓" + ((d.skipped)? " · "+d.skipped+" ignoree(s)":""));
   } catch(e){ notify("Erreur resync: "+e.message,"err"); }
+  setResyncing(false);
+};
 const refundOrder = async (o) => {
   const key = campaignKey || (function(){ try { return localStorage.getItem("olawin_campaign_key")||""; } catch(_e){ return ""; } })();
   if(!key){ notify("Entre d'abord ta cle (onglet Campagnes)","err"); return; }
