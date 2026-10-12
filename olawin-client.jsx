@@ -1011,31 +1011,6 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
             </section>
           ) : null}
 
-          {winners.length > 0 ? (
-            <section style={{background:C_BG,padding:isMobile?"48px 20px":"72px 48px",borderTop:"1px solid rgba(0,0,0,0.06)"}}>
-              <div style={{maxWidth:"1100px",margin:"0 auto"}}>
-                <div style={{textAlign:"center",marginBottom:isMobile?"28px":"40px"}}>
-                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"10px"}}>{lang==="en"?"THEY WON":lang==="es"?"GANARON":"ILS ONT GAGNÉ"}</div>
-                  <h2 style={{fontSize:isMobile?"clamp(30px,7vw,40px)":"clamp(36px,5vw,56px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px"}}>{lang==="en"?"OUR WINNERS":lang==="es"?"NUESTROS GANADORES":"NOS GAGNANTS"}</h2>
-                </div>
-                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(280px,1fr))",gap:"16px"}}>
-                  {winners.map(function(d, i) {
-                    var nm = (d.winner.name || "").trim().split(" ").filter(Boolean);
-                    var disp = nm.length > 1 ? (nm[0] + " " + nm[nm.length-1].charAt(0) + ".") : (nm[0] || "—");
-                    return (
-                      <div key={i} style={{background:"#ffffff",border:"1px solid rgba(0,0,0,0.08)",borderRadius:"16px",padding:"24px",boxShadow:"0 8px 24px rgba(0,0,0,0.04)"}}>
-                        <div style={{fontSize:"28px",marginBottom:"10px"}}>🏆</div>
-                        <div style={{fontSize:"16px",fontWeight:"700",color:"#1A1A1A",marginBottom:"4px"}}>{disp}</div>
-                        <div style={{fontSize:"13px",color:"rgba(0,0,0,0.55)",lineHeight:"1.5"}}>{(trd(d,"title") || d.title || "")}{trd(d,"prize") ? " — " + trd(d,"prize") : ""}</div>
-                        {d.winner.num ? <div style={{fontSize:"11px",letterSpacing:"1px",color:"rgba(0,0,0,0.4)",marginTop:"8px"}}>{(lang==="en"?"Ticket #":lang==="es"?"Boleto #":"Ticket n°") + d.winner.num}</div> : null}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-          ) : null}
-
           <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
 {[
           { val: String(activeDraws.length), lbl: t.stats.active },
