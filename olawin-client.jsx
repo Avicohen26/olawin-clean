@@ -573,6 +573,7 @@ const [page, setPage] = useState(function(){ try { var _sp = new URLSearchParams
   const [socialConfig, setSocialConfig] = useState(null);
   const [contentConfig, setContentConfig] = useState(null);
   const [legalConfig, setLegalConfig] = useState(null);
+  const [showFreePost, setShowFreePost] = useState(false);
   const [selectedDraw, setSelectedDraw] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
   const [qty, setQty] = useState(1);
@@ -1251,7 +1252,28 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
 {quizError ? <div style={{marginTop:"10px",fontSize:"12px",color:"#C0392B",fontFamily:"'DM Sans',sans-serif"}}>{lang==="fr"?"Mauvaise réponse, réessayez.":lang==="es"?"Respuesta incorrecta, inténtalo de nuevo.":"Wrong answer, try again."}</div> : null}
 {quizOk ? <div style={{marginTop:"10px",fontSize:"12px",color:"#1A8A3A",fontFamily:"'DM Sans',sans-serif"}}>{lang==="fr"?"Bonne réponse !":lang==="es"?"¡Respuesta correcta!":"Correct!"}</div> : null}
 </div>
-<button onClick={handlePay} disabled={!formValid || paying} className="cta-dark" style={{width:"100%",padding:"17px",fontSize:"12px"}}>
+<div style={{marginBottom:"14px",padding:"12px 14px",border:"1px dashed rgba(0,0,0,0.22)",borderRadius:"10px",background:"rgba(0,0,0,0.015)",fontSize:"12px",lineHeight:"1.6",color:"rgba(0,0,0,0.6)",fontFamily:"'DM Sans',sans-serif"}}>
+          <strong style={{color:"#1A1A1A"}}>{lang==="en"?"No purchase necessary.":lang==="es"?"Sin obligación de compra.":"Sans obligation d'achat."}</strong>{" "}
+          {lang==="en"?"A free entry by post is available, with the same chances of winning.":lang==="es"?"Existe una participación gratuita por correo, con las mismas posibilidades de ganar.":"Une participation gratuite par courrier est possible, avec les mêmes chances de gagner."}{" "}
+          <button type="button" onClick={function(){ setShowFreePost(true); }} style={{background:"none",border:"none",padding:0,color:"#1A1A1A",fontWeight:700,textDecoration:"underline",cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontSize:"12px"}}>{lang==="en"?"Learn more":lang==="es"?"Más información":"En savoir plus"}</button>
+        </div>
+        {showFreePost ? (
+          <div onClick={function(){ setShowFreePost(false); }} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.55)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
+            <div onClick={function(e){ e.stopPropagation(); }} style={{background:"#fff",borderRadius:"16px",maxWidth:"480px",width:"100%",maxHeight:"85vh",overflowY:"auto",padding:"28px",boxShadow:"0 20px 60px rgba(0,0,0,0.3)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"14px"}}>
+                <h3 style={{fontSize:"20px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#1A1A1A",margin:0,lineHeight:"1.2"}}>{lang==="en"?"FREE ENTRY — NO PURCHASE NECESSARY":lang==="es"?"PARTICIPACIÓN GRATUITA — SIN COMPRA":"PARTICIPATION GRATUITE — SANS ACHAT"}</h3>
+                <button type="button" onClick={function(){ setShowFreePost(false); }} style={{background:"none",border:"none",fontSize:"24px",lineHeight:1,cursor:"pointer",color:"rgba(0,0,0,0.5)",padding:"0 0 0 12px"}}>×</button>
+              </div>
+              <div style={{fontSize:"13px",lineHeight:"1.7",color:"rgba(0,0,0,0.7)",fontFamily:"'DM Sans',sans-serif"}}>
+                <p style={{marginTop:0}}>{lang==="en"?"You can enter this draw for free by post, with exactly the same chances of winning as a paid entry. No purchase is necessary, and buying tickets does not increase your chances of winning.":lang==="es"?"Puedes participar en este sorteo gratis por correo, con exactamente las mismas posibilidades de ganar que una participación de pago. No es necesaria ninguna compra, y comprar boletos no aumenta tus posibilidades de ganar.":"Vous pouvez participer gratuitement à ce tirage par courrier, avec exactement les mêmes chances de gagner qu'une participation payante. Aucun achat n'est nécessaire, et acheter des tickets n'augmente pas vos chances de gagner."}</p>
+                <p>{lang==="en"?"To enter for free, send a letter or postcard including your full name, postal address, email address, phone number and the name of the draw you wish to enter. Each free entry counts as one ticket.":lang==="es"?"Para participar gratis, envía una carta o postal con tu nombre completo, dirección postal, email, número de teléfono y el nombre del sorteo en el que deseas participar. Cada participación gratuita cuenta como un boleto.":"Pour participer gratuitement, envoyez une lettre ou une carte postale indiquant vos nom et prénom, votre adresse postale, votre email, votre numéro de téléphone et le nom du tirage auquel vous souhaitez participer. Chaque participation gratuite compte pour un ticket."}</p>
+                <p style={{marginBottom:0}}>{lang==="en"?"The postal address, the deadline and the full conditions are set out in our Terms & Conditions.":lang==="es"?"La dirección postal, el plazo y las condiciones completas figuran en nuestras Condiciones Generales.":"L'adresse postale, la date limite et les conditions complètes figurent dans nos CGV."}</p>
+              </div>
+              <button type="button" onClick={function(){ setShowFreePost(false); goTo("legal"); }} className="cta-dark" style={{width:"100%",padding:"14px",fontSize:"11px",marginTop:"20px"}}>{lang==="en"?"VIEW TERMS & CONDITIONS":lang==="es"?"VER CONDICIONES (CGV)":"VOIR LES CGV"}</button>
+            </div>
+          </div>
+        ) : null}
+        <button onClick={handlePay} disabled={!formValid || paying} className="cta-dark" style={{width:"100%",padding:"17px",fontSize:"12px"}}>
           {paying ? t.confirm.processing : (t.confirm.pay + " " + total + "£ " + t.confirm.payVia)}
         </button>
       </div>
