@@ -671,10 +671,14 @@ const [page, setPage] = useState(function(){ try { var _sp = new URLSearchParams
     }
     return false;
   };
+  const isSoldOut = function(d) { return !!d.soldOut || (Number(d.totalTickets||0) > 0 && Number(d.soldTickets||0) >= Number(d.totalTickets||0)); };
   const activeDraws = draws.filter(function(d) { return d.status === "active" && !isDrawnOrPast(d); });
   const pastDraws = draws.filter(function(d) { return isDrawnOrPast(d); });
   const winners = draws.filter(function(d) { return d.winner && d.winner.name; });
   activeDraws.sort(function(a, b) {
+    const sa = isSoldOut(a) ? 1 : 0;
+    const sb = isSoldOut(b) ? 1 : 0;
+    if (sa !== sb) return sa - sb;
     const ta = a.drawDate ? new Date(a.drawDate).getTime() : 0;
     const tb = b.drawDate ? new Date(b.drawDate).getTime() : 0;
     return tb - ta;
@@ -694,7 +698,7 @@ const [page, setPage] = useState(function(){ try { var _sp = new URLSearchParams
   const total = baseTotal - savings;
   const pct = activeDraw ? Math.round((activeDraw.soldTickets / activeDraw.totalTickets) * 100) : 0;
   const formValid = form.firstName && form.lastName && form.email && form.phone && form.address && form.city && form.country;
-  const featured = activeDraws.length > 0 ? activeDraws.slice().sort(function(a,b){ return new Date(a.drawDate) - new Date(b.drawDate); })[0] : null;
+  const featured = (function(){ if (activeDraws.length === 0) return null; const byDate = activeDraws.slice().sort(function(a,b){ return new Date(a.drawDate) - new Date(b.drawDate); }); const live = byDate.filter(function(d){ return !isSoldOut(d); }); return live.length > 0 ? live[0] : byDate[0]; })();
   const heroData = heroConfig && heroConfig.enabled ? heroConfig : featured;
   const localeMap = { en:"en-US", fr:"fr-FR", es:"es-ES" };
   const fmtDate = function(d) { return d ? new Date(d).toLocaleDateString(localeMap[lang],{day:"numeric",month:"short"}) : ""; };
