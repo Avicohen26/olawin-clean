@@ -484,15 +484,7 @@ function DrawCard(props) {
               <span style={{fontSize:"15px",color:"#ffffff",fontWeight:"800",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",textShadow:TEXT_SHADOW_STRONG}}>{draw.totalTickets} tickets</span>
             </div>
           </div>
-          {isFinished && draw.winner && draw.winner.name ? (
-            <div style={{marginTop:"12px",padding:"10px 14px",background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",borderRadius:"10px",border:"1px solid rgba(212,175,55,0.5)"}}>
-              <div style={{fontSize:"9px",letterSpacing:"2px",color:"#D4AF37",marginBottom:"4px",fontWeight:"700"}}>{t.winnerLabel}</div>
-              <div style={{fontSize:"18px",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"2px",color:"#ffffff",fontWeight:"800",textShadow:TEXT_SHADOW_STRONG}}>🏆 {shortWinnerName(draw.winner.name)}</div>
-              {draw.winner.certificateUrl ? (
-                <a href={draw.winner.certificateUrl} target="_blank" rel="noopener noreferrer" onClick={function(e){e.stopPropagation();}} style={{display:"inline-block",marginTop:"6px",fontSize:"10px",letterSpacing:"1px",color:"#D4AF37",textDecoration:"underline",fontWeight:"600"}}>🔒 {t.verifyCert}</a>
-              ) : null}
-            </div>
-          ) : null}
+          {null}
         </div>
       </div>
     </div>
