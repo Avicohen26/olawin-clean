@@ -951,11 +951,13 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
           <p style={{fontSize:"12px",letterSpacing:"3px",color:"rgba(0,0,0,0.35)"}}>{t.loading}</p>
         </div>
       );
-    } else if (activeDraws.length === 0 && pastDraws.length === 0) {
+    } else if (activeDraws.length === 0) {
       pageContent = (
-        <div style={{minHeight:"60vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"16px",textAlign:"center",padding:"48px 20px"}}>
-          <h2 style={{fontSize:"clamp(22px,5vw,28px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"4px"}}>{t.empty.title}</h2>
-          <p style={{fontSize:"14px",color:"rgba(0,0,0,0.45)"}}>{t.empty.sub}</p>
+        <div style={{minHeight:"72vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"20px",textAlign:"center",padding:"60px 20px"}}>
+          <OlawinLogo size={isMobile?54:66}></OlawinLogo>
+          <span style={{marginTop:"6px",display:"inline-block",background:"#B08D57",color:"#ffffff",fontSize:"11px",letterSpacing:"3px",fontWeight:"700",padding:"6px 16px",borderRadius:"20px",fontFamily:"'DM Sans',sans-serif"}}>{lang==="en"?"COMING SOON":lang==="es"?"PRÓXIMAMENTE":"BIENTÔT"}</span>
+          <h2 style={{fontSize:"clamp(30px,6vw,52px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",margin:0,color:"#1A1A1A",lineHeight:0.95}}>{lang==="en"?"A NEW DRAW IS COMING":lang==="es"?"UN NUEVO SORTEO LLEGA PRONTO":"UN NOUVEAU TIRAGE ARRIVE"}</h2>
+          <p style={{fontSize:"16px",color:"rgba(0,0,0,0.55)",fontFamily:"'Playfair Display', serif",fontStyle:"italic",maxWidth:"460px",lineHeight:"1.6",margin:0}}>{lang==="en"?"Come back very soon — a new exceptional trip to win will be online shortly.":lang==="es"?"Vuelve muy pronto — un nuevo viaje excepcional para ganar estará disponible en breve.":"Reviens très vite — un nouveau voyage d'exception à gagner sera bientôt en ligne."}</p>
         </div>
       );
     } else {
