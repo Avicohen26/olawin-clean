@@ -953,11 +953,27 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
       );
     } else if (activeDraws.length === 0) {
       pageContent = (
-        <div style={{minHeight:"72vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"20px",textAlign:"center",padding:"60px 20px"}}>
-          <OlawinLogo size={isMobile?54:66}></OlawinLogo>
-          <span style={{marginTop:"6px",display:"inline-block",background:"#B08D57",color:"#ffffff",fontSize:"11px",letterSpacing:"3px",fontWeight:"700",padding:"6px 16px",borderRadius:"20px",fontFamily:"'DM Sans',sans-serif"}}>{lang==="en"?"COMING SOON":lang==="es"?"PRÓXIMAMENTE":"BIENTÔT"}</span>
-          <h2 style={{fontSize:"clamp(30px,6vw,52px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",margin:0,color:"#1A1A1A",lineHeight:0.95}}>{lang==="en"?"A NEW DRAW IS COMING":lang==="es"?"UN NUEVO SORTEO LLEGA PRONTO":"UN NOUVEAU TIRAGE ARRIVE"}</h2>
-          <p style={{fontSize:"16px",color:"rgba(0,0,0,0.55)",fontFamily:"'Playfair Display', serif",fontStyle:"italic",maxWidth:"460px",lineHeight:"1.6",margin:0}}>{lang==="en"?"Come back very soon — a new exceptional trip to win will be online shortly.":lang==="es"?"Vuelve muy pronto — un nuevo viaje excepcional para ganar estará disponible en breve.":"Reviens très vite — un nouveau voyage d'exception à gagner sera bientôt en ligne."}</p>
+        <div>
+          <div style={{minHeight:pastDraws.length>0?"56vh":"72vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:"20px",textAlign:"center",padding:"60px 20px"}}>
+            <OlawinLogo size={isMobile?54:66}></OlawinLogo>
+            <span style={{marginTop:"6px",display:"inline-block",background:"#B08D57",color:"#ffffff",fontSize:"11px",letterSpacing:"3px",fontWeight:"700",padding:"6px 16px",borderRadius:"20px",fontFamily:"'DM Sans',sans-serif"}}>{lang==="en"?"COMING SOON":lang==="es"?"PRÓXIMAMENTE":"BIENTÔT"}</span>
+            <h2 style={{fontSize:"clamp(30px,6vw,52px)",fontFamily:"Bebas Neue, sans-serif",letterSpacing:"3px",margin:0,color:"#1A1A1A",lineHeight:0.95}}>{lang==="en"?"A NEW DRAW IS COMING":lang==="es"?"UN NUEVO SORTEO LLEGA PRONTO":"UN NOUVEAU TIRAGE ARRIVE"}</h2>
+            <p style={{fontSize:"16px",color:"rgba(0,0,0,0.55)",fontFamily:"'Playfair Display', serif",fontStyle:"italic",maxWidth:"460px",lineHeight:"1.6",margin:0}}>{lang==="en"?"Come back very soon — a new exceptional trip to win will be online shortly.":lang==="es"?"Vuelve muy pronto — un nuevo viaje excepcional para ganar estará disponible en breve.":"Reviens très vite — un nouveau voyage d'exception à gagner sera bientôt en ligne."}</p>
+          </div>
+          {pastDraws.length > 0 ? (
+            <section style={{background:C_BG,padding:isMobile?"40px 20px":"60px 48px",borderTop:"1px solid rgba(0,0,0,0.06)"}}>
+              <div style={{maxWidth:"1200px",margin:"0 auto"}}>
+                <div style={{marginBottom:"24px"}}>
+                  <div style={{fontSize:"9px",letterSpacing:"4px",color:"rgba(0,0,0,0.35)",marginBottom:"8px"}}>{t.section.past}</div>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(auto-fill,minmax(320px,1fr))",gap:"16px"}}>
+                  {pastDraws.map(function(draw) {
+                    return <DrawCard key={draw.id} draw={draw} t={t} finished={true} onClick={function(){}}></DrawCard>;
+                  })}
+                </div>
+              </div>
+            </section>
+          ) : null}
         </div>
       );
     } else {
