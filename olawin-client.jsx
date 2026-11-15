@@ -1038,10 +1038,10 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
             </section>
           ) : null}
 
-          <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4,1fr)",background:"rgba(0,0,0,0.02)"}}>
+          <section style={{borderTop:"1px solid rgba(0,0,0,0.09)",borderBottom:"1px solid rgba(0,0,0,0.09)",padding:isMobile?"32px 0":"40px 0",display:"grid",gridTemplateColumns:"repeat(3,1fr)",background:"rgba(0,0,0,0.02)"}}>
 {[
           { val: String(activeDraws.length), lbl: t.stats.active },
-{ val: "$" + activeDraws.reduce(function(s,d){ var n = parseInt((d.prize||"").replace(/[^0-9]/g,""),10) || 0; return s + n; }, 0).toLocaleString(localeMap[lang]), lbl: t.stats.value },          { val: "100+", lbl: t.stats.countries },
+          { val: "100+", lbl: t.stats.countries },
          { val: (
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:isMobile?"7px":"9px"}}>
               <svg width={isMobile?"26":"32"} height={isMobile?"26":"32"} viewBox="0 0 40 40" fill="none">
