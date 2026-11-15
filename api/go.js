@@ -26,6 +26,7 @@ const LINKS = {
   "ile-maurice": "4EOkMMU00Xrus1qzLhaQ",
   "dubai": "4gvW36Rs9nOGTRUrHR9A",
   "mich": "4gvW36Rs9nOGTRUrHR9A",
+  "apple": "cw5CIUs84L0WM1EWlOQg",
 };
 
 // slug -> code influenceur (parrainage). Le clic est aussi attribue cote site via ?ref=.
