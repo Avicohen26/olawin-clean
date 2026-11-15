@@ -970,11 +970,12 @@ const comingSoonContent = true ? null : (    <div style={{position:"fixed",inset
       );
     } else {
       const heroEndDate = heroData && heroData.drawDate ? heroData.drawDate : (heroData && heroData.endDate ? heroData.endDate : null);
+      const heroImg = heroData ? ((isMobile && heroData.imageMobile) ? heroData.imageMobile : heroData.image) : null;
       pageContent = (
         <div>
           <section style={{position:"relative",minHeight:isMobile?"calc(100dvh - 64px)":"calc(100vh - 64px)",overflow:"hidden",display:"flex",flexDirection:"column",justifyContent:"flex-end",paddingTop:isMobile?"16px":"28px"}}>
             <div style={{position:"absolute",inset:0,background:(heroData && heroData.gradient) || "#1A1A1A"}}></div>
-            {heroData && heroData.video ? <video autoPlay muted loop playsInline preload="auto" poster={heroData.image?optimg(heroData.image, isMobile?900:1600):undefined} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}><source src={heroData.video}></source></video> : (heroData && heroData.image ? <img src={optimg(heroData.image, isMobile?900:1600)} alt={heroData.location||"Olawin"} decoding="async" onError={function(e){ imgFallback(e, heroData.image); }} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}></img> : null)}
+            {heroData && heroData.video ? <video autoPlay muted loop playsInline preload="auto" poster={heroImg?optimg(heroImg, isMobile?900:1600):undefined} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:heroData.heroPosition||"center"}}><source src={heroData.video}></source></video> : (heroImg ? <img src={optimg(heroImg, isMobile?900:1600)} alt={heroData.location||"Olawin"} decoding="async" onError={function(e){ imgFallback(e, heroImg); }} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:(isMobile && heroData.imageMobile) ? (heroData.heroPositionMobile||"center") : (heroData.heroPosition||"center")}}></img> : null)}
             <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.15) 100%)"}}></div>
             <div style={{position:"relative",padding:isMobile?"0 20px 40px":"0 64px 72px",maxWidth:"900px"}}>
               {heroEndDate ? (
