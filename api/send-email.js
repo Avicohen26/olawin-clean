@@ -37,18 +37,29 @@ export default async function handler(req, res) {
 
     const fromAddress = from || "Olawin <noreply@olawin.org>";
 
+    // En-tête standard de désinscription (bouton natif "Se désinscrire" dans Gmail/Outlook)
+    const unsubUrl = (typeof to === "string")
+      ? "https://www.olawin.org/api/unsubscribe?e=" + encodeURIComponent(to)
+      : null;
+    const listHeaders = unsubUrl
+      ? { "List-Unsubscribe": "<" + unsubUrl + ">", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" }
+      : undefined;
+
+    const payload = {
+      from: fromAddress,
+      to: to,
+      subject: subject,
+      html: html,
+    };
+    if (listHeaders) payload.headers = listHeaders;
+
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + RESEND_API_KEY,
       },
-      body: JSON.stringify({
-        from: fromAddress,
-        to: to,
-        subject: subject,
-        html: html,
-      }),
+      body: JSON.stringify(payload),
     });
 
     const data = await response.json();
